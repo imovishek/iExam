@@ -1,0 +1,1 @@
+export const SET_NAVIGATION_TAB = 'SET_NAVIGATION_TAB';
