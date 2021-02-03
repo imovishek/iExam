@@ -1,0 +1,49 @@
+{
+  "name": "EMSBackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
+    "helmet": "^4.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "method-override": "^3.0.0",
+    "moment": "^2.27.0",
+    "mongoose": "^5.10.7",
+    "mongoose-autopopulate": "^0.12.2",
+    "mongoose-lean-defaults": "^0.4.1",
+    "mongoose-lean-getters": "^0.1.2",
+    "mongoose-lean-virtuals": "^0.6.9",
+    "mongoose-unique-validator": "^2.0.3",
+    "morgan": "^1.10.0",
+    "underscore": "^1.12.0",
+    "uniqid": "^5.2.0",
+    "validator": "^13.1.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "cross-env": "^7.0.2",
+    "eslint": "^7.18.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsdoc": "^30.2.4",
+    "eslint-watch": "^7.0.0",
+    "jsdoc": "^3.6.5",
+    "prettier": "^2.0.5"
+  },
+  "license": "ISC"
+}
