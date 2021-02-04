@@ -1,12 +1,12 @@
-const studentHelper = require('./student.helper');
+const examHelper = require('./exam.helper');
 const { httpStatuses } = require('../constants');
 
-// GET STUDENT
+// GET EXAM
 
-exports.getStudents = async (req, res) => {
+exports.getExams = async (req, res) => {
   const { query } = req;
   try {
-    const result = await studentHelper.getStudents(query);
+    const result = await examHelper.getExams(query);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -16,10 +16,10 @@ exports.getStudents = async (req, res) => {
   }
 };
 
-exports.getStudentByID = async (req, res) => {
+exports.getExamByID = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await studentHelper.getStudentByID(id);
+    const result = await examHelper.getExamByID(id);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -29,11 +29,11 @@ exports.getStudentByID = async (req, res) => {
   }
 };
 
-// CREATE STUDENT
-exports.createStudent = async (req, res) => {
-  const { student } = req.body;
+// CREATE EXAM
+exports.createExam = async (req, res) => {
+  const { exam } = req.body;
   try {
-    const result = await studentHelper.createStudent(student);
+    const result = await examHelper.createExam(exam);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -43,11 +43,11 @@ exports.createStudent = async (req, res) => {
   }
 };
 
-// UPDATE STUDENT
-exports.updateStudents = async (req, res) => {
+// UPDATE EXAM
+exports.updateExams = async (req, res) => {
   const { query, body } = req;
   try {
-    const result = await studentHelper.updateStudents(query, body);
+    const result = await examHelper.updateExams(query, body);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -57,11 +57,11 @@ exports.updateStudents = async (req, res) => {
   }
 };
 
-exports.updateStudentByID = async (req, res) => {
+exports.updateExamByID = async (req, res) => {
   const { id } = req.params;
   const { body } = req;
   try {
-    const result = await studentHelper.updateStudentByID(id, body.update);
+    const result = await examHelper.updateExamByID(id, body.update);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -72,11 +72,11 @@ exports.updateStudentByID = async (req, res) => {
 };
 
 
-// DELETE STUDENT
-exports.deleteStudents = async (req, res) => {
+// DELETE EXAM
+exports.deleteExams = async (req, res) => {
   const { query } = req;
   try {
-    const result = await studentHelper.deleteStudents(query);
+    const result = await examHelper.deleteExams(query);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -86,10 +86,10 @@ exports.deleteStudents = async (req, res) => {
   }
 };
 
-exports.deleteStudentByID = async (req, res) => {
+exports.deleteExamByID = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await studentHelper.deleteStudentByID(id);
+    const result = await examHelper.deleteExamByID(id);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
