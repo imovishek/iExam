@@ -5,7 +5,6 @@ const { httpStatuses } = require('../constants');
 
 exports.getCourses = async (req, res) => {
   const { query } = req;
-  console.log(req.user);
   try {
     const result = await courseHelper.getCourses(query);
     res.status(httpStatuses.OK).send({ payload: result });
@@ -62,7 +61,7 @@ exports.updateCourseByID = async (req, res) => {
   const { id } = req.params;
   const { body } = req;
   try {
-    const result = await courseHelper.updateCourseByID(id, body);
+    const result = await courseHelper.updateCourseByID(id, body.update);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);

@@ -23,7 +23,6 @@ exports.login = async (email, password) => {
       const { userType } = credential;
       const Model = userTypeToModelMapping[userType];
       const user = await Model.findOne({ 'credential.email': email }).lean();
-      console.log(user);
       const token = jwt.sign({
           ...user
         },
