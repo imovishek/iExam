@@ -1,11 +1,10 @@
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import courseValidator from './course.validation';
 import { Modal, Input, Select, DatePicker } from "antd";
-import Joi from "@hapi/joi";
+import moment from "moment";
 import _ from "underscore";
 import { joiObjectParser } from "../../utitlities/common.functions";
-import { requestApiAndGetResponse } from '../../utitlities/api';
 
 const { Option } = Select;
 
@@ -35,9 +34,15 @@ const ErrorWrapper = styled.p`
   margin-left: 5px;
 `;
 
-const CreateEditCourseModal = ({ selectedCourse, visible, setVisibility }) => {
+const CreateEditCourseModal = ({
+  selectedCourse,
+  visible,
+  setVisibility,
+  createCourse,
+  updateCourse
+}) => {
   const isEditing = !(!selectedCourse);
-  const tittle = isEditing ? 'Edit Course' : 'Create Course';
+  const title = isEditing ? 'Edit Course' : 'Create Course';
   const defaultCourse = {
     title: '',
     courseCode: '',
@@ -48,13 +53,17 @@ const CreateEditCourseModal = ({ selectedCourse, visible, setVisibility }) => {
     exams: [],
     enrolledStudents: [],
     pendingEnrollStudents: [],
-    assignedTeacher: {},
+    assignedTeacher: null,
     startDate: null,
     status: null 
   };
-
-  const [course, setCourse] = useState(defaultCourse);
+  const [course, setCourse] = useState(isEditing ? selectedCourse : defaultCourse);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    setCourse(selectedCourse || defaultCourse);
+  }, [isEditing, selectedCourse]);
+
   const setValue = (key, value) => {
     const newCourse = {
       ...course,
@@ -80,13 +89,14 @@ const CreateEditCourseModal = ({ selectedCourse, visible, setVisibility }) => {
     if (!_.isEmpty(errors)) {
       return;
     }
-    
+    if (isEditing) updateCourse(course);
+    else createCourse(course);
     closeModal();
   };
 
   return (
     <Modal
-      title={tittle}
+      title={title}
       style={{ top: 20 }}
       visible={visible}
       width={800}
@@ -97,7 +107,7 @@ const CreateEditCourseModal = ({ selectedCourse, visible, setVisibility }) => {
     >
       <Row columns="1fr 1fr">
         <ColumnWrapper>
-          <LabelWrapper>Tittle</LabelWrapper>
+          <LabelWrapper>Title</LabelWrapper>
           <InputWrapper
             placeholder="Course Title"
             value={course.title}
@@ -130,8 +140,9 @@ const CreateEditCourseModal = ({ selectedCourse, visible, setVisibility }) => {
         <ColumnWrapper>
           <LabelWrapper>Start Date</LabelWrapper>
           <DatePicker
+            allowClear
             placeholder="Start Date"
-            value={course.startDate}
+            value={!course.startDate ? '' : moment(course.startDate)}
             style={{ width: 270 }}
             format="DD/MM/YYYY"
             onChange={(d) => setValue('startDate', d)}

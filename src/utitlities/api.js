@@ -13,6 +13,14 @@ export const createCourse = async (course) =>
   requestApiAndGetResponse(`${apiUrl}/courses`, 'post', { course })
     .then(res => res.data);
 
+export const updateCourse = async (course) =>
+  requestApiAndGetResponse(`${apiUrl}/course/${course._id}`, 'put', { query: { _id: course._id }, update: course })
+    .then(res => res.data);
+
+export const updateDeptAdmin = async (course) =>
+  requestApiAndGetResponse(`${apiUrl}/course/${course._id}`, 'put', course)
+    .then(res => res.data);
+
 export const requestApiAndGetResponse = (url, method = 'get', body = {}, query = {}) => {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
@@ -29,6 +37,7 @@ const api = {
     getCourses,
     createCourse,
     requestApiAndGetResponse,
+    updateCourse
 };
 
 export default api;

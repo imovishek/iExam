@@ -4,6 +4,8 @@ import _ from 'underscore';
 import { Spin, Button } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import Pagination from "../Common/Pagination";
+import React, { useState, useEffect } from "react";
 
 const FlexBoxHeader = styled.div`
   display: flex;
@@ -67,7 +69,7 @@ const OperationWrapper = styled.div`
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`;
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course, setCourseToEdit, showCreateEditModal }) => {
     return (
         <FlexBox>
             <FlexChild> { course.title } </FlexChild>
@@ -77,7 +79,10 @@ const CourseCard = ({ course }) => {
             <FlexChild> { course.status } </FlexChild>
             <FlexChild>
                 <OperationWrapper>
-                  <Button>Edit</Button>
+                  <Button onClick={() => {
+                    setCourseToEdit(_.create('', course));
+                    showCreateEditModal(true);
+                  }}>Edit</Button>
                 <FontAwesomeIconWrapper icon={faTrash} color="#a02f2f" />
               </OperationWrapper>
             </FlexChild>
@@ -85,27 +90,56 @@ const CourseCard = ({ course }) => {
     )
 };
 
-const CourseTable = ({ courses, isLoading }) => {
-    return (
-      <div>
-        <FlexBoxHeader>
-            <FlexChildHeader> Course Title </FlexChildHeader>
-            <FlexChildHeader> Course Code </FlexChildHeader>
-            <FlexChildHeader> Assigned Teacher </FlexChildHeader>
-            <FlexChildHeader> Department </FlexChildHeader>
-            <FlexChildHeader> Status </FlexChildHeader>
-            <FlexChildHeader></FlexChildHeader>
-        </FlexBoxHeader>
-        { !isLoading && _.map(courses, (course, index) => (
-            <CourseCard key={`courses_${index}`} course={course} />
-        ))}
-        { isLoading &&
-          <SpinWrapper>
-            <Spin size="large" />
-          </SpinWrapper>
-        }
-      </div> 
-    );
+const CourseTable = ({
+  courses = [],
+  isLoading,
+  setCourseToEdit,
+  showCreateEditModal
+}) => {
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(3);
+  const [total, setTotal] = useState(1);
+
+  useEffect(() => {
+    setTotal(courses.length);
+  }, [courses]);
+  const paginatedCourses = courses.slice((current-1)*pageSize, current*pageSize);
+  return (
+    <div>
+      <FlexBoxHeader>
+        <FlexChildHeader> Course Title </FlexChildHeader>
+        <FlexChildHeader> Course Code </FlexChildHeader>
+        <FlexChildHeader> Assigned Teacher </FlexChildHeader>
+        <FlexChildHeader> Department </FlexChildHeader>
+        <FlexChildHeader> Status </FlexChildHeader>
+        <FlexChildHeader></FlexChildHeader>
+      </FlexBoxHeader>
+      { !isLoading && _.map(paginatedCourses, (course, index) => (
+          <CourseCard
+            key={`courses_${index}`}
+            course={course}
+            setCourseToEdit={setCourseToEdit}
+            showCreateEditModal={showCreateEditModal}
+          />
+      ))}
+      { !isLoading &&
+        <Pagination
+          current={current}
+          pageSize={pageSize}
+          total={total}
+          onChange={(page, pageSize) => {
+            setCurrent(page);
+            setPageSize(pageSize);
+          }}
+        />
+      }
+      { isLoading &&
+        <SpinWrapper>
+          <Spin size="large" />
+        </SpinWrapper>
+      }
+    </div> 
+  );
 };
 
   

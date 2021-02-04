@@ -26,19 +26,33 @@ const CreateNewCourseWrapper = styled.div`
 `;
 
 const Courses = ({ courses, user, dispatch }) => {
-    const isCoursesChanged = false;
+    const [isCoursesChanged, setCourseChanged] = useState(true);
     const [isLoading, setLoading] = useState(true);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [showCreateEditModal, setShowCreateEditModal] = useState(false);
+
     useEffect(() => {
+      if (isCoursesChanged) {
         const { courseIDs = [] } = user;
         api.getCourses(courseIDs)
         .then(({ payload }) => {
             dispatch(onUpdateCourses(payload));
+            setCourseChanged(false);
             setLoading(false);
         });
-
+      }
     }, [isCoursesChanged]);
+
+    const createCourseHandler = async (course) => {
+      await api.createCourse(course);
+      // await api.updateDeptAdmin(user._id, { courseIDs: { $push: course._id } });
+      setCourseChanged(true);
+    };
+
+    const updateCourseHandler = async (course) => {
+      await api.updateCourse(course);
+      setCourseChanged(true);
+    };
 
     return (
         <div>
@@ -59,15 +73,21 @@ const Courses = ({ courses, user, dispatch }) => {
                       </Button>
                     </CreateNewCourseWrapper>
                     <CourseTableWrapper>
-                        <CourseTable
-                          courses={courses}
-                          isLoading={isLoading}
-                        />
+                      <CourseTable
+                        courses={courses}
+                        isLoading={isLoading}
+                        setCourseToEdit={(selectedCourse) => {
+                          setSelectedCourse(selectedCourse);
+                        }}
+                        showCreateEditModal={(value) => setShowCreateEditModal(value)}
+                      />
                     </CourseTableWrapper>
                     <CreateEditCourseModal
                       visible={showCreateEditModal}
                       selectedCourse={selectedCourse}
                       setVisibility={setShowCreateEditModal}
+                      createCourse={createCourseHandler}
+                      updateCourse={updateCourseHandler}
                     />
                 </Container>
             </BodyWrapper>
