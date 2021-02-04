@@ -17,6 +17,10 @@ export const updateCourse = async (course) =>
   requestApiAndGetResponse(`${apiUrl}/course/${course._id}`, 'put', { query: { _id: course._id }, update: course })
     .then(res => res.data);
 
+export const deleteCourse = async (course) =>
+  requestApiAndGetResponse(`${apiUrl}/course/${course._id}`, 'delete')
+    .then(res => res.data);
+
 export const updateDeptAdmin = async (course) =>
   requestApiAndGetResponse(`${apiUrl}/course/${course._id}`, 'put', course)
     .then(res => res.data);
@@ -37,7 +41,8 @@ const api = {
     getCourses,
     createCourse,
     requestApiAndGetResponse,
-    updateCourse
+    updateCourse,
+    deleteCourse
 };
 
 export default api;

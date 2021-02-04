@@ -44,6 +44,7 @@ const Courses = ({ courses, user, dispatch }) => {
     }, [isCoursesChanged]);
 
     const createCourseHandler = async (course) => {
+      setLoading(true);
       await api.createCourse(course);
       // await api.updateDeptAdmin(user._id, { courseIDs: { $push: course._id } });
       setCourseChanged(true);
@@ -51,6 +52,12 @@ const Courses = ({ courses, user, dispatch }) => {
 
     const updateCourseHandler = async (course) => {
       await api.updateCourse(course);
+      setCourseChanged(true);
+    };
+
+    const deleteCourseHandler = async (course) => {
+      setLoading(true);
+      await api.deleteCourse(course);
       setCourseChanged(true);
     };
 
@@ -80,6 +87,7 @@ const Courses = ({ courses, user, dispatch }) => {
                           setSelectedCourse(selectedCourse);
                         }}
                         showCreateEditModal={(value) => setShowCreateEditModal(value)}
+                        deleteCourse={deleteCourseHandler}
                       />
                     </CourseTableWrapper>
                     <CreateEditCourseModal

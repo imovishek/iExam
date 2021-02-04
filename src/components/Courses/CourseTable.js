@@ -1,11 +1,12 @@
 
 import styled from "styled-components";
 import _ from 'underscore';
-import { Spin, Button } from "antd";
+import { Spin, Button, Popconfirm } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "../Common/Pagination";
 import React, { useState, useEffect } from "react";
+import { deleteCourse } from "../../utitlities/api";
 
 const FlexBoxHeader = styled.div`
   display: flex;
@@ -69,7 +70,7 @@ const OperationWrapper = styled.div`
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`;
 
-const CourseCard = ({ course, setCourseToEdit, showCreateEditModal }) => {
+const CourseCard = ({ course, setCourseToEdit, showCreateEditModal, deleteCourse }) => {
     return (
         <FlexBox>
             <FlexChild> { course.title } </FlexChild>
@@ -83,7 +84,17 @@ const CourseCard = ({ course, setCourseToEdit, showCreateEditModal }) => {
                     setCourseToEdit(_.create('', course));
                     showCreateEditModal(true);
                   }}>Edit</Button>
-                <FontAwesomeIconWrapper icon={faTrash} color="#a02f2f" />
+                <Popconfirm
+                  title="Are you sure？"
+                  okText="Yes"
+                  cancelText="No"
+                  onConfirm={() => deleteCourse(course)}
+                >
+                  <FontAwesomeIconWrapper
+                    icon={faTrash}
+                    color="#a02f2f"
+                  />
+                </Popconfirm>,
               </OperationWrapper>
             </FlexChild>
         </FlexBox>
@@ -94,7 +105,8 @@ const CourseTable = ({
   courses = [],
   isLoading,
   setCourseToEdit,
-  showCreateEditModal
+  showCreateEditModal,
+  deleteCourse,
 }) => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(3);
@@ -120,6 +132,7 @@ const CourseTable = ({
             course={course}
             setCourseToEdit={setCourseToEdit}
             showCreateEditModal={showCreateEditModal}
+            deleteCourse={deleteCourse}
           />
       ))}
       { !isLoading &&
