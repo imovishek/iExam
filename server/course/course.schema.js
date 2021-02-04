@@ -20,7 +20,7 @@ const courseSchema = new Schema({
   enrolledStudents: [studentSchema],
   pendingEnrollStudents: [studentSchema],
   assignedTeacher: teacherSchema,
-  startDate: { type: Date, required: true },
+  startDate: { type: Date },
   status: { type: String, required: true }
 },
 {
