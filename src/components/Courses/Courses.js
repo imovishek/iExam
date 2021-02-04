@@ -1,11 +1,10 @@
 import CheckAuthentication from "../CheckAuthentication/CheckAuthentication";
 import NavBar from "../NavBar/NavBar";
 import { connect } from "react-redux";
-import { BodyWrapper, Text, Container } from "../../utitlities/styles";
+import { BodyWrapper, Container } from "../../utitlities/styles";
 import React, { useEffect, useState } from "react";
 import api from '../../utitlities/api';
 import { onUpdateCourses } from "./actions";
-import _ from 'underscore';
 import styled from "styled-components";
 import CourseTable from "./CourseTable";
 import { Button } from "antd";

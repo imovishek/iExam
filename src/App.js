@@ -1,6 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter, Route, Switch, useHistory } from "react-router-dom";
+import { Route, Switch } from "react-router";
 import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
 import Logout from './components/Logout/Logout';
@@ -21,28 +20,22 @@ const loadUser = (dispatch) => {
 };
 
 const App = ({ user, dispatch }) => {
-  const history = useHistory();
   if (!user || !user.credential) {
     if (!localStorage.token) return <Login />;
     else loadUser(dispatch);
     return <div></div>;
   }
-  console.log(user);
   let userType = "";
   if (user.credential) userType = user.credential.userType;
   return (
-    <div>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/login" component={Login} />
-          <Route path="/logout" component={Logout} />
-          <Route path="/dashboard" component={Dashboard} />
-          { hasPageAccess[userType] && hasPageAccess[userType].Courses && <Route path="/courses" component={Courses} /> }
-          { hasPageAccess[userType] && hasPageAccess[userType].Teachers && <Route path="/teachers" component={Teachers} /> }
-          <Route path="/" component={Dashboard} />
-        </Switch>
-      </BrowserRouter>
-    </div>
+      <Switch>
+        <Route path="/login" component={Login} />
+        <Route path="/logout" component={Logout} />
+        <Route path="/dashboard" component={Dashboard} />
+        { hasPageAccess[userType] && hasPageAccess[userType].Courses && <Route path="/courses" component={Courses} /> }
+        { hasPageAccess[userType] && hasPageAccess[userType].Teachers && <Route path="/teachers" component={Teachers} /> }
+        <Route path="/" component={Dashboard} />
+      </Switch>
   );
 }
 

@@ -1,14 +1,17 @@
-import { useHistory } from "react-router-dom";
-import { setUserAction } from "../Login/actions";
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
+import Login from '../Login/Login';
+import { useEffect } from 'react';
 
-const Logout = () => {
-    const history = useHistory();
-    localStorage.clear();
-    history.push('/login');
-    return (
-      <div></div>
-    )
+const Logout = ({ dispatch }) => {
+    useEffect(() => {
+      localStorage.clear();
+      dispatch(push('/login'));
+    });
+    return <Login/>;
 };
+const mapDispatchToProps = dispatch => ({
+  dispatch,
+});
 
-export default Logout;
+export default connect(null, mapDispatchToProps)(Logout);

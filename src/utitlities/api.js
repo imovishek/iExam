@@ -5,27 +5,29 @@ export const apiLogin = async (email, password) => {
     return axios.post(`${apiUrl}/auth/login`, { email, password });
 };
 
-export const getCourses = async (courseIDs) => {
-    const token = localStorage.getItem('token');
-    const config = {
-        headers: { Authorization: `Bearer ${token}` }
-    };
-    console.log(config);
-    return axios.get(`${apiUrl}/courses`, config).then(res => res.data);
-};
+export const getCourses = async (courseIDs) =>
+    requestApiAndGetResponse(`${apiUrl}/courses`, 'get')
+      .then(res => res.data);
+
+export const createCourse = async (course) =>
+  requestApiAndGetResponse(`${apiUrl}/courses`, 'post', { course })
+    .then(res => res.data);
 
 export const requestApiAndGetResponse = (url, method = 'get', body = {}, query = {}) => {
     const token = localStorage.getItem('token');
-    const config = {
-        headers: { Authorization: `Bearer ${token}` }
-    };
-    console.log(config);
-    return axios[method.toLowerCase()](`${apiUrl}${url}`, body, config);
+    const headers = { Authorization: `Bearer ${token}` };
+    return axios({
+      method,
+      url,
+      data: body,
+      headers,
+    });
 }
 
 const api = {
     apiLogin,
     getCourses,
+    createCourse,
     requestApiAndGetResponse,
 };
 

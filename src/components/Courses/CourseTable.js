@@ -96,8 +96,8 @@ const CourseTable = ({ courses, isLoading }) => {
             <FlexChildHeader> Status </FlexChildHeader>
             <FlexChildHeader></FlexChildHeader>
         </FlexBoxHeader>
-        { !isLoading && _.map(courses, (course) => (
-            <CourseCard course={course} />
+        { !isLoading && _.map(courses, (course, index) => (
+            <CourseCard key={`courses_${index}`} course={course} />
         ))}
         { isLoading &&
           <SpinWrapper>

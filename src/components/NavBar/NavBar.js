@@ -1,11 +1,9 @@
-import { Input, Button, message } from 'antd';
-import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoffee, faBox, faAnchor } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import { setNavigaitonTabAction } from './actions';
+import { push } from 'connected-react-router';
 
 const BodyWrapper = styled.div`
   display: inline-block;
@@ -35,7 +33,7 @@ const TextWrapper = styled.div`
   user-select: none;
 `;
 
-const LinkWrapper = styled(Link)`
+const LinkWrapper = styled.div`
   color: ${(props) => props.selected ? '#40a9ff' : '#ececec'};
   :hover{
     color: #40a9aa;
@@ -51,24 +49,28 @@ const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   width: 50px;
 `;
 
-const NavBar = ({ setNavigationTab, tabKey = 'dashboard' }) => {
-
+const NavBar = ({ setNavigationTab, tabKey = 'dashboard', dispatch }) => {
+  const redirectTo = path => {
+    setNavigationTab(path)
+    dispatch(push(`/${path}`));
+  };
+  
   return (
     <BodyWrapper>
       <SubWrapper>
-        <LinkWrapper to="/dashboard" onClick={() => setNavigationTab('dashboard')} selected={tabKey === "dashboard"}>
+        <LinkWrapper onClick={() => redirectTo('dashboard')} selected={tabKey === "dashboard"}>
           <TextWrapper>
             <FontAwesomeIconWrapper icon={faCoffee} />
             Dashboard
           </TextWrapper>
         </LinkWrapper>
-        <LinkWrapper to="/courses" onClick={() => setNavigationTab('courses')} selected={tabKey === "courses"}>
+        <LinkWrapper onClick={() => redirectTo('courses')} selected={tabKey === "courses"}>
           <TextWrapper>
             <FontAwesomeIconWrapper icon={faBox} />
             Courses
           </TextWrapper>
         </LinkWrapper>
-        <LinkWrapper to="/teachers" onClick={() => setNavigationTab('teachers')} selected={tabKey === "teachers"}>
+        <LinkWrapper onClick={() => redirectTo('teachers')} selected={tabKey === "teachers"}>
           <TextWrapper>
             <FontAwesomeIconWrapper icon={faAnchor} />
             Teachers
@@ -85,6 +87,7 @@ const mapDispatchToProps = (dispatch) => ({
   setNavigationTab: (key) => {
     localStorage.setItem('tabKey', key);
     dispatch(setNavigaitonTabAction(key));
-  }
+  },
+  dispatch
 });
 export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

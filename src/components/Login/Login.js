@@ -1,12 +1,11 @@
-import { Input, Button, message } from 'antd';
+import { Input, Button, message, Spin } from 'antd';
 import React, { useState } from 'react';
 import jwt from 'jsonwebtoken';
 import styled from 'styled-components';
 import { apiLogin } from '../../utitlities/api';
 import { connect } from 'react-redux';
 import { setUserAction } from './actions';
-import Logout from '../Logout/Logout';
-import { useHistory } from 'react-router-dom';
+import { push } from 'connected-react-router';
 
 const BodyWrapper = styled.div`
   display: flex;
@@ -40,6 +39,21 @@ const TextWrapper = styled.p`
 const HeaderWrapper = styled.h1`
   font-weight: 100;
 `;
+
+const SpinWrapper = styled.div`
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  z-index: 1000;
+  background: rgba(225, 223, 223, 0.53);
+`;
+
 const setLocalStorage = (user, token) => {
   const { firstName, lastName, credential: { email, userType } } = user;
   localStorage.setItem('firstName', firstName);
@@ -49,22 +63,22 @@ const setLocalStorage = (user, token) => {
   localStorage.setItem('token', token);
 };
 const Login = ({ setUser, dispatch }) => {
-  const history = useHistory();
-  localStorage.clear();
   const tryToLogin = async (email, password) => {
     const { data: res } = await apiLogin(email, password);
+    setIsLoading(false);
     if (res.error) return message.error(res.message);
+    localStorage.clear();
     const user = await jwt.decode(res.token);
-    console.log(user);
     setUser(user);
     if (!user) return message.error('Something went wrong please try again later!');
     
     setLocalStorage(user, res.token);
-    history.push('/');
+    dispatch(push('/'));
   }
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   return (
     <BodyWrapper>
       <HeaderWrapper> Login </HeaderWrapper>
@@ -87,6 +101,7 @@ const Login = ({ setUser, dispatch }) => {
           <ButtonWrapper
             type="primary"
             onClick={() => {
+              setIsLoading(true);
               tryToLogin(email, password);
             }}
           >
@@ -94,7 +109,11 @@ const Login = ({ setUser, dispatch }) => {
           </ButtonWrapper>
           <TextWrapper> <a href="/"> Forget Password </a> </TextWrapper>
         </div>
-        
+        {isLoading && (
+          <SpinWrapper>
+            <Spin size="large" />
+          </SpinWrapper>
+        )}
       </SubWrapper>
     </BodyWrapper>
   )
