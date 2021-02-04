@@ -94,7 +94,7 @@ const CourseCard = ({ course, setCourseToEdit, showCreateEditModal, deleteCourse
                     icon={faTrash}
                     color="#a02f2f"
                   />
-                </Popconfirm>,
+                </Popconfirm>
               </OperationWrapper>
             </FlexChild>
         </FlexBox>
