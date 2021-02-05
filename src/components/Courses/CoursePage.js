@@ -22,7 +22,7 @@ const Row = styled.div`
 `;
 
 const HeaderRow = styled.div`
-  height: 80px;
+  height: 90px;
 `;
 
 const BodyRow = styled.div`
@@ -74,7 +74,14 @@ const CoursePage = ({ course = courses[0] }) => {
       <BodyWrapper>
         <NavBar />
         <Container>
-          <PageHeader>Course</PageHeader>
+        <ExamsHeaderWrapper>
+            <PageHeader>Course</PageHeader>
+            <ExamButtonWrapper>
+              <ButtonStyled type="primary">
+                Update Course
+              </ButtonStyled>
+            </ExamButtonWrapper>
+          </ExamsHeaderWrapper>
           <Row columns="1fr 1fr 150px">
             <HeaderRow>
               <LabelWrapper>Title</LabelWrapper>
