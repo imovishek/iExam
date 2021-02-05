@@ -7,6 +7,8 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "../Common/Pagination";
 import React, { useState, useEffect } from "react";
 import { deleteCourse } from "../../utitlities/api";
+import { push } from "connected-react-router";
+import { connect } from "react-redux";
 
 const FlexBoxHeader = styled.div`
   display: flex;
@@ -37,6 +39,7 @@ const FlexBox = styled.div`
   border-radius: 8px;
   background: #e6e6e6;
   margin-top: 5px;
+  cursor: pointer;
 `;
 
 const FlexChild = styled.div`
@@ -70,9 +73,9 @@ const OperationWrapper = styled.div`
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`;
 
-const CourseCard = ({ course, setCourseToEdit, showCreateEditModal, deleteCourse }) => {
+const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, deleteCourse }) => {
     return (
-        <FlexBox>
+        <FlexBox onClick={() => dispatch(push(`/course/${course._id}`))}>
             <FlexChild> { course.title } </FlexChild>
             <FlexChild> { course.courseCode } </FlexChild>
             <FlexChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </FlexChild>
@@ -107,6 +110,7 @@ const CourseTable = ({
   setCourseToEdit,
   showCreateEditModal,
   deleteCourse,
+  dispatch
 }) => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(3);
@@ -133,6 +137,7 @@ const CourseTable = ({
             setCourseToEdit={setCourseToEdit}
             showCreateEditModal={showCreateEditModal}
             deleteCourse={deleteCourse}
+            dispatch={dispatch}
           />
       ))}
       { !isLoading &&
@@ -155,5 +160,9 @@ const CourseTable = ({
   );
 };
 
-  
-export default CourseTable;
+const mapDispatchToProps = dispatch => ({
+  dispatch
+});
+
+
+export default connect(null, mapDispatchToProps)(CourseTable);

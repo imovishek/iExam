@@ -3,5 +3,7 @@ export const hasPageAccess = {
         Courses: true,
         Teachers: true,
         Students: true,
+        CoursePage: true,
+        ExamPage: true,
     }
 };
