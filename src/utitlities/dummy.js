@@ -19,7 +19,13 @@ export const courses = [
     department: {
       departmentName: 'Computer Science and Engineering'
     },
-    
+    assignedTeacher: {
+      firstName: 'Saiful',
+      lastName: 'Islam'
+    },
+    status: 'Upcoming',
+    startDate: moment('2021-02-08 09:30:26.123+07:00'),
+    endDate: moment('2021-02-08 10:10:26.123+07:00')
   }
 ];
 

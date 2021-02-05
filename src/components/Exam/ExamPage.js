@@ -5,7 +5,7 @@ import { BodyWrapper, Container } from "../../utitlities/styles";
 import React, { useEffect, useState } from "react";
 import api from '../../utitlities/api';
 import styled from "styled-components";
-import { Input } from "antd";
+import { Button, Input } from "antd";
 import { students, questions, exams, courses } from "../../utitlities/dummy";
 import { stFormatDate, getDuration } from "../../utitlities/common.functions";
 import Questions from "./components/Questions";
@@ -19,7 +19,7 @@ const Row = styled.div`
 `;
 
 const HeaderRow = styled.div`
-  height: 100px;
+  height: 90px;
 `;
 
 const BodyRow = styled.div`
@@ -34,10 +34,15 @@ const LabelWrapper = styled.div`
   margin-bottom: 10px;
 `;
 const ExamsHeaderWrapper = styled.div`
-  color: grey;
-  margin-bottom: 10px;
-  height: 30px;
-  border-bottom: 1px solid rgba(10, 10, 10, 0.3);;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 50px;
+  justify-content: space-between;
+`;
+
+const ExamButtonWrapper = styled.div`
+  float: right;
 `;
 
 const PageHeader = styled.div`
@@ -53,6 +58,10 @@ const InputWrapper = styled(Input)`
   }
 `;
 
+const ButtonStyled = styled(Button)`
+  height: 30px;
+`;
+
 const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
   return (
     <div>
@@ -60,7 +69,14 @@ const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
       <BodyWrapper>
         <NavBar />
         <Container>
-          <PageHeader>Exam</PageHeader>
+          <ExamsHeaderWrapper>
+            <PageHeader>Exam</PageHeader>
+            <ExamButtonWrapper>
+              <ButtonStyled type="primary">
+                Update Exam
+              </ButtonStyled>
+            </ExamButtonWrapper>
+          </ExamsHeaderWrapper>
           <Row columns="auto auto auto">
             <HeaderRow>
               <LabelWrapper>Exam Title</LabelWrapper>
@@ -106,7 +122,14 @@ const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
 
           <Row columns="1.2fr .7fr .7fr">
             <BodyRow>
-              <LabelWrapper>Questions</LabelWrapper>
+              <ExamsHeaderWrapper>
+                  <LabelWrapper>Questions</LabelWrapper>
+                  <ExamButtonWrapper>
+                    <ButtonStyled type="primary">
+                      Create Question
+                    </ButtonStyled>
+                  </ExamButtonWrapper>
+                </ExamsHeaderWrapper>
               <Questions questions={questions} />
             </BodyRow>
             <BodyRow>
