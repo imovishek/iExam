@@ -3,35 +3,35 @@ const router = express.Router();
 const expressJWT = require('express-jwt');
 
 const config = require('../../config/config');
-const studentController = require('./student.controller');
+const credentialController = require('./credential.controller');
 
 router
-  .route('/students')
+  .route('/credentials')
   .get(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    studentController.getStudents
+    credentialController.getCredentials
   ).post(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    studentController.createStudent
+    credentialController.createCredential
   ).put(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    studentController.updateStudents
+    credentialController.updateCredentials
   ).delete(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    studentController.deleteStudents
+    credentialController.deleteCredentials
   );
 
 router
-  .route('/student/:id')
+  .route('/credential/:id')
   .get(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    studentController.getStudentByID
+    credentialController.getCredentialByID
   ).put(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    studentController.updateStudentByID
+    credentialController.updateCredentialByID
   ).delete(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    studentController.deleteStudentByID
+    credentialController.deleteCredentialByID
   );
 
 

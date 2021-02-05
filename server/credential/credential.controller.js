@@ -1,12 +1,12 @@
-const studentHelper = require('./student.helper');
+const credentialHelper = require('./credential.helper');
 const { httpStatuses } = require('../constants');
 
-// GET STUDENT
+// GET CREDENTIAL
 
-exports.getStudents = async (req, res) => {
+exports.getCredentials = async (req, res) => {
   const { query } = req;
   try {
-    const result = await studentHelper.getStudents(query);
+    const result = await credentialHelper.getCredentials(query);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -16,10 +16,10 @@ exports.getStudents = async (req, res) => {
   }
 };
 
-exports.getStudentByID = async (req, res) => {
+exports.getCredentialByID = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await studentHelper.getStudentByID(id);
+    const result = await credentialHelper.getCredentialByID(id);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -29,11 +29,11 @@ exports.getStudentByID = async (req, res) => {
   }
 };
 
-// CREATE STUDENT
-exports.createStudent = async (req, res) => {
-  const { student } = req.body;
+// CREATE CREDENTIAL
+exports.createCredential = async (req, res) => {
+  const { credential } = req.body;
   try {
-    const result = await studentHelper.createStudent(student);
+    const result = await credentialHelper.createCredential(credential);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -43,11 +43,11 @@ exports.createStudent = async (req, res) => {
   }
 };
 
-// UPDATE STUDENT
-exports.updateStudents = async (req, res) => {
+// UPDATE CREDENTIAL
+exports.updateCredentials = async (req, res) => {
   const { query, body } = req;
   try {
-    const result = await studentHelper.updateStudents(query, body);
+    const result = await credentialHelper.updateCredentials(query, body);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -57,11 +57,11 @@ exports.updateStudents = async (req, res) => {
   }
 };
 
-exports.updateStudentByID = async (req, res) => {
+exports.updateCredentialByID = async (req, res) => {
   const { id } = req.params;
   const { body } = req;
   try {
-    const result = await studentHelper.updateStudentByID(id, body.update);
+    const result = await credentialHelper.updateCredentialByID(id, body.update);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -72,11 +72,11 @@ exports.updateStudentByID = async (req, res) => {
 };
 
 
-// DELETE STUDENT
-exports.deleteStudents = async (req, res) => {
+// DELETE CREDENTIAL
+exports.deleteCredentials = async (req, res) => {
   const { query } = req;
   try {
-    const result = await studentHelper.deleteStudents(query);
+    const result = await credentialHelper.deleteCredentials(query);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -86,10 +86,10 @@ exports.deleteStudents = async (req, res) => {
   }
 };
 
-exports.deleteStudentByID = async (req, res) => {
+exports.deleteCredentialByID = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await studentHelper.deleteStudentByID(id);
+    const result = await credentialHelper.deleteCredentialByID(id);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);

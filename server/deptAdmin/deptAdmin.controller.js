@@ -1,12 +1,12 @@
-const studentHelper = require('./student.helper');
+const deptAdminHelper = require('./deptAdmin.helper');
 const { httpStatuses } = require('../constants');
 
-// GET STUDENT
+// GET DEPTADMIN
 
-exports.getStudents = async (req, res) => {
+exports.getDeptAdmins = async (req, res) => {
   const { query } = req;
   try {
-    const result = await studentHelper.getStudents(query);
+    const result = await deptAdminHelper.getDeptAdmins(query);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -16,10 +16,10 @@ exports.getStudents = async (req, res) => {
   }
 };
 
-exports.getStudentByID = async (req, res) => {
+exports.getDeptAdminByID = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await studentHelper.getStudentByID(id);
+    const result = await deptAdminHelper.getDeptAdminByID(id);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -29,11 +29,11 @@ exports.getStudentByID = async (req, res) => {
   }
 };
 
-// CREATE STUDENT
-exports.createStudent = async (req, res) => {
-  const { student } = req.body;
+// CREATE DEPTADMIN
+exports.createDeptAdmin = async (req, res) => {
+  const { deptAdmin } = req.body;
   try {
-    const result = await studentHelper.createStudent(student);
+    const result = await deptAdminHelper.createDeptAdmin(deptAdmin);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -43,11 +43,11 @@ exports.createStudent = async (req, res) => {
   }
 };
 
-// UPDATE STUDENT
-exports.updateStudents = async (req, res) => {
+// UPDATE DEPTADMIN
+exports.updateDeptAdmins = async (req, res) => {
   const { query, body } = req;
   try {
-    const result = await studentHelper.updateStudents(query, body);
+    const result = await deptAdminHelper.updateDeptAdmins(query, body);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -57,11 +57,11 @@ exports.updateStudents = async (req, res) => {
   }
 };
 
-exports.updateStudentByID = async (req, res) => {
+exports.updateDeptAdminByID = async (req, res) => {
   const { id } = req.params;
   const { body } = req;
   try {
-    const result = await studentHelper.updateStudentByID(id, body.update);
+    const result = await deptAdminHelper.updateDeptAdminByID(id, body.update);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -72,11 +72,11 @@ exports.updateStudentByID = async (req, res) => {
 };
 
 
-// DELETE STUDENT
-exports.deleteStudents = async (req, res) => {
+// DELETE DEPTADMIN
+exports.deleteDeptAdmins = async (req, res) => {
   const { query } = req;
   try {
-    const result = await studentHelper.deleteStudents(query);
+    const result = await deptAdminHelper.deleteDeptAdmins(query);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -86,10 +86,10 @@ exports.deleteStudents = async (req, res) => {
   }
 };
 
-exports.deleteStudentByID = async (req, res) => {
+exports.deleteDeptAdminByID = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await studentHelper.deleteStudentByID(id);
+    const result = await deptAdminHelper.deleteDeptAdminByID(id);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
