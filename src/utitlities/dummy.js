@@ -6,8 +6,8 @@ export const students = [
     registrationNo: '2015331005'
   },
   {
-    firstName: 'Lubna',
-    lastName: 'Haque',
+    firstName: 'Humayan',
+    lastName: 'Kabir',
     registrationNo: '2015331040'
   }
 ];
@@ -42,7 +42,7 @@ export const exams = [
 export const questions = [
   {
     title: 'Question 01',
-    authorID: 'Arnab Sen Sharma',
+    authorID: 'Enamul Hasan',
     type: 'MCQ',
     marks: 5
   },
@@ -53,3 +53,24 @@ export const questions = [
     marks: 10
   }
 ];
+
+export const teachers = [
+  {
+    firstName: 'Enamul',
+    lastName: 'Hasan',
+    department: {
+      departmentName: 'Computer Science and Engineering',
+      departmentCode: 'CSE',
+    },
+    questions,
+  },
+  {
+    firstName: 'Mridul',
+    lastName: 'Ahmed',
+    department: {
+      departmentName: 'Computer Science and Engineering',
+      departmentCode: 'CSE',
+    },
+    questions,
+  }
+]

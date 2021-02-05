@@ -70,7 +70,7 @@ const BannedParticipants = ({
         <HeaderLabel>Regi No.</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
-      {_.map(students, student => <Card student={student} />)}
+      {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} />)}
     </Container>
   );
 };
