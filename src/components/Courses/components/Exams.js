@@ -53,7 +53,7 @@ const Exams = ({
         <HeaderLabel>Duration</HeaderLabel>
         <HeaderLabel>Status</HeaderLabel>
       </Row>
-      {_.map(exams, exam => <Card exam={exam} />)}
+      {_.map(exams, (exam, index) => <Card key={`exam_${index}`} exam={exam} />)}
     </Container>
   );
 };

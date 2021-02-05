@@ -53,7 +53,7 @@ const Questions = ({
         <HeaderLabel>Type</HeaderLabel>
         <HeaderLabel>Marks</HeaderLabel>
       </Row>
-      {_.map(questions, question => <Card question={question} />)}
+      {_.map(questions, (question, index) => <Card key={`question_${index}`} question={question} />)}
     </Container>
   );
 };
