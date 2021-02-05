@@ -21,7 +21,7 @@ export const joiObjectParser = (object, validator) => {
 
 export const stFormatDate = (date) =>
   moment(date)
-    .format('DD/MM/YYY');
+    .format('DD/MM/YYYY');
 
 export const getDuration = (d1, d2) => {
   return moment(d2).diff(d1, 'minutes');

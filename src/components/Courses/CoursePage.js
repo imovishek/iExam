@@ -38,10 +38,14 @@ const LabelWrapper = styled.div`
   margin-bottom: 10px;
 `;
 const ExamsHeaderWrapper = styled.div`
-  color: grey;
-  margin-bottom: 10px;
-  height: 30px;
-  border-bottom: 1px solid rgba(10, 10, 10, 0.3);;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 50px;
+  justify-content: space-between;
+`;
+const ExamButtonWrapper = styled.div`
+  float: right;
 `;
 
 const PageHeader = styled.div`
@@ -55,6 +59,10 @@ const InputWrapper = styled(Input)`
   && {
     width: 100%;
   }
+`;
+
+const ButtonStyled = styled(Button)`
+  height: 30px;
 `;
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`;
@@ -131,7 +139,14 @@ const CoursePage = ({ course = courses[0] }) => {
               <EnrollmentRequest students={students} />
             </BodyRow>
             <BodyRow>
-              <ExamsHeaderWrapper>Exams</ExamsHeaderWrapper>
+              <ExamsHeaderWrapper>
+                <LabelWrapper>Exams</LabelWrapper>
+                <ExamButtonWrapper>
+                  <ButtonStyled type="primary">
+                    Create Exam
+                  </ButtonStyled>
+                </ExamButtonWrapper>
+              </ExamsHeaderWrapper>
               <Exams exams={exams} />
             </BodyRow>
           </Row>
