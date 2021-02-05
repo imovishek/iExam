@@ -13,6 +13,7 @@ import EnrolledStudents from "./components/EnrolledStudents";
 import Exams from "./components/Exams";
 import { students, exams, courses } from "../../utitlities/dummy";
 import EnrollmentRequest from "./components/EnrollmentRequest";
+import { getDuration, stFormatDate } from "../../utitlities/common.functions";
 
 const Row = styled.div`
   display: grid;
@@ -21,13 +22,14 @@ const Row = styled.div`
 `;
 
 const HeaderRow = styled.div`
-  height: 100px;
+  height: 80px;
 `;
 
 const BodyRow = styled.div`
   padding: 10px;
   height: calc(100vh - 240px);
   margin-bottom: 20px;
+  margin-top: 30px;
   border: 1px solid rgba(10, 10, 10, 0.3);
 `;
 
@@ -55,6 +57,8 @@ const InputWrapper = styled(Input)`
   }
 `;
 
+const getName = obj => `${obj.firstName} ${obj.lastName}`;
+
 const CoursePage = ({ course = courses[0] }) => {
   return (
     <div>
@@ -63,11 +67,18 @@ const CoursePage = ({ course = courses[0] }) => {
         <NavBar />
         <Container>
           <PageHeader>Course</PageHeader>
-          <Row columns="1fr 1fr 1fr">
+          <Row columns="1fr 1fr 150px">
             <HeaderRow>
               <LabelWrapper>Title</LabelWrapper>
               <InputWrapper
                 value={course.title}
+              />
+            </HeaderRow>
+
+            <HeaderRow>
+              <LabelWrapper>Department</LabelWrapper>
+              <InputWrapper
+                value={course.department && course.department.departmentName}
               />
             </HeaderRow>
 
@@ -78,12 +89,36 @@ const CoursePage = ({ course = courses[0] }) => {
               />
             </HeaderRow>
 
+          </Row>
+          <Row columns="1fr 1fr 1fr 1fr">
             <HeaderRow>
-              <LabelWrapper>Department</LabelWrapper>
+              <LabelWrapper>Teacher</LabelWrapper>
               <InputWrapper
-                value={course.department && course.department.departmentName}
+                value={ course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'}
               />
             </HeaderRow>
+
+            <HeaderRow>
+              <LabelWrapper>Status</LabelWrapper>
+              <InputWrapper
+                value={course.status}
+              />
+            </HeaderRow>
+
+            <HeaderRow>
+              <LabelWrapper>Start Date</LabelWrapper>
+              <InputWrapper
+                value={stFormatDate(course.startDate)}
+              />
+            </HeaderRow>
+
+            <HeaderRow>
+              <LabelWrapper>Duration</LabelWrapper>
+              <InputWrapper
+                value={`${getDuration(course.startDate, course.endDate)} minutes`}
+              />
+            </HeaderRow>
+
           </Row>
 
           <Row columns=".7fr .7fr 1.2fr">
