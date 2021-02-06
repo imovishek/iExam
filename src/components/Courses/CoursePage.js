@@ -82,7 +82,7 @@ const CoursePage = ({ course = courses[0] }) => {
               </ButtonStyled>
             </ExamButtonWrapper>
           </ExamsHeaderWrapper>
-          <Row columns="1fr 1fr 150px">
+          <Row columns="1fr 1fr">
             <HeaderRow>
               <LabelWrapper>Title</LabelWrapper>
               <InputWrapper
@@ -97,15 +97,15 @@ const CoursePage = ({ course = courses[0] }) => {
               />
             </HeaderRow>
 
-            <HeaderRow>
+          </Row>
+          <Row columns="1fr 1fr 1fr 1fr">
+          <HeaderRow>
               <LabelWrapper>Course Code</LabelWrapper>
               <InputWrapper
                 value={course.courseCode}
               />
             </HeaderRow>
-
-          </Row>
-          <Row columns="1fr 1fr 1fr 1fr">
+            
             <HeaderRow>
               <LabelWrapper>Teacher</LabelWrapper>
               <InputWrapper
@@ -127,18 +127,18 @@ const CoursePage = ({ course = courses[0] }) => {
               />
             </HeaderRow>
 
-            <HeaderRow>
-              <LabelWrapper>Duration</LabelWrapper>
-              <InputWrapper
-                value={`${getDuration(course.startDate, course.endDate)} minutes`}
-              />
-            </HeaderRow>
-
           </Row>
 
           <Row columns=".7fr .7fr 1.2fr">
             <BodyRow>
+              <ExamsHeaderWrapper>
               <LabelWrapper>Enrolled Students</LabelWrapper>
+                <ExamButtonWrapper>
+                  <ButtonStyled type="primary">
+                    Import
+                  </ButtonStyled>
+                </ExamButtonWrapper>
+              </ExamsHeaderWrapper>
               <EnrolledStudents students={students} />
             </BodyRow>
             <BodyRow>
