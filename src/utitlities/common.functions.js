@@ -20,11 +20,12 @@ export const joiObjectParser = (object, validator) => {
 };
 
 export const stFormatDate = (date) =>
-  moment(date)
-    .format('DD/MM/YYYY');
+  date ? moment(date)
+    .format('DD/MM/YYYY') : 'N/A';
 
 export const getDuration = (d1, d2) => {
-  return moment(d2).diff(d1, 'minutes');
+  if (!d1 || !d2) return 'N/A';
+  return `${moment(d2).diff(d1, 'minutes')} minutes`;
 }
 export const useNavAuthentication = (Component) => (
   <div>

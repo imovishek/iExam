@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "../Common/Pagination";
 import React, { useState, useEffect } from "react";
-import { deleteCourse } from "../../utitlities/api";
+import { deleteQuestion } from "../../utitlities/api";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
 
@@ -39,6 +39,7 @@ const FlexBox = styled.div`
   border-radius: 8px;
   background: #e6e6e6;
   margin-top: 5px;
+  cursor: pointer;
 `;
 
 const FlexChild = styled.div`
@@ -70,104 +71,72 @@ const OperationWrapper = styled.div`
   float: right;
 `;
 
-const CenterNoData = styled.div`
-  text-align: center;
-  font-size: 20px;
-  color: grey;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const getName = obj => `${obj.firstName} ${obj.lastName}`;
 
-const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, deleteCourse }) => {
+const QuestionCard = ({ dispatch, question, setQuestionToEdit, showCreateEditModal, deleteQuestion }) => {
     return (
         <FlexBox>
-            <FlexChild> { course.title } </FlexChild>
-            <FlexChild> { course.courseCode } </FlexChild>
-            <FlexChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </FlexChild>
-            <FlexChild> { course.department.departmentCode } </FlexChild>
-            <FlexChild> { course.status } </FlexChild>
+            <FlexChild> { question.firstName } </FlexChild>
+            <FlexChild> { question.lastName } </FlexChild>
+            <FlexChild> { question.department.departmentCode } </FlexChild>
             <FlexChild>
-              <OperationWrapper>
-                <Button onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  dispatch(push(`/course/${course._id}`));
-                  // setCourseToEdit(_.create('', course));
-                  // showCreateEditModal(true);
-                }}>Edit</Button>
-                
+                <OperationWrapper>
+                  <Button onClick={() => {
+                    setQuestionToEdit(_.create('', question));
+                    showCreateEditModal(true);
+                  }}>Edit</Button>
                 <Popconfirm
                   title="Are you sure？"
                   okText="Yes"
                   cancelText="No"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  onConfirm={(e) => {
-                    deleteCourse(course);
-                  }}
+                  onConfirm={() => deleteQuestion(question)}
                 >
                   <FontAwesomeIconWrapper
                     icon={faTrash}
                     color="#a02f2f"
                   />
                 </Popconfirm>
-              
-            </OperationWrapper>
-          </FlexChild>
+              </OperationWrapper>
+            </FlexChild>
         </FlexBox>
     )
 };
 
-const NoData = () => {
-  return <CenterNoData>No Data</CenterNoData>
-};
-
-const CourseTable = ({
-  courses = [],
+const QuestionTable = ({
+  questions = [],
   isLoading,
-  setCourseToEdit,
+  setQuestionToEdit,
   showCreateEditModal,
-  deleteCourse,
+  deleteQuestion,
   dispatch
 }) => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(3);
   const [total, setTotal] = useState(1);
-  const paginatedCourses = courses.slice((current-1)*pageSize, current*pageSize);
 
   useEffect(() => {
-    setTotal(courses.length);
-    if (!paginatedCourses.length) setCurrent(1);
-  }, [courses, paginatedCourses.length]);
-  const isNoData = courses.length === 0;
+    setTotal(questions.length);
+  }, [questions]);
+  const paginatedQuestions = questions.slice((current-1)*pageSize, current*pageSize);
   return (
     <div>
       <FlexBoxHeader>
-        <FlexChildHeader> Course Title </FlexChildHeader>
-        <FlexChildHeader> Course Code </FlexChildHeader>
-        <FlexChildHeader> Assigned Teacher </FlexChildHeader>
+        <FlexChildHeader> First Name </FlexChildHeader>
+        <FlexChildHeader> Last Name </FlexChildHeader>
         <FlexChildHeader> Department </FlexChildHeader>
-        <FlexChildHeader> Status </FlexChildHeader>
         <FlexChildHeader></FlexChildHeader>
       </FlexBoxHeader>
-      {(isNoData && !isLoading) && <NoData />}
-      { !isLoading && _.map(paginatedCourses, (course, index) => (
-          <CourseCard
-            key={`courses_${index}`}
-            course={course}
-            setCourseToEdit={setCourseToEdit}
+      { !isLoading && _.map(paginatedQuestions, (question, index) => (
+          <QuestionCard
+            key={`questions_${index}`}
+            question={question}
+            setQuestionToEdit={setQuestionToEdit}
             showCreateEditModal={showCreateEditModal}
-            deleteCourse={deleteCourse}
+            deleteQuestion={deleteQuestion}
             dispatch={dispatch}
           />
       ))}
-      { (!isLoading && !isNoData) &&
+      { !isLoading &&
         <Pagination
           current={current}
           pageSize={pageSize}
@@ -192,4 +161,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
-export default connect(null, mapDispatchToProps)(CourseTable);
+export default connect(null, mapDispatchToProps)(QuestionTable);

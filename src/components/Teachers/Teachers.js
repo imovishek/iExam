@@ -34,7 +34,7 @@ const Teachers = ({ teachers, user, dispatch }) => {
     useEffect(() => {
       if (isTeachersChanged) {
         const { teacherIDs = [] } = user;
-        api.getTeachers(teacherIDs)
+        api.getTeachers({ _id: { $in: teacherIDs } })
         .then(({ payload }) => {
             console.log(payload);
             dispatch(onUpdateTeachers(payload));

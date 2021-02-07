@@ -1,14 +1,17 @@
 import axios from 'axios';
-import { teachers } from './dummy';
+import { teachers, courses } from './dummy';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 export const apiLogin = async (email, password) => {
     return axios.post(`${apiUrl}/auth/login`, { email, password });
 };
 
-export const getCourses = async (courseIDs) =>
-    requestApiAndGetResponse(`${apiUrl}/courses`, 'get')
+export const getCourses = async (query) =>
+    requestApiAndGetResponse(`${apiUrl}/courses`, 'get', {}, query)
       .then(res => res.data);
+export const getCourseByID = (id) =>
+  requestApiAndGetResponse(`${apiUrl}/course/${id}`, 'get')
+  .then(res => res.data);
 
 export const createCourse = async (course) =>
   requestApiAndGetResponse(`${apiUrl}/courses`, 'post', { course })
@@ -22,9 +25,9 @@ export const deleteCourse = async (course) =>
   requestApiAndGetResponse(`${apiUrl}/course/${course._id}`, 'delete')
     .then(res => res.data);
 
-export const getTeachers = async (teacherIDs) => {
-  return { payload: teachers };
-};
+export const getTeachers = async (query) =>
+  requestApiAndGetResponse(`${apiUrl}/teachers`, 'get', {}, query)
+      .then(res => res.data);
 
 export const createTeacher = async (teacher) =>
 requestApiAndGetResponse(`${apiUrl}/courses`, 'post', { teacher })
@@ -37,8 +40,16 @@ export const deleteTeacher = async (teacher) =>
   requestApiAndGetResponse(`${apiUrl}/teacher/${teacher._id || 'random'}`, 'delete')
     .then(res => res.data);
 
-export const updateDeptAdmin = async (deptAdmin) =>
-  requestApiAndGetResponse(`${apiUrl}/deptAdmin/${deptAdmin._id}`, 'put', { update: deptAdmin })
+export const updateDeptAdminByID = async (_id, body) =>
+  requestApiAndGetResponse(`${apiUrl}/deptAdmin/${_id}`, 'put', { update: body })
+    .then(res => res.data);
+
+export const getUserByID = (id) =>
+  requestApiAndGetResponse(`${apiUrl}/user/${id}`, 'get')
+  .then(res => res.data);
+
+export const updateUserByID = async (_id, body) =>
+  requestApiAndGetResponse(`${apiUrl}/user/${_id}`, 'put', { update: body })
     .then(res => res.data);
 
 export const requestApiAndGetResponse = (url, method = 'get', body = {}, query = {}) => {
@@ -47,6 +58,7 @@ export const requestApiAndGetResponse = (url, method = 'get', body = {}, query =
     return axios({
       method,
       url,
+      params: query,
       data: body,
       headers,
     });
@@ -63,6 +75,10 @@ const api = {
     updateTeacher,
     deleteTeacher,
     getTeachers,
+    getCourseByID,
+    updateDeptAdminByID,
+    updateUserByID,
+    getUserByID,
 };
 
 export default api;

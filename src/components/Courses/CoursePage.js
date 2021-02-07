@@ -1,20 +1,22 @@
 import CheckAuthentication from "../CheckAuthentication/CheckAuthentication";
 import NavBar from "../NavBar/NavBar";
 import { connect } from "react-redux";
+import _ from 'underscore';
 import { BodyWrapper, Container } from "../../utitlities/styles";
 import React, { useEffect, useState } from "react";
 import api from '../../utitlities/api';
-import { onUpdateCoursePage } from "./actions";
 import styled from "styled-components";
-import CourseTable from "./CourseTable";
-import { Button, Input } from "antd";
-import CreateEditCourseModal from "./CreateEditCourseModal";
+import moment from 'moment';
+import { Button, Input, Select, DatePicker } from "antd";
 import EnrolledStudents from "./components/EnrolledStudents";
 import Exams from "./components/Exams";
-import { students, exams, courses } from "../../utitlities/dummy";
 import EnrollmentRequest from "./components/EnrollmentRequest";
-import { getDuration, stFormatDate } from "../../utitlities/common.functions";
-
+import { getDuration } from "../../utitlities/common.functions";
+import { useParams } from "react-router";
+import { goBack } from "connected-react-router";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+const { Option } = Select;
 const Row = styled.div`
   display: grid;
   grid-gap: 20px;
@@ -49,6 +51,7 @@ const ExamButtonWrapper = styled.div`
 `;
 
 const PageHeader = styled.div`
+  display: inline;
   font-weight: 600;
   font-size: 20px;
   color: #828b94;
@@ -65,17 +68,64 @@ const ButtonStyled = styled(Button)`
   height: 30px;
 `;
 
-const getName = obj => `${obj.firstName} ${obj.lastName}`;
+const FontAwesomeIconWrapper = styled.div`
+  width: 30px;
+  display: inline-block;
+  cursor: pointer;
+`;
 
-const CoursePage = ({ course = courses[0] }) => {
+const SelectStyled = styled(Select)`
+  width: 100%;
+`;
+
+const getNameWithShort = obj => `${obj.firstName} ${obj.lastName} (${obj.shortName || ''})`;
+
+const CoursePage = ({ dispatch, user, hasBack = true }) => {
+  const { id } = useParams();
+  if (!id) dispatch(goBack());
+  const [isLoading, setIsLoading] = useState(true);
+  const [course, setCourse] = useState({});
+  const [teachers, setTeachers] = useState({});
+  const { departmentName } = user.department || {};
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(async () => {
+    try {
+      const { payload = {} } = await api.getCourseByID(id);
+      const { payload: fetchedTeachers = [] } = await api.getTeachers({});
+      setCourse(payload);
+      setTeachers(fetchedTeachers);
+    } catch(err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [id]);
+
+  const setValue = (key, value) => {
+    const newCourse = {
+      ...course,
+      [key]: value
+    };
+    setCourse(newCourse);
+  };
+
   return (
     <div>
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
         <Container>
-        <ExamsHeaderWrapper>
-            <PageHeader>Course</PageHeader>
+          {/* <Header>{departmentName}</Header> */}
+          <ExamsHeaderWrapper>
+            <div>
+              {hasBack &&
+                <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
+                  <FontAwesomeIcon icon={faArrowLeft} size="lg"/>
+                </FontAwesomeIconWrapper>
+              }
+              <PageHeader>Course</PageHeader>
+            </div>
+            
             <ExamButtonWrapper>
               <ButtonStyled type="primary">
                 Update Course
@@ -87,12 +137,14 @@ const CoursePage = ({ course = courses[0] }) => {
               <LabelWrapper>Title</LabelWrapper>
               <InputWrapper
                 value={course.title}
+                onChange={(e) => setValue('title', e.target.value)}
               />
             </HeaderRow>
 
             <HeaderRow>
               <LabelWrapper>Department</LabelWrapper>
-              <InputWrapper
+              <SelectStyled
+                disabled={true}
                 value={course.department && course.department.departmentName}
               />
             </HeaderRow>
@@ -101,6 +153,7 @@ const CoursePage = ({ course = courses[0] }) => {
               <LabelWrapper>Course Code</LabelWrapper>
               <InputWrapper
                 value={course.courseCode}
+                onChange={(e) => setValue('courseCode', e.target.value)}
               />
             </HeaderRow>
 
@@ -108,29 +161,43 @@ const CoursePage = ({ course = courses[0] }) => {
           <Row columns="1fr 1fr 1fr 1fr">
             <HeaderRow>
               <LabelWrapper>Teacher</LabelWrapper>
-              <InputWrapper
-                value={ course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'}
-              />
+              <SelectStyled
+                value={JSON.stringify(course.assignedTeacher)}
+                onChange={(value) => setValue('assignedTeacher', JSON.parse(value))}
+              >
+                {_.map(teachers, (t) => <Option key={t._id} value={JSON.stringify(t)}>{getNameWithShort(t)}</Option>)}
+                <Option key="unassigned" value={JSON.stringify(null)}> Unassigned </Option>
+              </SelectStyled>
             </HeaderRow>
 
             <HeaderRow>
               <LabelWrapper>Status</LabelWrapper>
-              <InputWrapper
-                value={course.status}
-              />
+              <SelectStyled
+                value={course.status ? course.status.toLowerCase() : ''}
+                onChange={(value) => setValue('status', value)}
+              >
+                <Option key="upcoming" value="upcoming"> Upcoming </Option>
+                <Option key="running" value="running"> Running </Option>
+                <Option key="ended" value="ended"> Ended </Option>
+              </SelectStyled>
             </HeaderRow>
 
             <HeaderRow>
               <LabelWrapper>Start Date</LabelWrapper>
-              <InputWrapper
-                value={stFormatDate(course.startDate)}
+              <DatePicker
+                allowClear
+                placeholder="Start Date"
+                value={!course.startDate ? '' : moment(course.startDate)}
+                style={{ width: 270 }}
+                format="DD/MM/YYYY"
+                onChange={(d) => setValue('startDate', d)}
               />
             </HeaderRow>
 
             <HeaderRow>
               <LabelWrapper>Duration</LabelWrapper>
               <InputWrapper
-                value={`${getDuration(course.startDate, course.endDate)} minutes`}
+                value={getDuration(course.startDate, course.endDate)}
               />
             </HeaderRow>
 
@@ -139,11 +206,11 @@ const CoursePage = ({ course = courses[0] }) => {
           <Row columns=".7fr .7fr 1.2fr">
             <BodyRow>
               <LabelWrapper>Enrolled Students</LabelWrapper>
-              <EnrolledStudents students={students} />
+              <EnrolledStudents students={course.enrolledStudents} />
             </BodyRow>
             <BodyRow>
               <LabelWrapper>Enrollment Request</LabelWrapper>
-              <EnrollmentRequest students={students} />
+              <EnrollmentRequest students={course.pendingEnrollStudents} />
             </BodyRow>
             <BodyRow>
               <ExamsHeaderWrapper>
@@ -154,7 +221,7 @@ const CoursePage = ({ course = courses[0] }) => {
                   </ButtonStyled>
                 </ExamButtonWrapper>
               </ExamsHeaderWrapper>
-              <Exams exams={exams} />
+              <Exams exams={course.exams} />
             </BodyRow>
           </Row>
         </Container>
@@ -162,7 +229,9 @@ const CoursePage = ({ course = courses[0] }) => {
     </div>
   );
 };
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  user: state.login.user
+});
 
 const mapDispatchToProps = dispatch => ({
     dispatch
