@@ -15,7 +15,7 @@ exports.getDeptAdmins = (query) =>
 
 // UPDATE
 exports.updateDeptAdminByID = (_id, body) =>
-  DeptAdmin.findOneAndUpdate({ _id }, body);
+  DeptAdmin.findOneAndUpdate({ _id }, body, { new: true });
 
 exports.updateDeptAdmins = (query, body) =>
   DeptAdmin.updateMany(query, body);

@@ -5,20 +5,25 @@ const departmentSchema = require('../department/department.schema');
 const teacherSchema = require('../teacher/teacher.schema');
 const studentSchema = require('../student/student.schema');
 const examSchema = require('../exam/exam.schema');
+const mongooseLeanGetters = require('mongoose-lean-getters');
+const mongooseLeanVirtuals = require('mongoose-lean-virtuals');
+const mongooseLeanDefaults = require('mongoose-lean-defaults');
 
 const courseSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
   },
   courseCode: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
   },
   department: { type: departmentSchema, required: true },
-  exams: [examSchema],
-  enrolledStudents: [studentSchema],
-  pendingEnrollStudents: [studentSchema],
+  exams: [{ type: Schema.Types.ObjectId, ref: 'Exam'}],
+  enrolledStudents: [{ type: Schema.Types.ObjectId, ref: 'Student'}],
+  pendingEnrollStudents: [{ type: Schema.Types.ObjectId, ref: 'Student'}],
   assignedTeacher: teacherSchema,
   startDate: { type: Date },
   status: { type: String, required: true }
@@ -29,5 +34,32 @@ const courseSchema = new Schema({
   toJSON: { getters: true, virtuals: true },
   strict: true
 });
+
+// courseSchema.plugin(mongooseLeanGetters);
+// courseSchema.plugin(mongooseLeanVirtuals);
+// courseSchema.plugin(mongooseLeanDefaults);
+
+// courseSchema.virtual('exams', {
+//   ref: 'Exam',
+//   localField: 'examIDs',
+//   foreignField: '_id',
+//   justOne: false,
+//   id: false,
+// });
+
+// courseSchema.virtual('enrolledStudents', {
+//   ref: 'Student',
+//   localField: 'enrolledStudentIDs',
+//   foreignField: '_id',
+//   justOne: false
+// });
+
+// courseSchema.virtual('pendingEnrollStudents', {
+//   ref: 'Student',
+//   localField: 'pendingEnrollStudentIDs',
+//   foreignField: '_id',
+//   justOne: false
+// });
+
 
 module.exports = courseSchema;

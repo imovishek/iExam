@@ -1,5 +1,7 @@
 const courseHelper = require('./course.helper');
 const { httpStatuses } = require('../constants');
+const _ = require('underscore');
+const { parseQuery } = require('../common.functions');
 
 // GET COURSE
 
@@ -46,6 +48,9 @@ exports.createCourse = async (req, res) => {
 // UPDATE COURSE
 exports.updateCourses = async (req, res) => {
   const { query, body } = req;
+  const { _id } = query;
+  if (_id) query._id = parseQuery(_id);
+
   try {
     const result = await courseHelper.updateCourses(query, body);
     res.status(httpStatuses.OK).send({ payload: result });

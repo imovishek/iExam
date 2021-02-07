@@ -9,13 +9,14 @@ const teacherSchema = require('../teacher/teacher.schema');
 const deptAdminSchema = new Schema({
   firstName: String,
   lastName: String,
+  userType: { type: String, default: 'deptAdmin' },
   department: {
       type: departmentSchema,
       required: true
   },
-  courses: [Schema.Types.ObjectId],
-  teachers: [Schema.Types.ObjectId],
-  students: [Schema.Types.ObjectId],
+  courseIDs: [Schema.Types.ObjectId],
+  teacherIDs: [Schema.Types.ObjectId],
+  studentIDs: [Schema.Types.ObjectId],
   credential: { type: credentialSchema, required: true },
 },
 {
