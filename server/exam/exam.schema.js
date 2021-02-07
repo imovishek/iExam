@@ -15,11 +15,12 @@ const examSchema = new Schema({
 		type: departmentSchema,
 		required: true
 	},
-	questions: [questionSchema],
-	participants: [Schema.Types.ObjectId],
-	bannedParticipants: [Schema.Types.ObjectId],
+	course: { type: Schema.Types.ObjectId, ref: 'Course' },
+	questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
+	participants: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
+	bannedParticipants: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
 	papers: [{
-		student: Schema.Types.ObjectId,
+		student: { type: Schema.Types.ObjectId, ref: 'Student' },
 		answers: [{
 			question: Schema.Types.ObjectId,
 			answer: [String]
