@@ -7,7 +7,12 @@ exports.createExam = (exam) =>
 
 // GET
 exports.getExamByID = (_id) =>
-  Exam.findOne({ _id });
+  Exam.findOne({ _id })
+    .populate("course")
+    .populate("questions")
+    .populate("participants")
+    .populate("bannedParticipants");
+
 
 exports.getExams = (query) =>
   Exam.find(query);
