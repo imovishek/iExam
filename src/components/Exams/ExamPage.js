@@ -98,11 +98,11 @@ const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
               <Questions questions={questions} />
             </BodyRow>
             <BodyRow>
-              <LabelWrapper>Participants</LabelWrapper>
+              <TileHeaderWrapper><LabelWrapper>Participants</LabelWrapper></TileHeaderWrapper>
               <Participants students={students} />
             </BodyRow>
             <BodyRow>
-              <TileHeaderWrapper>Banned Participants</TileHeaderWrapper>
+              <TileHeaderWrapper><LabelWrapper>Banned Participants</LabelWrapper></TileHeaderWrapper>
               <BannedParticipants students={students} />
             </BodyRow>
           </Row>

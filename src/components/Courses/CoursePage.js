@@ -169,7 +169,9 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
               <EnrolledStudents students={course.enrolledStudents} />
             </BodyRow>
             <BodyRow>
-              <LabelWrapper>Enrollment Request</LabelWrapper>
+              <TileHeaderWrapper>
+                <LabelWrapper>Enrollment Request</LabelWrapper>
+              </TileHeaderWrapper>
               <EnrollmentRequest students={course.pendingEnrollStudents} />
             </BodyRow>
             <BodyRow>
