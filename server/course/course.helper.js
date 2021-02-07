@@ -10,10 +10,15 @@ exports.getCourseByID = (_id) =>
   Course.findOne({ _id })
     .populate("enrolledStudents")
     .populate("pendingEnrollStudents")
-    .populate("exams");
+    .populate("exams")
+    .populate("assignedTeacher");
 
 exports.getCourses = (query) =>
   Course.find(query)
+    .populate("enrolledStudents")
+    .populate("pendingEnrollStudents")
+    .populate("exams")
+    .populate("assignedTeacher");
 
 
 // UPDATE

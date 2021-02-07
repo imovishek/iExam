@@ -24,7 +24,7 @@ const courseSchema = new Schema({
   exams: [{ type: Schema.Types.ObjectId, ref: 'Exam'}],
   enrolledStudents: [{ type: Schema.Types.ObjectId, ref: 'Student'}],
   pendingEnrollStudents: [{ type: Schema.Types.ObjectId, ref: 'Student'}],
-  assignedTeacher: teacherSchema,
+  assignedTeacher: { type: Schema.Types.ObjectId, ref: 'Teacher'},
   startDate: { type: Date },
   status: { type: String, required: true }
 },
