@@ -4,13 +4,16 @@ import { connect } from "react-redux";
 import { BodyWrapper, Container } from "../../utitlities/styles";
 import React, { useEffect, useState } from "react";
 import api from '../../utitlities/api';
+import { onUpdateQuestionPage } from "./actions";
 import styled from "styled-components";
+import QuestionTable from "./QuestionTable";
 import { Button, Input } from "antd";
-import { students, questions, exams, courses } from "../../utitlities/dummy";
-import { stFormatDate, getDuration } from "../../utitlities/common.functions";
-import Questions from "./components/Questions";
-import Participants from "./components/Participants";
-import BannedParticipants from "./components/BannedParticipants";
+import CreateEditQuestionModal from "./CreateEditQuestionModal";
+import Exams from "./components/Exams";
+import { students, exams, questions } from "../../utitlities/dummy";
+import { getDuration, stFormatDate } from "../../utitlities/common.functions";
+import QuestionBody from "./components/QuestionBody";
+import QuestionAccess from "./components/QuestionAccess";
 
 const Row = styled.div`
   display: grid;
@@ -24,8 +27,17 @@ const HeaderRow = styled.div`
 
 const BodyRow = styled.div`
   padding: 10px;
-  height: calc(100vh - 340px);
+  height: calc(100vh - 240px);
   margin-bottom: 20px;
+  margin-top: 30px;
+  border: 1px solid rgba(10, 10, 10, 0.3);
+`;
+
+const QuestionBodyRow = styled.div`
+  padding: 10px;
+  height: 500px;
+  margin-bottom: 20px;
+  margin-top: 30px;
   border: 1px solid rgba(10, 10, 10, 0.3);
 `;
 
@@ -40,7 +52,6 @@ const ExamsHeaderWrapper = styled.div`
   height: 50px;
   justify-content: space-between;
 `;
-
 const ExamButtonWrapper = styled.div`
   float: right;
 `;
@@ -60,10 +71,11 @@ const InputWrapper = styled(Input)`
 
 const ButtonStyled = styled(Button)`
   height: 30px;
-  margin-right: 10px;
 `;
 
-const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
+const getName = obj => `${obj.firstName} ${obj.lastName}`;
+
+const QuestionPage = ({ question = questions[0] }) => {
   return (
     <div>
       <CheckAuthentication />
@@ -71,79 +83,72 @@ const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
         <NavBar />
         <Container>
           <ExamsHeaderWrapper>
-            <PageHeader>Exam</PageHeader>
+            <PageHeader>Question</PageHeader>
             <ExamButtonWrapper>
               <ButtonStyled type="primary">
-                Update Exam
+                Update Question
               </ButtonStyled>
             </ExamButtonWrapper>
           </ExamsHeaderWrapper>
-          <Row columns="auto auto auto">
+          <Row columns="1fr 1fr 1fr 150px">
             <HeaderRow>
-              <LabelWrapper>Exam Title</LabelWrapper>
+              <LabelWrapper>Title</LabelWrapper>
               <InputWrapper
-                value={exam.title}
+                value={question.title}
               />
             </HeaderRow>
 
             <HeaderRow>
-              <LabelWrapper>Course Title</LabelWrapper>
+              <LabelWrapper>Question Type</LabelWrapper>
               <InputWrapper
-                value={course.title}
+                value={question.type}
               />
             </HeaderRow>
 
             <HeaderRow>
-              <LabelWrapper>Status</LabelWrapper>
+              <LabelWrapper>Author</LabelWrapper>
               <InputWrapper
-                value={exam.status}
-              />
-            </HeaderRow>
-            <HeaderRow>
-              <LabelWrapper>Start Date</LabelWrapper>
-              <InputWrapper
-                value={stFormatDate(exam.startDate)}
+                value={ question.authorID || 'Anonymous'}
               />
             </HeaderRow>
 
             <HeaderRow>
-              <LabelWrapper>Duration</LabelWrapper>
+              <LabelWrapper>Marks</LabelWrapper>
               <InputWrapper
-                value={getDuration(exam.startDate, exam.endDate)}
+                value={question.marks}
               />
             </HeaderRow>
 
-            <HeaderRow>
-              <LabelWrapper>Total Marks</LabelWrapper>
-              <InputWrapper
-                value={Number(exam.totalMarks).toFixed(0)}
-              />
-            </HeaderRow>
           </Row>
-
-          <Row columns="1.2fr .7fr .7fr">
+          <Row columns="1fr">
+            <QuestionBodyRow>
+              <LabelWrapper>Body</LabelWrapper>
+              <QuestionBody question={question} />
+            </QuestionBodyRow>
+          </Row>
+          <Row columns="1fr 1fr">
             <BodyRow>
               <ExamsHeaderWrapper>
-                <LabelWrapper>Questions</LabelWrapper>
+                <PageHeader>Access</PageHeader>
                 <ExamButtonWrapper>
                   <ButtonStyled type="primary">
-                      Import
-                    </ButtonStyled>
-                    <ButtonStyled type="primary">
-                      Create Question
-                    </ButtonStyled>
-                  </ExamButtonWrapper>
-                </ExamsHeaderWrapper>
-              <Questions questions={questions} />
+                    Add Access
+                  </ButtonStyled>
+                </ExamButtonWrapper>
+              </ExamsHeaderWrapper>
+              <QuestionAccess  />
             </BodyRow>
-            <BodyRow>
-              <LabelWrapper>Participants</LabelWrapper>
-              <Participants students={students} />
-            </BodyRow>
-            <BodyRow>
-              <ExamsHeaderWrapper>Banned Participants</ExamsHeaderWrapper>
-              <BannedParticipants students={students} />
-            </BodyRow>
+            {/* <BodyRow>
+              <ExamsHeaderWrapper>
+                <LabelWrapper>Exams</LabelWrapper>
+                <ExamButtonWrapper>
+                  <ButtonStyled type="primary">
+                    Create Exam
+                  </ButtonStyled>
+                </ExamButtonWrapper>
+              </ExamsHeaderWrapper>
+              <Exams exams={exams} />
+            </BodyRow> */}
           </Row>
         </Container>
       </BodyWrapper>
@@ -157,4 +162,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
   
-export default connect(mapStateToProps, mapDispatchToProps)(ExamPage);
+export default connect(mapStateToProps, mapDispatchToProps)(QuestionPage);

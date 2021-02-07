@@ -1,9 +1,8 @@
 import styled from "styled-components";
 
 export const BodyWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: 200px 1fr;
   height: 100vh;
   align-items: space-around;
   `;

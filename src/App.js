@@ -12,20 +12,27 @@ import { setUserAction } from './components/Login/actions';
 import { setNavigaitonTabAction } from './components/NavBar/actions';
 import CoursePage from './components/Courses/CoursePage';
 import ExamPage from './components/Exam/ExamPage';
+import QuestionPage from './components/Question/QuestionPage';
+import api from './utitlities/api';
+import Loading from './components/Common/Loading';
 
 require('dotenv').config();
-const loadUser = (dispatch) => {
-  const user = jwt.decode(localStorage.token);
-  const tabKey = localStorage.tabKey || "dashboard";
+const loadUser = async (dispatch) => {
+  const localUser = jwt.decode(localStorage.token);
+  const { payload: user } = await api.getUserByID(localUser._id);
   dispatch(setUserAction(user));
+}
+const loadInit = async (dispatch) => {
+  await loadUser(dispatch);
+  const tabKey = localStorage.tabKey || "dashboard";
   dispatch(setNavigaitonTabAction(tabKey));
 };
 
 const App = ({ user, dispatch }) => {
   if (!user || !user.credential) {
     if (!localStorage.token) return <Login />;
-    else loadUser(dispatch);
-    return <div></div>;
+    else loadInit(dispatch);
+    return <Loading isLoading={true} />;
   }
   let userType = "";
   if (user.credential) userType = user.credential.userType;
@@ -38,6 +45,7 @@ const App = ({ user, dispatch }) => {
         { hasPageAccess[userType] && hasPageAccess[userType].CoursePage && <Route path="/course/:id" component={CoursePage} /> }
         { hasPageAccess[userType] && hasPageAccess[userType].Teachers && <Route path="/teachers" component={Teachers} /> }
         { hasPageAccess[userType] && hasPageAccess[userType].ExamPage && <Route path="/exam/:id" component={ExamPage} /> }
+        { hasPageAccess[userType] && hasPageAccess[userType].ExamPage && <Route path="/question/:id" component={QuestionPage} /> }
         <Route path="/" component={Dashboard} />
       </Switch>
   );

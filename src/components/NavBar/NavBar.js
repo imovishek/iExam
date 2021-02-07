@@ -11,7 +11,6 @@ const BodyWrapper = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  width: 200px;
   background: #4b555d;
   box-shadow: 4px 0px 3px 0px rgba(0,0,0,0.36);
   `;

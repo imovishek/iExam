@@ -9,6 +9,7 @@ import styled from "styled-components";
 import CourseTable from "./CourseTable";
 import { Button } from "antd";
 import CreateEditCourseModal from "./CreateEditCourseModal";
+import { setUserAction } from "../Login/actions";
 
 
 const LabelWrapper = styled.div`
@@ -44,22 +45,28 @@ const Courses = ({ courses, user, dispatch }) => {
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [showCreateEditModal, setShowCreateEditModal] = useState(false);
 
-    useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(async () => {
       if (isCoursesChanged) {
         const { courseIDs = [] } = user;
-        api.getCourses(courseIDs)
-        .then(({ payload }) => {
-            dispatch(onUpdateCourses(payload));
-            setCourseChanged(false);
-            setLoading(false);
-        });
+        try {
+          const { payload = [] } = await api.getCourses({ _id: { $in: courseIDs } });
+          dispatch(onUpdateCourses(payload));
+        } catch (err) {
+          console.log(err);
+        } finally {
+          setCourseChanged(false);
+          setLoading(false);
+        }
       }
-    }, [isCoursesChanged]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isCoursesChanged, user.courseIDs]);
 
     const createCourseHandler = async (course) => {
       setLoading(true);
-      await api.createCourse(course);
-      // await api.updateDeptAdmin(user._id, { courseIDs: { $push: course._id } });
+      const { payload: newCourse } = await api.createCourse(course);
+      const { payload: newUser } = await api.updateUserByID(user._id, { $push: { courseIDs: newCourse._id } });
+      dispatch(setUserAction(newUser));
       setCourseChanged(true);
     };
 
@@ -71,6 +78,8 @@ const Courses = ({ courses, user, dispatch }) => {
     const deleteCourseHandler = async (course) => {
       setLoading(true);
       await api.deleteCourse(course);
+      const { payload: newUser } = await api.updateUserByID(user._id, { $pull: { courseIDs: course._id } });
+      dispatch(setUserAction(newUser));
       setCourseChanged(true);
     };
 
