@@ -11,7 +11,7 @@ import jwt from 'jsonwebtoken';
 import { setUserAction } from './components/Login/actions';
 import { setNavigaitonTabAction } from './components/NavBar/actions';
 import CoursePage from './components/Courses/CoursePage';
-import ExamPage from './components/Exam/ExamPage';
+import ExamPage from './components/Exams/ExamPage';
 import QuestionPage from './components/Question/QuestionPage';
 import api from './utitlities/api';
 import Loading from './components/Common/Loading';
