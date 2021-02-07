@@ -5,5 +5,8 @@ export const hasPageAccess = {
         Students: true,
         CoursePage: true,
         ExamPage: true,
+    },
+    student: {
+        Exams: true,
     }
 };

@@ -159,7 +159,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
           <Row columns=".7fr .7fr 1.2fr">
             <BodyRow>
               <TileHeaderWrapper>
-              <LabelWrapper>Enrolled Students</LabelWrapper>
+                <LabelWrapper>Enrolled Students</LabelWrapper>
                 <RightButtonWrapper>
                   <ButtonStyled type="primary">
                     Import

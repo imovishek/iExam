@@ -4,6 +4,7 @@ import { faCoffee, faBox, faAnchor } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import { setNavigaitonTabAction } from './actions';
 import { push } from 'connected-react-router';
+import { hasPageAccess } from '../../utitlities/constants';
 
 const BodyWrapper = styled.div`
   display: inline-block;
@@ -48,12 +49,12 @@ const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   width: 50px;
 `;
 
-const NavBar = ({ setNavigationTab, tabKey = 'dashboard', dispatch }) => {
+const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
   const redirectTo = path => {
     setNavigationTab(path)
     dispatch(push(`/${path}`));
   };
-  
+  const { userType } = user;
   return (
     <BodyWrapper>
       <SubWrapper>
@@ -63,24 +64,37 @@ const NavBar = ({ setNavigationTab, tabKey = 'dashboard', dispatch }) => {
             Dashboard
           </TextWrapper>
         </LinkWrapper>
-        <LinkWrapper onClick={() => redirectTo('courses')} selected={tabKey === "courses"}>
-          <TextWrapper>
-            <FontAwesomeIconWrapper icon={faBox} />
-            Courses
-          </TextWrapper>
-        </LinkWrapper>
-        <LinkWrapper onClick={() => redirectTo('teachers')} selected={tabKey === "teachers"}>
-          <TextWrapper>
-            <FontAwesomeIconWrapper icon={faAnchor} />
-            Teachers
-          </TextWrapper>
-        </LinkWrapper>
+        { hasPageAccess[userType] && hasPageAccess[userType].Courses &&
+          <LinkWrapper onClick={() => redirectTo('courses')} selected={tabKey === "courses"}>
+            <TextWrapper>
+              <FontAwesomeIconWrapper icon={faBox} />
+              Courses
+            </TextWrapper>
+          </LinkWrapper>
+        }
+        { hasPageAccess[userType] && hasPageAccess[userType].Teachers &&
+          <LinkWrapper onClick={() => redirectTo('teachers')} selected={tabKey === "teachers"}>
+            <TextWrapper>
+              <FontAwesomeIconWrapper icon={faAnchor} />
+              Teachers
+            </TextWrapper>
+          </LinkWrapper>
+        }
+        { hasPageAccess[userType] && hasPageAccess[userType].Exams &&
+          <LinkWrapper onClick={() => redirectTo('exams')} selected={tabKey === "exams"}>
+            <TextWrapper>
+              <FontAwesomeIconWrapper icon={faAnchor} />
+              Exams
+            </TextWrapper>
+          </LinkWrapper>
+        }
       </SubWrapper>
     </BodyWrapper>
   )
 };
 const mapStateToProps = (state) => ({
-  tabKey: state.navBar.tabKey
+  tabKey: state.navBar.tabKey,
+  user: state.login.user
 });
 const mapDispatchToProps = (dispatch) => ({
   setNavigationTab: (key) => {
