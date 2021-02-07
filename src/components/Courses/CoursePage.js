@@ -39,14 +39,14 @@ const LabelWrapper = styled.div`
   color: grey;
   margin-bottom: 10px;
 `;
-const ExamsHeaderWrapper = styled.div`
+const TileHeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
   height: 50px;
   justify-content: space-between;
 `;
-const ExamButtonWrapper = styled.div`
+const RightButtonWrapper = styled.div`
   float: right;
 `;
 
@@ -116,7 +116,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
         <NavBar />
         <Container>
           {/* <Header>{departmentName}</Header> */}
-          <ExamsHeaderWrapper>
+          <TileHeaderWrapper>
             <div>
               {hasBack &&
                 <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
@@ -126,12 +126,12 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
               <PageHeader>Course</PageHeader>
             </div>
             
-            <ExamButtonWrapper>
+            <RightButtonWrapper>
               <ButtonStyled type="primary">
                 Update Course
               </ButtonStyled>
-            </ExamButtonWrapper>
-          </ExamsHeaderWrapper>
+            </RightButtonWrapper>
+          </TileHeaderWrapper>
           <Row columns="1fr 1fr">
             <HeaderRow>
               <LabelWrapper>Title</LabelWrapper>
@@ -197,14 +197,14 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
 
           <Row columns=".7fr .7fr 1.2fr">
             <BodyRow>
-              <ExamsHeaderWrapper>
+              <TileHeaderWrapper>
               <LabelWrapper>Enrolled Students</LabelWrapper>
-                <ExamButtonWrapper>
+                <RightButtonWrapper>
                   <ButtonStyled type="primary">
                     Import
                   </ButtonStyled>
-                </ExamButtonWrapper>
-              </ExamsHeaderWrapper>
+                </RightButtonWrapper>
+              </TileHeaderWrapper>
               <EnrolledStudents students={course.enrolledStudents} />
             </BodyRow>
             <BodyRow>
@@ -212,14 +212,14 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
               <EnrollmentRequest students={course.pendingEnrollStudents} />
             </BodyRow>
             <BodyRow>
-              <ExamsHeaderWrapper>
+              <TileHeaderWrapper>
                 <LabelWrapper>Exams</LabelWrapper>
-                <ExamButtonWrapper>
+                <RightButtonWrapper>
                   <ButtonStyled type="primary">
                     Create Exam
                   </ButtonStyled>
-                </ExamButtonWrapper>
-              </ExamsHeaderWrapper>
+                </RightButtonWrapper>
+              </TileHeaderWrapper>
               <Exams exams={course.exams} />
             </BodyRow>
           </Row>

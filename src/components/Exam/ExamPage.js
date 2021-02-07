@@ -33,7 +33,7 @@ const LabelWrapper = styled.div`
   color: grey;
   margin-bottom: 10px;
 `;
-const ExamsHeaderWrapper = styled.div`
+const TileHeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -41,7 +41,7 @@ const ExamsHeaderWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const ExamButtonWrapper = styled.div`
+const RightButtonWrapper = styled.div`
   float: right;
 `;
 
@@ -70,14 +70,14 @@ const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
       <BodyWrapper>
         <NavBar />
         <Container>
-          <ExamsHeaderWrapper>
+          <TileHeaderWrapper>
             <PageHeader>Exam</PageHeader>
-            <ExamButtonWrapper>
+            <RightButtonWrapper>
               <ButtonStyled type="primary">
                 Update Exam
               </ButtonStyled>
-            </ExamButtonWrapper>
-          </ExamsHeaderWrapper>
+            </RightButtonWrapper>
+          </TileHeaderWrapper>
           <Row columns="auto auto auto">
             <HeaderRow>
               <LabelWrapper>Exam Title</LabelWrapper>
@@ -123,17 +123,17 @@ const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
 
           <Row columns="1.2fr .7fr .7fr">
             <BodyRow>
-              <ExamsHeaderWrapper>
+              <TileHeaderWrapper>
                 <LabelWrapper>Questions</LabelWrapper>
-                <ExamButtonWrapper>
+                <RightButtonWrapper>
                   <ButtonStyled type="primary">
                       Import
                     </ButtonStyled>
                     <ButtonStyled type="primary">
                       Create Question
                     </ButtonStyled>
-                  </ExamButtonWrapper>
-                </ExamsHeaderWrapper>
+                  </RightButtonWrapper>
+                </TileHeaderWrapper>
               <Questions questions={questions} />
             </BodyRow>
             <BodyRow>
@@ -141,7 +141,7 @@ const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
               <Participants students={students} />
             </BodyRow>
             <BodyRow>
-              <ExamsHeaderWrapper>Banned Participants</ExamsHeaderWrapper>
+              <TileHeaderWrapper>Banned Participants</TileHeaderWrapper>
               <BannedParticipants students={students} />
             </BodyRow>
           </Row>

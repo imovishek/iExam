@@ -45,14 +45,14 @@ const LabelWrapper = styled.div`
   color: grey;
   margin-bottom: 10px;
 `;
-const ExamsHeaderWrapper = styled.div`
+const TileHeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
   height: 50px;
   justify-content: space-between;
 `;
-const ExamButtonWrapper = styled.div`
+const RightButtonWrapper = styled.div`
   float: right;
 `;
 
@@ -82,14 +82,14 @@ const QuestionPage = ({ question = questions[0] }) => {
       <BodyWrapper>
         <NavBar />
         <Container>
-          <ExamsHeaderWrapper>
+          <TileHeaderWrapper>
             <PageHeader>Question</PageHeader>
-            <ExamButtonWrapper>
+            <RightButtonWrapper>
               <ButtonStyled type="primary">
                 Update Question
               </ButtonStyled>
-            </ExamButtonWrapper>
-          </ExamsHeaderWrapper>
+            </RightButtonWrapper>
+          </TileHeaderWrapper>
           <Row columns="1fr 1fr 1fr 150px">
             <HeaderRow>
               <LabelWrapper>Title</LabelWrapper>
@@ -128,25 +128,25 @@ const QuestionPage = ({ question = questions[0] }) => {
           </Row>
           <Row columns="1fr 1fr">
             <BodyRow>
-              <ExamsHeaderWrapper>
+              <TileHeaderWrapper>
                 <PageHeader>Access</PageHeader>
-                <ExamButtonWrapper>
+                <RightButtonWrapper>
                   <ButtonStyled type="primary">
                     Add Access
                   </ButtonStyled>
-                </ExamButtonWrapper>
-              </ExamsHeaderWrapper>
+                </RightButtonWrapper>
+              </TileHeaderWrapper>
               <QuestionAccess  />
             </BodyRow>
             {/* <BodyRow>
-              <ExamsHeaderWrapper>
+              <TileHeaderWrapper>
                 <LabelWrapper>Exams</LabelWrapper>
-                <ExamButtonWrapper>
+                <RightButtonWrapper>
                   <ButtonStyled type="primary">
                     Create Exam
                   </ButtonStyled>
-                </ExamButtonWrapper>
-              </ExamsHeaderWrapper>
+                </RightButtonWrapper>
+              </TileHeaderWrapper>
               <Exams exams={exams} />
             </BodyRow> */}
           </Row>
