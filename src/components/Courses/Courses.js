@@ -12,6 +12,11 @@ import CreateEditCourseModal from "./CreateEditCourseModal";
 import { setUserAction } from "../Login/actions";
 
 
+const LabelWrapper = styled.div`
+  color: grey;
+  margin-bottom: 10px;
+`;
+
 const CourseTableWrapper = styled.div`
   margin-top: 50px;
 `;
@@ -23,6 +28,14 @@ const PageHeader = styled.div`
 `;
 
 const CreateNewCourseWrapper = styled.div`
+  float: right;
+`;
+
+const ButtonStyled = styled(Button)`
+  height: 30px;
+  margin-right: 10px;
+`;
+const CourseButtonWrapper = styled.div`
   float: right;
 `;
 
@@ -76,9 +89,14 @@ const Courses = ({ courses, user, dispatch }) => {
             <BodyWrapper>
                 <NavBar />
                 <Container>
-                    <PageHeader>Courses</PageHeader>
-                    <CreateNewCourseWrapper>
-                      <Button
+                      <CourseTableWrapper>
+                      <PageHeader>Courses</PageHeader>
+                        <CourseButtonWrapper>
+                          <ButtonStyled type="primary">
+                            Import Courses
+                          </ButtonStyled>
+
+                          <ButtonStyled
                         onClick={() => {
                           setShowCreateEditModal(true);
                           setSelectedCourse(null);
@@ -86,8 +104,9 @@ const Courses = ({ courses, user, dispatch }) => {
                         type="primary"
                       >
                           Create New Course
-                      </Button>
-                    </CreateNewCourseWrapper>
+                      </ButtonStyled>
+                        </CourseButtonWrapper>
+                      </CourseTableWrapper>
                     <CourseTableWrapper>
                       <CourseTable
                         courses={courses}

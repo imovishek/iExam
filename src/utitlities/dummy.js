@@ -18,7 +18,7 @@ export const students = [
   {
     firstName: 'Humayan',
     lastName: 'Kabir',
-    registrationNo: '2015331040',
+    registrationNo: '2015331057',
     userType: 'student',
     department: {
       departmentName: 'Computer Science and Engineering',

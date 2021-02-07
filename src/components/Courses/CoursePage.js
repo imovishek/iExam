@@ -132,7 +132,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
               </ButtonStyled>
             </ExamButtonWrapper>
           </ExamsHeaderWrapper>
-          <Row columns="1fr 1fr 150px">
+          <Row columns="1fr 1fr">
             <HeaderRow>
               <LabelWrapper>Title</LabelWrapper>
               <InputWrapper
@@ -149,16 +149,16 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
               />
             </HeaderRow>
 
-            <HeaderRow>
+          </Row>
+          <Row columns="1fr 1fr 1fr 1fr">
+          <HeaderRow>
               <LabelWrapper>Course Code</LabelWrapper>
               <InputWrapper
                 value={course.courseCode}
                 onChange={(e) => setValue('courseCode', e.target.value)}
               />
             </HeaderRow>
-
-          </Row>
-          <Row columns="1fr 1fr 1fr 1fr">
+            
             <HeaderRow>
               <LabelWrapper>Teacher</LabelWrapper>
               <SelectStyled
@@ -193,19 +193,18 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
                 onChange={(d) => setValue('startDate', d)}
               />
             </HeaderRow>
-
-            <HeaderRow>
-              <LabelWrapper>Duration</LabelWrapper>
-              <InputWrapper
-                value={getDuration(course.startDate, course.endDate)}
-              />
-            </HeaderRow>
-
           </Row>
 
           <Row columns=".7fr .7fr 1.2fr">
             <BodyRow>
+              <ExamsHeaderWrapper>
               <LabelWrapper>Enrolled Students</LabelWrapper>
+                <ExamButtonWrapper>
+                  <ButtonStyled type="primary">
+                    Import
+                  </ButtonStyled>
+                </ExamButtonWrapper>
+              </ExamsHeaderWrapper>
               <EnrolledStudents students={course.enrolledStudents} />
             </BodyRow>
             <BodyRow>
