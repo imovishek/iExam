@@ -48,7 +48,8 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     try {
-      const { payload = {} } = await api.getExamByID(id);
+      let { payload = {} } = await api.getExamByID(id);
+      if(!payload) payload = {};
       setExam(payload);
     } catch(err) {
       console.log(err);
@@ -157,11 +158,11 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               <Questions questions={exam.questions} />
             </BodyRow>
             <BodyRow>
-              <LabelWrapper>Participants</LabelWrapper>
+              <TileHeaderWrapper><LabelWrapper>Participants</LabelWrapper></TileHeaderWrapper>
               <Participants students={exam.participants} />
             </BodyRow>
             <BodyRow>
-              <TileHeaderWrapper>Banned Participants</TileHeaderWrapper>
+              <TileHeaderWrapper><LabelWrapper>Banned Participants</LabelWrapper></TileHeaderWrapper>
               <BannedParticipants students={exam.bannedParticipants} />
             </BodyRow>
           </Row>

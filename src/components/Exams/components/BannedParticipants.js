@@ -7,6 +7,7 @@ import { faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
 const SearchStyled = styled(Search)`
   width: 100%;
+  margin-bottom: 10px;
 `;
 
 const Container = styled.div`
@@ -50,8 +51,8 @@ const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ student }) => {
   return (
     <Row columns="repeat(2, 1fr) 70px">
-      <Wrapper>{getName(student)}</Wrapper>
       <Wrapper>{student.registrationNo}</Wrapper>
+      <Wrapper>{getName(student)}</Wrapper>
       <Wrapper>
         <ButtonStyled type="primary"> Unban </ButtonStyled>
       </Wrapper>
@@ -66,8 +67,8 @@ const BannedParticipants = ({
     <Container>
       <SearchStyled placeholder="Search" />
       <Row columns="repeat(2, 1fr) 70px">
-        <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel>Regi No.</HeaderLabel>
+        <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
       {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} />)}

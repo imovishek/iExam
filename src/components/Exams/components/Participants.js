@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const SearchStyled = styled(Search)`
   width: 100%;
+  margin-bottom: 10px;
 `;
 
 const Container = styled.div`
@@ -38,8 +39,8 @@ const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ student }) => {
   return (
     <Row columns="repeat(2, 1fr) 50px">
-      <Wrapper>{getName(student)}</Wrapper>
       <Wrapper>{student.registrationNo}</Wrapper>
+      <Wrapper>{getName(student)}</Wrapper>
       <Wrapper>
       <Popconfirm
         title="Are you sure？"
@@ -61,8 +62,8 @@ const Participants = ({
     <Container>
       <SearchStyled placeholder="Search" />
       <Row columns="repeat(2, 1fr) 50px">
-        <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel>Regi No.</HeaderLabel>
+        <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
       {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} />)}
