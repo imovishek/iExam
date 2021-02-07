@@ -11,6 +11,7 @@ const studentSchema = new Schema({
         type: String,
         required: true
     },
+    userType: { type: String, default: 'student' },
     department: {
         type: departmentSchema,
         required: true

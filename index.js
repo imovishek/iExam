@@ -9,6 +9,7 @@ const methodOverride = require('method-override');
 const helmet = require('helmet');
 
 const cors = require('cors');
+const { parseObject } = require('./server/common.functions');
 
 const connectToDB = async () => {
     await connectToMongoDB().then(async (mongoose) => {
@@ -41,6 +42,18 @@ app.use(helmet());
 app.use(cors());
 app.use(express.static(__dirname));
 
+app.use(function (req, res, next) {
+  console.log('Request Time ---------------------', new Date().toISOString())
+
+  if (req.body) {
+    req.body = parseObject(req.body);
+  }
+  if (req.query) {
+    req.query = parseObject(req.query);
+  }
+  next()
+})
+
 // routes
 app.get("/", (req, res) => {
     res.render("index");
@@ -48,7 +61,7 @@ app.get("/", (req, res) => {
 app.use('/api', router);
 
 app.listen(port, () => {
-    console.log('App running in port: ', port);
+    console.log('App running in port:', port);
 })
 
 connectToDB();

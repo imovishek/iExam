@@ -7,10 +7,13 @@ exports.createCourse = (course) =>
 
 // GET
 exports.getCourseByID = (_id) =>
-  Course.findOne({ _id });
+  Course.findOne({ _id })
+    .populate("enrolledStudents")
+    .populate("pendingEnrollStudents")
+    .populate("exams");
 
 exports.getCourses = (query) =>
-  Course.find(query);
+  Course.find(query)
 
 
 // UPDATE
