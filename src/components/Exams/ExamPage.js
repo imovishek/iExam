@@ -15,6 +15,8 @@ import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, Labe
 import { useParams } from "react-router";
 import { goBack } from "connected-react-router";
 import moment from 'moment';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const { Option } = Select;
 
@@ -30,6 +32,12 @@ const ButtonStyled = styled(Button)`
 `;
 const SelectStyled = styled(Select)`
   width: 100%;
+`;
+
+const FontAwesomeIconWrapper = styled.div`
+  width: 30px;
+  display: inline-block;
+  cursor: pointer;
 `;
 const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const { id } = useParams();
@@ -63,7 +71,14 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
         <NavBar />
         <Container>
           <TileHeaderWrapper>
-            <PageHeader>Exam</PageHeader>
+            <div>
+              {hasBack &&
+                <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
+                  <FontAwesomeIcon icon={faArrowLeft} size="lg"/>
+                </FontAwesomeIconWrapper>
+              }
+              <PageHeader>Exam</PageHeader>
+            </div>
             <RightButtonWrapper>
               <ButtonStyled type="primary">
                 Update Exam

@@ -5,6 +5,7 @@ import { Modal, Input, Select, DatePicker } from "antd";
 import moment from "moment";
 import _ from "underscore";
 import { joiObjectParser } from "../../utitlities/common.functions";
+import api from "../../utitlities/api";
 
 const { Option } = Select;
 
@@ -34,6 +35,11 @@ const ErrorWrapper = styled.p`
   margin-left: 5px;
 `;
 
+const SelectStyled = styled(Select)`
+  width: 100%;
+`;
+const getNameWithShort = obj => `${obj.firstName} ${obj.lastName} (${obj.shortName || ''})`;
+
 const CreateEditCourseModal = ({
   selectedCourse,
   visible,
@@ -58,10 +64,13 @@ const CreateEditCourseModal = ({
     status: null 
   };
   const [course, setCourse] = useState(isEditing ? selectedCourse : defaultCourse);
+  const [teachers, setTeachers] = useState({});
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+  useEffect(async () => {
     setCourse(selectedCourse || defaultCourse);
+    const { payload: fetchedTeachers = [] } = await api.getTeachers({});
+    setTeachers(fetchedTeachers);
   }, [isEditing, selectedCourse]);
 
   const setValue = (key, value) => {
@@ -153,23 +162,13 @@ const CreateEditCourseModal = ({
       <Row columns="1fr 1fr">
         <ColumnWrapper>
           <LabelWrapper>Assignee</LabelWrapper>
-          <Select
-            showSearch
-            style={{ width: 270 }}
-            placeholder="Assign a teacher"
-            optionFilterProp="children"
-            onChange={()=>{}}
-            onFocus={()=>{}}
-            onBlur={()=>{}}
-            onSearch={()=>{}}
-            filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            <Option value="zzz">Saiful Islam</Option>
-            <Option value="lucy">Enamul Hasan</Option>
-            <Option value="tom">Arnam Sen Sharma</Option>
-          </Select>
+            <SelectStyled
+              value={JSON.stringify(course.assignedTeacher)}
+              onChange={(value) => setValue('assignedTeacher', JSON.parse(value))}
+            >
+              {_.map(teachers, (t) => <Option key={t._id} value={JSON.stringify(t)}>{getNameWithShort(t)}</Option>)}
+              <Option key="unassigned" value={JSON.stringify(null)}> Unassigned </Option>
+            </SelectStyled>
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Status</LabelWrapper>
