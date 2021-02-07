@@ -64,6 +64,7 @@ const Courses = ({ courses, user, dispatch }) => {
 
     const createCourseHandler = async (course) => {
       setLoading(true);
+      course.assignedTeacher = course.assignedTeacher._id;
       const { payload: newCourse } = await api.createCourse(course);
       const { payload: newUser } = await api.updateUserByID(user._id, { $push: { courseIDs: newCourse._id } });
       dispatch(setUserAction(newUser));
