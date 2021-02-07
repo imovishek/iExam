@@ -60,6 +60,7 @@ const InputWrapper = styled(Input)`
 
 const ButtonStyled = styled(Button)`
   height: 30px;
+  margin-right: 10px;
 `;
 
 const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
@@ -125,6 +126,9 @@ const ExamPage = ({ exam = exams[0], course = courses[0] }) => {
               <ExamsHeaderWrapper>
                   <LabelWrapper>Questions</LabelWrapper>
                   <ExamButtonWrapper>
+                  <ButtonStyled type="primary">
+                      Import
+                    </ButtonStyled>
                     <ButtonStyled type="primary">
                       Create Question
                     </ButtonStyled>
