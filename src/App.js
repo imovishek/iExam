@@ -23,7 +23,7 @@ const loadUser = async (dispatch) => {
   dispatch(setUserAction(user));
 }
 const loadInit = async (dispatch) => {
-  await loadUser();
+  await loadUser(dispatch);
   const tabKey = localStorage.tabKey || "dashboard";
   dispatch(setNavigaitonTabAction(tabKey));
 };
