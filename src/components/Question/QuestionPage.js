@@ -14,24 +14,7 @@ import { students, exams, questions } from "../../utitlities/dummy";
 import { getDuration, stFormatDate } from "../../utitlities/common.functions";
 import QuestionBody from "./components/QuestionBody";
 import QuestionAccess from "./components/QuestionAccess";
-
-const Row = styled.div`
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: ${props => props.columns || 'auto'};
-`;
-
-const HeaderRow = styled.div`
-  height: 90px;
-`;
-
-const BodyRow = styled.div`
-  padding: 10px;
-  height: calc(100vh - 240px);
-  margin-bottom: 20px;
-  margin-top: 30px;
-  border: 1px solid rgba(10, 10, 10, 0.3);
-`;
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../styles/pageStyles";
 
 const QuestionBodyRow = styled.div`
   padding: 10px;
@@ -39,28 +22,6 @@ const QuestionBodyRow = styled.div`
   margin-bottom: 20px;
   margin-top: 30px;
   border: 1px solid rgba(10, 10, 10, 0.3);
-`;
-
-const LabelWrapper = styled.div`
-  color: grey;
-  margin-bottom: 10px;
-`;
-const TileHeaderWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 50px;
-  justify-content: space-between;
-`;
-const RightButtonWrapper = styled.div`
-  float: right;
-`;
-
-const PageHeader = styled.div`
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
-  user-select: none;
 `;
 
 const InputWrapper = styled(Input)`

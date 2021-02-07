@@ -16,47 +16,8 @@ import { useParams } from "react-router";
 import { goBack } from "connected-react-router";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../styles/pageStyles";
 const { Option } = Select;
-const Row = styled.div`
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: ${props => props.columns || 'auto'};
-`;
-
-const HeaderRow = styled.div`
-  height: 90px;
-`;
-
-const BodyRow = styled.div`
-  padding: 10px;
-  height: calc(100vh - 240px);
-  margin-bottom: 20px;
-  margin-top: 30px;
-  border: 1px solid rgba(10, 10, 10, 0.3);
-`;
-
-const LabelWrapper = styled.div`
-  color: grey;
-  margin-bottom: 10px;
-`;
-const TileHeaderWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 50px;
-  justify-content: space-between;
-`;
-const RightButtonWrapper = styled.div`
-  float: right;
-`;
-
-const PageHeader = styled.div`
-  display: inline;
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
-  user-select: none;
-`;
 
 const InputWrapper = styled(Input)`
   && {
