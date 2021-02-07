@@ -11,51 +11,12 @@ import { stFormatDate, getDuration } from "../../utitlities/common.functions";
 import Questions from "./components/Questions";
 import Participants from "./components/Participants";
 import BannedParticipants from "./components/BannedParticipants";
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../styles/pageStyles";
 import { useParams } from "react-router";
 import { goBack } from "connected-react-router";
 import moment from 'moment';
 
 const { Option } = Select;
-
-const Row = styled.div`
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: ${props => props.columns || 'auto'};
-`;
-
-const HeaderRow = styled.div`
-  height: 90px;
-`;
-
-const BodyRow = styled.div`
-  padding: 10px;
-  height: calc(100vh - 340px);
-  margin-bottom: 20px;
-  border: 1px solid rgba(10, 10, 10, 0.3);
-`;
-
-const LabelWrapper = styled.div`
-  color: grey;
-  margin-bottom: 10px;
-`;
-const ExamsHeaderWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 50px;
-  justify-content: space-between;
-`;
-
-const ExamButtonWrapper = styled.div`
-  float: right;
-`;
-
-const PageHeader = styled.div`
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
-  user-select: none;
-`;
 
 const InputWrapper = styled(Input)`
   && {
@@ -76,6 +37,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [exam, setExam] = useState({});
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     try {
       const { payload = {} } = await api.getExamByID(id);
@@ -100,14 +62,14 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       <BodyWrapper>
         <NavBar />
         <Container>
-          <ExamsHeaderWrapper>
+          <TileHeaderWrapper>
             <PageHeader>Exam</PageHeader>
-            <ExamButtonWrapper>
+            <RightButtonWrapper>
               <ButtonStyled type="primary">
                 Update Exam
               </ButtonStyled>
-            </ExamButtonWrapper>
-          </ExamsHeaderWrapper>
+            </RightButtonWrapper>
+          </TileHeaderWrapper>
           <Row columns="auto auto auto">
             <HeaderRow>
               <LabelWrapper>Exam Title</LabelWrapper>
@@ -166,17 +128,17 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
 
           <Row columns="1.2fr .7fr .7fr">
             <BodyRow>
-              <ExamsHeaderWrapper>
+              <TileHeaderWrapper>
                 <LabelWrapper>Questions</LabelWrapper>
-                <ExamButtonWrapper>
-                  <ButtonStyled type="primary">
+                  <RightButtonWrapper>
+                    <ButtonStyled type="primary">
                       Import
                     </ButtonStyled>
                     <ButtonStyled type="primary">
                       Create Question
                     </ButtonStyled>
-                  </ExamButtonWrapper>
-                </ExamsHeaderWrapper>
+                  </RightButtonWrapper>
+                </TileHeaderWrapper>
               <Questions questions={exam.questions} />
             </BodyRow>
             <BodyRow>
@@ -184,7 +146,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               <Participants students={exam.participants} />
             </BodyRow>
             <BodyRow>
-              <ExamsHeaderWrapper>Banned Participants</ExamsHeaderWrapper>
+              <TileHeaderWrapper>Banned Participants</TileHeaderWrapper>
               <BannedParticipants students={exam.bannedParticipants} />
             </BodyRow>
           </Row>
