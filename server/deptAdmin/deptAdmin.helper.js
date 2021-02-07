@@ -18,7 +18,7 @@ exports.updateDeptAdminByID = (_id, body) =>
   DeptAdmin.findOneAndUpdate({ _id }, body, { new: true });
 
 exports.updateDeptAdmins = (query, body) =>
-  DeptAdmin.updateMany(query, body);
+  DeptAdmin.updateMany(query, body, { new: true });
 
 // DELETE
 exports.deleteDeptAdminByID = _id => {

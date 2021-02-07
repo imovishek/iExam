@@ -15,10 +15,10 @@ exports.getTeachers = (query) =>
 
 // UPDATE
 exports.updateTeacherByID = (_id, body) =>
-  Teacher.findOneAndUpdate({ _id }, body);
+  Teacher.findOneAndUpdate({ _id }, body, { new: true });
 
 exports.updateTeachers = (query, body) =>
-  Teacher.updateMany(query, body);
+  Teacher.updateMany(query, body, { new: true });
 
 // DELETE
 exports.deleteTeacherByID = _id => {

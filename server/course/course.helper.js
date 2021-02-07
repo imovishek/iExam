@@ -18,10 +18,10 @@ exports.getCourses = (query) =>
 
 // UPDATE
 exports.updateCourseByID = (_id, body) =>
-  Course.findOneAndUpdate({ _id }, body);
+  Course.findOneAndUpdate({ _id }, body, { new: true });
 
 exports.updateCourses = (query, body) =>
-  Course.updateMany(query, body);
+  Course.updateMany(query, body, { new: true });
 
 // DELETE
 exports.deleteCourseByID = _id => {

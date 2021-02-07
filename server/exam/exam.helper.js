@@ -15,10 +15,10 @@ exports.getExams = (query) =>
 
 // UPDATE
 exports.updateExamByID = (_id, body) =>
-  Exam.findOneAndUpdate({ _id }, body);
+  Exam.findOneAndUpdate({ _id }, body, { new: true });
 
 exports.updateExams = (query, body) =>
-  Exam.updateMany(query, body);
+  Exam.updateMany(query, body, { new: true });
 
 // DELETE
 exports.deleteExamByID = _id => {

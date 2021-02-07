@@ -15,10 +15,10 @@ exports.getQuestions = (query) =>
 
 // UPDATE
 exports.updateQuestionByID = (_id, body) =>
-  Question.findOneAndUpdate({ _id }, body);
+  Question.findOneAndUpdate({ _id }, body, { new: true });
 
 exports.updateQuestions = (query, body) =>
-  Question.updateMany(query, body);
+  Question.updateMany(query, body, { new: true });
 
 // DELETE
 exports.deleteQuestionByID = _id => {
