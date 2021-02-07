@@ -15,10 +15,10 @@ exports.getCredentials = (query) =>
 
 // UPDATE
 exports.updateCredential = (query, body) =>
-    Credential.findOneAndUpdate(query, body);
+    Credential.findOneAndUpdate(query, body, { new: true });
 
 exports.updateCredentials = (query, body) =>
-    Credential.updateMany(query, body);
+    Credential.updateMany(query, body, { new: true });
 
 // DELETE
 exports.deleteCredential = query => {
