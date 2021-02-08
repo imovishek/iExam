@@ -4,6 +4,7 @@ import moment from 'moment';
 import CheckAuthentication from "../components/CheckAuthentication/CheckAuthentication";
 import { BodyWrapper } from "./styles";
 import NavBar from "../components/NavBar/NavBar";
+import { ignoreKeys } from './constants';
 
 export const joiObjectParser = (object, validator) => {
   const { error } = Joi.validate(object, validator, {
@@ -36,4 +37,21 @@ export const useNavAuthentication = (Component) => (
     </BodyWrapper>
   </div>
 );
-  
+
+export const smartLabel = (s) => {
+  return s.replace(/^./, str => str.toUpperCase());
+};
+
+export const getObjectByAddingID = (obj = {}) => {
+  const newObj = { ...obj };
+  _.map(newObj, (v, k) => {
+    if (ignoreKeys[k]) delete newObj[k];
+    else if (_.isArray(v)) {
+      const newVal = _.map(v, e => _.isObject(e) ? (e._id || e) : e);
+      newObj[k] = newVal;
+    } else {
+      newObj[k] = _.isObject(v) ? (v._id || v) : v;
+    }
+  });
+  return newObj;
+}

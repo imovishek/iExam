@@ -1,22 +1,23 @@
-import CheckAuthentication from "../CheckAuthentication/CheckAuthentication";
-import NavBar from "../NavBar/NavBar";
+import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
+import NavBar from "../../NavBar/NavBar";
 import { connect } from "react-redux";
 import _ from 'underscore';
-import { BodyWrapper, Container } from "../../utitlities/styles";
+import { BodyWrapper, Container } from "../../../utitlities/styles";
 import React, { useEffect, useState } from "react";
-import api from '../../utitlities/api';
+import api from '../../../utitlities/api';
 import styled from "styled-components";
 import moment from 'moment';
 import { Button, Input, Select, DatePicker } from "antd";
 import EnrolledStudents from "./components/EnrolledStudents";
 import Exams from "./components/Exams";
 import EnrollmentRequest from "./components/EnrollmentRequest";
-import { getDuration } from "../../utitlities/common.functions";
+import { getDuration, getObjectByAddingID } from "../../../utitlities/common.functions";
 import { useParams } from "react-router";
+import Loading from '../../Common/Loading';
 import { goBack } from "connected-react-router";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../styles/pageStyles";
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../../styles/pageStyles";
 const { Option } = Select;
 
 const InputWrapper = styled(Input)`
@@ -44,13 +45,14 @@ const getNameWithShort = obj => `${obj.firstName} ${obj.lastName} (${obj.shortNa
 const CoursePage = ({ dispatch, user, hasBack = true }) => {
   const { id } = useParams();
   if (!id) dispatch(goBack());
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setLoading] = useState(false);
   const [course, setCourse] = useState({});
   const [teachers, setTeachers] = useState({});
   const { departmentName } = user.department || {};
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     try {
+      setLoading(true);
       const { payload = {} } = await api.getCourseByID(id);
       const { payload: fetchedTeachers = [] } = await api.getTeachers({});
       setCourse(payload);
@@ -58,7 +60,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
     } catch(err) {
       console.log(err);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   }, [id]);
 
@@ -70,12 +72,23 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
     setCourse(newCourse);
   };
 
+  const handleUpdateCourse = async (course) => {
+    setLoading(true);
+    const newCourse = getObjectByAddingID(course);
+    console.log(newCourse);
+    await api.updateCourse(newCourse);
+    const { payload = {} } = await api.getCourseByID(id);
+    setLoading(false);
+    setCourse(payload);
+  }
+
   return (
     <div>
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
         <Container>
+          {isLoading && <Loading isLoading={isLoading}/>}
           {/* <Header>{departmentName}</Header> */}
           <TileHeaderWrapper>
             <div>
@@ -88,7 +101,10 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
             </div>
             
             <RightButtonWrapper>
-              <ButtonStyled type="primary">
+              <ButtonStyled
+                type="primary"
+                onClick={() => handleUpdateCourse(course)}
+              >
                 Update Course
               </ButtonStyled>
             </RightButtonWrapper>
@@ -123,11 +139,11 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
             <HeaderRow>
               <LabelWrapper>Teacher</LabelWrapper>
               <SelectStyled
-                value={JSON.stringify(course.assignedTeacher)}
-                onChange={(value) => setValue('assignedTeacher', JSON.parse(value))}
+                value={course.assignedTeacher ? course.assignedTeacher._id : null}
+                onChange={(value) => setValue('assignedTeacher', value ? { _id: value } : null)}
               >
-                {_.map(teachers, (t) => <Option key={t._id} value={JSON.stringify(t)}>{getNameWithShort(t)}</Option>)}
-                <Option key="unassigned" value={JSON.stringify(null)}> Unassigned </Option>
+                {_.map(teachers, (t) => <Option key={t._id} value={t._id}>{getNameWithShort(t)}</Option>)}
+                <Option key="unassigned" value={null}> Unassigned </Option>
               </SelectStyled>
             </HeaderRow>
 

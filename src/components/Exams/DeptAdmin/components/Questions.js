@@ -1,7 +1,7 @@
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 import _ from 'underscore';
-import { stFormatDate, getDuration } from "../../../utitlities/common.functions";
+import { stFormatDate, getDuration } from "../../../../utitlities/common.functions";
 
 const SearchStyled = styled(Search)`
   width: 100%;

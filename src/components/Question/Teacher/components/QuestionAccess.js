@@ -4,7 +4,7 @@ import _ from 'underscore';
 import { Popconfirm } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCheckCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { teachers } from '../../../utitlities/dummy';
+import { teachers } from '../../../../utitlities/dummy';
 
 const SearchStyled = styled(Search)`
   width: 100%;

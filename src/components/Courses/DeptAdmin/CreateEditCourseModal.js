@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
-import courseValidator from './course.validation';
+import courseValidator from '../course.validation';
 import { Modal, Input, Select, DatePicker } from "antd";
 import moment from "moment";
 import _ from "underscore";
-import { joiObjectParser } from "../../utitlities/common.functions";
-import api from "../../utitlities/api";
+import { joiObjectParser } from "../../../utitlities/common.functions";
+import api from "../../../utitlities/api";
 
 const { Option } = Select;
 
@@ -67,6 +67,7 @@ const CreateEditCourseModal = ({
   const [teachers, setTeachers] = useState({});
   const [errors, setErrors] = useState({});
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     setCourse(selectedCourse || defaultCourse);
     const { payload: fetchedTeachers = [] } = await api.getTeachers({});

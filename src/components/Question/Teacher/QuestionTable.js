@@ -9,77 +9,15 @@ import React, { useState, useEffect } from "react";
 import { deleteQuestion } from "../../utitlities/api";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
-
-const FlexBoxHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-radius: 8px;
-  background: #cecece;
-  margin-top: 5px;
-`;
-
-const FlexChildHeader = styled.div`
-  flex: 1;
-  font-weight: 600;
-  padding: 10px;
-  text-align: center;
-  height: 60px;
-  line-height: 40px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  user-select: none;
-`;
-
-
-const FlexBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-radius: 8px;
-  background: #e6e6e6;
-  margin-top: 5px;
-  cursor: pointer;
-`;
-
-const FlexChild = styled.div`
-  flex: 1;
-  font-weight: 400;
-  padding: 10px;
-  text-align: center;
-  height: 60px;
-  line-height: 40px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  user-select: none;
-`;
-
-const SpinWrapper = styled.div`
-  text-align: center;
-  margin-top: 50px;;
-  height: 100%;
-  width: 100%;
-  z-index: 1000;
-`;
-const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
-  cursor: pointer;
-  margin: auto;
-  margin-left: 5px;
-`;
-
-const OperationWrapper = styled.div`
-  float: right;
-`;
-
-const getName = obj => `${obj.firstName} ${obj.lastName}`;
+import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from "../styles/tableStyles";
 
 const QuestionCard = ({ dispatch, question, setQuestionToEdit, showCreateEditModal, deleteQuestion }) => {
     return (
-        <FlexBox>
-            <FlexChild> { question.firstName } </FlexChild>
-            <FlexChild> { question.lastName } </FlexChild>
-            <FlexChild> { question.department.departmentCode } </FlexChild>
-            <FlexChild>
+        <TableRow>
+            <TableRowChild> { question.firstName } </TableRowChild>
+            <TableRowChild> { question.lastName } </TableRowChild>
+            <TableRowChild> { question.department.departmentCode } </TableRowChild>
+            <TableRowChild>
                 <OperationWrapper>
                   <Button onClick={() => {
                     setQuestionToEdit(_.create('', question));
@@ -97,8 +35,8 @@ const QuestionCard = ({ dispatch, question, setQuestionToEdit, showCreateEditMod
                   />
                 </Popconfirm>
               </OperationWrapper>
-            </FlexChild>
-        </FlexBox>
+            </TableRowChild>
+        </TableRow>
     )
 };
 
@@ -120,12 +58,12 @@ const QuestionTable = ({
   const paginatedQuestions = questions.slice((current-1)*pageSize, current*pageSize);
   return (
     <div>
-      <FlexBoxHeader>
-        <FlexChildHeader> First Name </FlexChildHeader>
-        <FlexChildHeader> Last Name </FlexChildHeader>
-        <FlexChildHeader> Department </FlexChildHeader>
-        <FlexChildHeader></FlexChildHeader>
-      </FlexBoxHeader>
+      <TableHeader>
+        <TableHeaderChild> First Name </TableHeaderChild>
+        <TableHeaderChild> Last Name </TableHeaderChild>
+        <TableHeaderChild> Department </TableHeaderChild>
+        <TableHeaderChild></TableHeaderChild>
+      </TableHeader>
       { !isLoading && _.map(paginatedQuestions, (question, index) => (
           <QuestionCard
             key={`questions_${index}`}

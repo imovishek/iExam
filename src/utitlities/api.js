@@ -15,6 +15,11 @@ export const apiLogin = async (email, password) => {
 export const getCourses = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/courses`, 'get', {}, query)
   .then(res => res.data);
+
+export const getExams = async (query) =>
+  requestApiAndGetResponse(`${apiUrl}/exams`, 'get', {}, query)
+  .then(res => res.data);
+
 export const getCourseByID = (id) =>
   requestApiAndGetResponse(`${apiUrl}/course/${id}`, 'get')
   .then(res => res.data);
@@ -109,7 +114,8 @@ const api = {
   updateDeptAdminByID,
   updateUserByID,
   getUserByID,
-  getExamByID
+  getExamByID,
+  getExams
 };
 
 export default api;
