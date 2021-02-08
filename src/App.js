@@ -8,6 +8,7 @@ import CoursePageForAdmin from './components/Courses/DeptAdmin/CoursePage';
 import { connect } from 'react-redux';
 import { hasPageAccess } from './utitlities/constants';
 import TeachersForAdmin from './components/Teachers/DeptAdmin/Teachers';
+import StudentsForAdmin from './components/Students/DeptAdmin/Students';
 import jwt from 'jsonwebtoken';
 import { setUserAction } from './components/Login/actions';
 import { setNavigaitonTabAction } from './components/NavBar/actions';
@@ -52,6 +53,7 @@ const App = ({ user, dispatch }) => {
         { userType === "deptAdmin" && <Route path="/courses" component={CoursesForAdmin} /> }
         { userType === "deptAdmin" && <Route path="/course/:id" component={CoursePageForAdmin} /> }
         { userType === "deptAdmin" && <Route path="/teachers" component={TeachersForAdmin} /> }
+        { userType === "deptAdmin" && <Route path="/students" component={StudentsForAdmin} /> }
         { userType === "deptAdmin" && <Route path="/exam/:id" component={ExamPageForAdmin} /> }
         { userType === "teacher" && <Route path="/question/:id" component={QuestionPageForTeacher} /> }
         <Route path="/" component={Dashboard} />

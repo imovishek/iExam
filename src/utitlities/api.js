@@ -47,6 +47,10 @@ export const getTeachers = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/teachers`, 'get', {}, query)
   .then(res => res.data);
 
+export const getStudents = async (query) =>
+  requestApiAndGetResponse(`${apiUrl}/students`, 'get', {}, query)
+  .then(res => res.data);
+
 export const createTeacher = async (teacher) =>
   requestApiAndGetResponse(`${apiUrl}/courses`, 'post', {
     teacher
@@ -110,6 +114,7 @@ const api = {
   updateTeacher,
   deleteTeacher,
   getTeachers,
+  getStudents,
   getCourseByID,
   updateDeptAdminByID,
   updateUserByID,
