@@ -44,18 +44,18 @@ const CreateEditTeacherModal = ({
   const isEditing = !(!selectedTeacher);
   const title = isEditing ? 'Edit Teacher' : 'Create Teacher';
   const defaultTeacher = {
-    title: '',
-    teacherCode: '',
+    firstName: '',
+    lastName: '',
     department : {
       departmentCode : "CSE",
       departmentName : "Computer Science and Engineering"
     },
-    exams: [],
-    enrolledStudents: [],
-    pendingEnrollStudents: [],
-    assignedTeacher: null,
-    startDate: null,
-    status: null 
+    credential : {
+      email : '',
+      password : "superuser",
+      userType : "teacher"
+    },
+    questions: []
   };
   const [teacher, setTeacher] = useState(isEditing ? selectedTeacher : defaultTeacher);
   const [errors, setErrors] = useState({});
@@ -69,6 +69,9 @@ const CreateEditTeacherModal = ({
       ...teacher,
       [key]: value
     };
+    if(key === 'email'){
+      newTeacher.credential.email = value;
+    }
     const newErrors = {
       ...errors
     };
@@ -107,24 +110,24 @@ const CreateEditTeacherModal = ({
     >
       <Row columns="1fr 1fr">
         <ColumnWrapper>
-          <LabelWrapper>Title</LabelWrapper>
+          <LabelWrapper>First Name</LabelWrapper>
           <InputWrapper
-            placeholder="Teacher Title"
-            value={teacher.title}
+            placeholder="First Name"
+            value={teacher.firstName}
             style={{ width: 270 }}
-            onChange={(e) => setValue('title', e.target.value)}
+            onChange={(e) => setValue('firstName', e.target.value)}
           />
-          <ErrorWrapper> {errors['title']} </ErrorWrapper>
+          <ErrorWrapper> {errors['firstName']} </ErrorWrapper>
         </ColumnWrapper>
         <ColumnWrapper>
-          <LabelWrapper>Teacher Code</LabelWrapper>
+          <LabelWrapper>Last Name</LabelWrapper>
           <InputWrapper
-            placeholder="Teacher Code"
-            value={teacher.teacherCode}
+            placeholder="Last Name"
+            value={teacher.lastName}
             style={{ width: 270 }}
-            onChange={(e) => setValue('teacherCode', e.target.value)}
+            onChange={(e) => setValue('lastName', e.target.value)}
           />
-          <ErrorWrapper> {errors['teacherCode']} </ErrorWrapper>
+          <ErrorWrapper> {errors['lastName']} </ErrorWrapper>
         </ColumnWrapper>        
       </Row>
       <Row columns="1fr 1fr">
@@ -138,55 +141,17 @@ const CreateEditTeacherModal = ({
           </Select>
         </ColumnWrapper>
         <ColumnWrapper>
-          <LabelWrapper>Start Date</LabelWrapper>
-          <DatePicker
-            allowClear
-            placeholder="Start Date"
-            value={!teacher.startDate ? '' : moment(teacher.startDate)}
+          <LabelWrapper>Email</LabelWrapper>
+          <InputWrapper
+            placeholder="Email"
+            value={teacher.credential.email}
             style={{ width: 270 }}
-            format="DD/MM/YYYY"
-            onChange={(d) => setValue('startDate', d)}
+            onChange={(e) => setValue('email', e.target.value)}
           />
-          <ErrorWrapper> {errors['startDate']} </ErrorWrapper>
+          <ErrorWrapper> {errors['email']} </ErrorWrapper>
         </ColumnWrapper>
       </Row>
-      <Row columns="1fr 1fr">
-        <ColumnWrapper>
-          <LabelWrapper>Assignee</LabelWrapper>
-          <Select
-            showSearch
-            style={{ width: 270 }}
-            placeholder="Assign a teacher"
-            optionFilterProp="children"
-            onChange={()=>{}}
-            onFocus={()=>{}}
-            onBlur={()=>{}}
-            onSearch={()=>{}}
-            filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            <Option value="zzz">Saiful Islam</Option>
-            <Option value="lucy">Enamul Hasan</Option>
-            <Option value="tom">Arnam Sen Sharma</Option>
-          </Select>
-        </ColumnWrapper>
-        <ColumnWrapper>
-          <LabelWrapper>Status</LabelWrapper>
-          <Select
-            style={{ width: 270 }}
-            placeholder="Select a status"
-            value={teacher.status}
-            onChange={(value) => setValue('status', value)}
-          >
-            <Option value="upcoming">Upcoming</Option>
-            <Option value="running">Running</Option>
-            <Option value="ended">Ended</Option>
-          </Select>
-          <ErrorWrapper> {errors['status']} </ErrorWrapper>
-        </ColumnWrapper>
-      </Row>
-    </Modal>
+      </Modal>
   )
 };
 

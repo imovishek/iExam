@@ -48,7 +48,7 @@ export const getTeachers = async (query) =>
   .then(res => res.data);
 
 export const createTeacher = async (teacher) =>
-  requestApiAndGetResponse(`${apiUrl}/courses`, 'post', {
+  requestApiAndGetResponse(`${apiUrl}/teachers`, 'post', {
     teacher
   })
   .then(res => res.data);

@@ -9,6 +9,7 @@ import styled from "styled-components";
 import TeacherTable from "./TeacherTable";
 import { Button } from "antd";
 import CreateEditTeacherModal from "./CreateEditTeacherModal";
+import { setUserAction } from "../../Login/actions";
 
 
 const TeacherTableWrapper = styled.div`
@@ -46,8 +47,9 @@ const Teachers = ({ teachers, user, dispatch }) => {
 
     const createTeacherHandler = async (teacher) => {
       setLoading(true);
-      await api.createTeacher(teacher);
-      // await api.updateDeptAdmin(user._id, { teacherIDs: { $push: teacher._id } });
+      const {payload : newTeacher} = await api.createTeacher(teacher);
+      const { payload: newUser } = await api.updateUserByID(user._id, { $push: { teacherIDs: newTeacher._id } });
+      dispatch(setUserAction(newUser));
       setTeacherChanged(true);
     };
 
@@ -91,13 +93,13 @@ const Teachers = ({ teachers, user, dispatch }) => {
                         deleteTeacher={deleteTeacherHandler}
                       />
                     </TeacherTableWrapper>
-                    {/* <CreateEditTeacherModal
+                    <CreateEditTeacherModal
                       visible={showCreateEditModal}
                       selectedTeacher={selectedTeacher}
                       setVisibility={setShowCreateEditModal}
                       createTeacher={createTeacherHandler}
                       updateTeacher={updateTeacherHandler}
-                    /> */}
+                    />
                 </Container>
             </BodyWrapper>
             
