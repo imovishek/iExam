@@ -64,6 +64,18 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
     }
   }, [id]);
 
+  const updateCourseOnUi = async() => {
+    try {
+      setLoading(true);
+      const { payload = {} } = await api.getCourseByID(id);
+      setCourse(payload);
+    } catch(err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const setValue = (key, value) => {
     const newCourse = {
       ...course,
@@ -182,13 +194,15 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
                   </ButtonStyled>
                 </RightButtonWrapper>
               </TileHeaderWrapper>
-              <EnrolledStudents students={course.enrolledStudents} />
+              <EnrolledStudents students={course.enrolledStudents} 
+              course = {course} updateCourseOnUi = {updateCourseOnUi}/>
             </BodyRow>
             <BodyRow>
               <TileHeaderWrapper>
                 <LabelWrapper>Enrollment Request</LabelWrapper>
               </TileHeaderWrapper>
-              <EnrollmentRequest students={course.pendingEnrollStudents} />
+              <EnrollmentRequest students={course.pendingEnrollStudents}
+               course={course} updateCourseOnUi = {updateCourseOnUi}/>
             </BodyRow>
             <BodyRow>
               <TileHeaderWrapper>

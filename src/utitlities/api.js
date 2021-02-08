@@ -30,12 +30,12 @@ export const createCourse = async (course) =>
   })
   .then(res => res.data);
 
-export const updateCourse = async (course) =>
+export const updateCourse = async (course, update) =>
   requestApiAndGetResponse(`${apiUrl}/course/${course._id}`, 'put', {
     query: {
       _id: course._id
     },
-    update: course
+    update: update || course
   })
   .then(res => res.data);
 

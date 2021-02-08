@@ -4,6 +4,7 @@ import _ from 'underscore';
 import { Button, Popconfirm } from "antd";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import api from "../../../../utitlities/api";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -40,7 +41,16 @@ const Row = styled.div`
   grid-template-columns: ${props => props.columns || 'auto'};
 `;
 const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ student }) => {
+const Card = ({ student, course, updateCourseOnUi }) => {
+
+  const deleteFromEnrolledStudentHandler = async (e) => {
+    await api.updateCourse(course, {
+      $pull: {
+        enrolledStudents: student._id
+      }
+    });
+    await updateCourseOnUi();
+  }
   return (
     <Row columns="repeat(2, 1fr) 20px">
       <Wrapper>{student.registrationNo}</Wrapper>
@@ -50,7 +60,7 @@ const Card = ({ student }) => {
           title="Are you sure？"
           okText="Yes"
           cancelText="No"
-          onConfirm={() => {}}
+          onConfirm={deleteFromEnrolledStudentHandler}
         >
           <FontAwesomeIconWrapper
             icon={faTrash}
@@ -63,7 +73,7 @@ const Card = ({ student }) => {
 };
 
 const EnrolledStudents = ({
-  students
+  students, course, updateCourseOnUi 
 }) => {
   return (
     <Container>
@@ -73,7 +83,8 @@ const EnrolledStudents = ({
         <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
-      {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} />)}
+      {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} 
+      course = {course} updateCourseOnUi = {updateCourseOnUi} />)}
     </Container>
   );
 };
