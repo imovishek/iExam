@@ -1,9 +1,17 @@
 const Teacher = require('./teacher.model');
 const _ = require('underscore');
-
+const bcryptjs = require('bcryptjs');
+function hash(password) {
+  return bcryptjs.hash(password, 10);
+}
 // CREATE
-exports.createTeacher = (teacher) =>
-  Teacher.create(teacher);
+exports.createTeacher = async (teacher) => {
+  const { credential } = teacher;
+  credential.password = hash(credential.password);
+  const cred = await Credential.create(credential);
+  teacher.credential = cred;
+  return Teacher.create(teacher);
+}
 
 // GET
 exports.getTeacherByID = (_id) =>
