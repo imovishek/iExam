@@ -4,16 +4,18 @@ import _ from 'underscore';
 import { Spin, Button, Popconfirm } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import Pagination from "../Common/Pagination";
+import Pagination from "../../Common/Pagination";
 import React, { useState, useEffect } from "react";
-import { deleteCourse } from "../../utitlities/api";
+import { deleteCourse } from "../../../utitlities/api";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
-import { smartLabel } from "../../utitlities/common.functions";
-import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from "../styles/tableStyles";
+import { smartLabel } from "../../../utitlities/common.functions";
+import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from "../../styles/tableStyles";
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`;
-
+const ButtonSyled = styled(Button)`
+  margin-left: 10px;
+`;
 const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, deleteCourse }) => {
     return (
         <TableRow>
@@ -24,32 +26,24 @@ const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, de
             <TableRowChild> { smartLabel(course.status) } </TableRowChild>
             <TableRowChild>
               <OperationWrapper>
-                <Button onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  dispatch(push(`/course/${course._id}`));
-                  // setCourseToEdit(_.create('', course));
-                  // showCreateEditModal(true);
-                }}>Edit</Button>
-                
-                <Popconfirm
-                  title="Are you sure？"
-                  okText="Yes"
-                  cancelText="No"
+                <ButtonSyled
+                  type="primary"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                  }}
-                  onConfirm={(e) => {
-                    deleteCourse(course);
-                  }}
-                >
-                  <FontAwesomeIconWrapper
-                    icon={faTrash}
-                    color="#e85120"
-                  />
-                </Popconfirm>
-              
+                    // setCourseToEdit(_.create('', course));
+                    // showCreateEditModal(true);
+                  }}>Enroll</ButtonSyled>
+
+                <ButtonSyled
+                  type="primary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dispatch(push(`/course/${course._id}`));
+                    // setCourseToEdit(_.create('', course));
+                    // showCreateEditModal(true);
+                  }}>Enter</ButtonSyled>
             </OperationWrapper>
           </TableRowChild>
         </TableRow>
@@ -57,7 +51,7 @@ const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, de
 };
 
 const NoData = () => {
-  return <CenterNoData>No Data</CenterNoData>
+  return <CenterNoData>No Courses</CenterNoData>
 };
 
 const CourseTable = ({
@@ -69,7 +63,7 @@ const CourseTable = ({
   dispatch
 }) => {
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(5);
   const [total, setTotal] = useState(1);
   const paginatedCourses = courses.slice((current-1)*pageSize, current*pageSize);
 

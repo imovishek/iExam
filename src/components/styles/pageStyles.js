@@ -21,12 +21,14 @@ export const BodyRow = styled.div`
 export const LabelWrapper = styled.div`
   color: grey;
   margin-bottom: 10px;
+  user-select: none;
 `;
 export const TileHeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
   height: 50px;
+  user-select: none;
   justify-content: space-between;
 `;
 export const RightButtonWrapper = styled.div`

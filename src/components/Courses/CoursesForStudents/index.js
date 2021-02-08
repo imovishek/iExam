@@ -1,16 +1,13 @@
-import CheckAuthentication from "../CheckAuthentication/CheckAuthentication";
-import NavBar from "../NavBar/NavBar";
+import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
+import NavBar from "../../NavBar/NavBar";
 import { connect } from "react-redux";
-import { BodyWrapper, Container } from "../../utitlities/styles";
+import { BodyWrapper, Container } from "../../../utitlities/styles";
 import React, { useEffect, useState } from "react";
-import api from '../../utitlities/api';
-import { onUpdateCourses } from "./actions";
+import api from '../../../utitlities/api';
 import styled from "styled-components";
 import CourseTable from "./CourseTable";
 import { Button } from "antd";
-import CreateEditCourseModal from "./CreateEditCourseModal";
-import { setUserAction } from "../Login/actions";
-
+import { setUserAction } from "../../Login/actions";
 
 const LabelWrapper = styled.div`
   color: grey;
@@ -39,10 +36,11 @@ const CourseButtonWrapper = styled.div`
   float: right;
 `;
 
-const Courses = ({ courses, user, dispatch }) => {
+const Courses = ({ user, dispatch }) => {
   const [isCoursesChanged, setCourseChanged] = useState(true);
   const [isLoading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [courses, setCourses] = useState([]);
   const [showCreateEditModal, setShowCreateEditModal] = useState(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,8 +48,8 @@ const Courses = ({ courses, user, dispatch }) => {
     if (isCoursesChanged) {
       const { courseIDs = [] } = user;
       try {
-        const { payload = [] } = await api.getCourses({ _id: { $in: courseIDs } });
-        dispatch(onUpdateCourses(payload));
+        const { payload = [] } = await api.getCourses({});
+        setCourses(payload);
       } catch (err) {
         console.log(err);
       } finally {
@@ -91,21 +89,6 @@ const Courses = ({ courses, user, dispatch }) => {
         <NavBar />
         <Container>
           <PageHeader>Courses</PageHeader>
-          <CourseButtonWrapper>
-            <ButtonStyled type="primary">
-              Import Courses
-            </ButtonStyled>
-
-            <ButtonStyled
-              onClick={() => {
-                setShowCreateEditModal(true);
-                setSelectedCourse(null);
-              }}
-              type="primary"
-            >
-              Create New Course
-            </ButtonStyled>
-          </CourseButtonWrapper>
           <CourseTableWrapper>
             <CourseTable
               courses={courses}
@@ -117,13 +100,6 @@ const Courses = ({ courses, user, dispatch }) => {
               deleteCourse={deleteCourseHandler}
             />
           </CourseTableWrapper>
-          <CreateEditCourseModal
-            visible={showCreateEditModal}
-            selectedCourse={selectedCourse}
-            setVisibility={setShowCreateEditModal}
-            createCourse={createCourseHandler}
-            updateCourse={updateCourseHandler}
-          />
         </Container>
       </BodyWrapper>
 

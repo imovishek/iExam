@@ -15,7 +15,10 @@ import ExamPage from './components/Exams/ExamPage';
 import QuestionPage from './components/Question/QuestionPage';
 import api from './utitlities/api';
 import Loading from './components/Common/Loading';
-import ExamsForStudent from './components/Exams/ExamsForStudent';
+import ExamsForStudent from './components/Exams/ExamsForStudent/index';
+import CoursesForStudents from './components/Courses/CoursesForStudents';
+import CoursePageForStudents from './components/Courses/CoursesForStudents/CoursePage';
+import ExamPageForStudents from './components/Exams/ExamsForStudent/ExamPage';
 
 require('dotenv').config();
 const loadUser = async (dispatch) => {
@@ -42,12 +45,15 @@ const App = ({ user, dispatch }) => {
         <Route path="/login" component={Login} />
         <Route path="/logout" component={Logout} />
         <Route path="/dashboard" component={Dashboard} />
+        { userType === "student" && <Route path="/exams" component={ExamsForStudent} /> }
+        { userType === "student" && <Route path="/courses" component={CoursesForStudents} /> }
+        { userType === "student" && <Route path="/course/:id" component={CoursePageForStudents} /> }
+        { userType === "student" && <Route path="/exam/:id" component={ExamPageForStudents} /> }
         { hasPageAccess[userType] && hasPageAccess[userType].Courses && <Route path="/courses" component={Courses} /> }
         { hasPageAccess[userType] && hasPageAccess[userType].CoursePage && <Route path="/course/:id" component={CoursePage} /> }
         { hasPageAccess[userType] && hasPageAccess[userType].Teachers && <Route path="/teachers" component={Teachers} /> }
         { hasPageAccess[userType] && hasPageAccess[userType].ExamPage && <Route path="/exam/:id" component={ExamPage} /> }
         { hasPageAccess[userType] && hasPageAccess[userType].ExamPage && <Route path="/question/:id" component={QuestionPage} /> }
-        { userType === "student" && <Route path="/exams" component={ExamsForStudent} /> }
         <Route path="/" component={Dashboard} />
       </Switch>
   );

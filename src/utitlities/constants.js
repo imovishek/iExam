@@ -8,5 +8,13 @@ export const hasPageAccess = {
     },
     student: {
         Exams: true,
+        Courses: true,
     }
+};
+
+export const ignoreKeys = {
+    updatedAt: true,
+    createdAt: true,
+    __v: true,
+    department: true,
 };
