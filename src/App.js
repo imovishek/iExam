@@ -3,22 +3,22 @@ import { Route, Switch } from "react-router";
 import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
 import Logout from './components/Logout/Logout';
-import Courses from './components/Courses/Courses';
+import CoursesForAdmin from './components/Courses/DeptAdmin/Courses';
+import CoursePageForAdmin from './components/Courses/DeptAdmin/CoursePage';
 import { connect } from 'react-redux';
 import { hasPageAccess } from './utitlities/constants';
-import Teachers from './components/Teachers/Teachers';
+import TeachersForAdmin from './components/Teachers/DeptAdmin/Teachers';
 import jwt from 'jsonwebtoken';
 import { setUserAction } from './components/Login/actions';
 import { setNavigaitonTabAction } from './components/NavBar/actions';
-import CoursePage from './components/Courses/CoursePage';
-import ExamPage from './components/Exams/ExamPage';
-import QuestionPage from './components/Question/QuestionPage';
+import ExamPageForAdmin from './components/Exams/DeptAdmin/ExamPage';
+import QuestionPageForTeacher from './components/Question/Teacher/QuestionPage';
 import api from './utitlities/api';
 import Loading from './components/Common/Loading';
-import ExamsForStudent from './components/Exams/ExamsForStudent/index';
-import CoursesForStudents from './components/Courses/CoursesForStudents';
-import CoursePageForStudents from './components/Courses/CoursesForStudents/CoursePage';
-import ExamPageForStudents from './components/Exams/ExamsForStudent/ExamPage';
+import ExamsForStudent from './components/Exams/Student/index';
+import CoursesForStudent from './components/Courses/Student';
+import CoursePageForStudents from './components/Courses/Student/CoursePage';
+import ExamPageForStudents from './components/Exams/Student/ExamPage';
 
 require('dotenv').config();
 const loadUser = async (dispatch) => {
@@ -46,14 +46,14 @@ const App = ({ user, dispatch }) => {
         <Route path="/logout" component={Logout} />
         <Route path="/dashboard" component={Dashboard} />
         { userType === "student" && <Route path="/exams" component={ExamsForStudent} /> }
-        { userType === "student" && <Route path="/courses" component={CoursesForStudents} /> }
+        { userType === "student" && <Route path="/courses" component={CoursesForStudent} /> }
         { userType === "student" && <Route path="/course/:id" component={CoursePageForStudents} /> }
         { userType === "student" && <Route path="/exam/:id" component={ExamPageForStudents} /> }
-        { hasPageAccess[userType] && hasPageAccess[userType].Courses && <Route path="/courses" component={Courses} /> }
-        { hasPageAccess[userType] && hasPageAccess[userType].CoursePage && <Route path="/course/:id" component={CoursePage} /> }
-        { hasPageAccess[userType] && hasPageAccess[userType].Teachers && <Route path="/teachers" component={Teachers} /> }
-        { hasPageAccess[userType] && hasPageAccess[userType].ExamPage && <Route path="/exam/:id" component={ExamPage} /> }
-        { hasPageAccess[userType] && hasPageAccess[userType].ExamPage && <Route path="/question/:id" component={QuestionPage} /> }
+        { userType === "deptAdmin" && <Route path="/courses" component={CoursesForAdmin} /> }
+        { userType === "deptAdmin" && <Route path="/course/:id" component={CoursePageForAdmin} /> }
+        { userType === "deptAdmin" && <Route path="/teachers" component={TeachersForAdmin} /> }
+        { userType === "deptAdmin" && <Route path="/exam/:id" component={ExamPageForAdmin} /> }
+        { userType === "teacher" && <Route path="/question/:id" component={QuestionPageForTeacher} /> }
         <Route path="/" component={Dashboard} />
       </Switch>
   );

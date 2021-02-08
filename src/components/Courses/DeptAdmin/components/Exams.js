@@ -1,7 +1,7 @@
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 import _ from 'underscore';
-import { stFormatDate, getDuration } from "../../../utitlities/common.functions";
+import { stFormatDate, getDuration } from "../../../../utitlities/common.functions";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -29,6 +29,7 @@ const Row = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
+  user-select: none;
 `;
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ exam }) => {

@@ -1,7 +1,7 @@
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 import _ from 'underscore';
-import { stFormatDate, getDuration } from "../../../utitlities/common.functions";
+import { stFormatDate, getDuration } from "../../../../utitlities/common.functions";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -29,34 +29,33 @@ const Row = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
-  user-select: none;
 `;
-const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ exam }) => {
+
+const Card = ({ question }) => {
   return (
     <Row columns="repeat(4, 1fr)">
-      <Wrapper>{exam.title}</Wrapper>
-      <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
-      <Wrapper>{getDuration(exam.startDate, exam.endDate)}</Wrapper>
-      <Wrapper>{exam.status}</Wrapper>
+      <Wrapper>{question.title}</Wrapper>
+      <Wrapper>{question.authorID}</Wrapper>
+      <Wrapper>{question.type}</Wrapper>
+      <Wrapper>{question.marks}</Wrapper>
     </Row>
   );
 };
 
-const Exams = ({
-  exams
+const Questions = ({
+  questions
 }) => {
   return (
     <Container>
       <Row columns="repeat(4, 1fr)">
         <HeaderLabel>Title</HeaderLabel>
-        <HeaderLabel>Start Date</HeaderLabel>
-        <HeaderLabel>Duration</HeaderLabel>
-        <HeaderLabel>Status</HeaderLabel>
+        <HeaderLabel>Author</HeaderLabel>
+        <HeaderLabel>Type</HeaderLabel>
+        <HeaderLabel>Marks</HeaderLabel>
       </Row>
-      {_.map(exams, (exam, index) => <Card key={`exam_${index}`} exam={exam} />)}
+      {_.map(questions, (question, index) => <Card key={`question_${index}`} question={question} />)}
     </Container>
   );
 };
 
-export default Exams;
+export default Questions;

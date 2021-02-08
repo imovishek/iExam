@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
-import teacherValidator from './teacher.validation';
+import teacherValidator from '../teacher.validation';
 import { Modal, Input, Select, DatePicker } from "antd";
 import moment from "moment";
 import _ from "underscore";
-import { joiObjectParser } from "../../utitlities/common.functions";
+import { joiObjectParser } from "../../../utitlities/common.functions";
 
 const { Option } = Select;
 

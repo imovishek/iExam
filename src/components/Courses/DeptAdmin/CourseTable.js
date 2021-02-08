@@ -4,13 +4,13 @@ import _ from 'underscore';
 import { Spin, Button, Popconfirm } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import Pagination from "../Common/Pagination";
+import Pagination from "../../Common/Pagination";
 import React, { useState, useEffect } from "react";
-import { deleteCourse } from "../../utitlities/api";
+import { deleteCourse } from "../../../utitlities/api";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
-import { smartLabel } from "../../utitlities/common.functions";
-import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from "../styles/tableStyles";
+import { smartLabel } from "../../../utitlities/common.functions";
+import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from "../../styles/tableStyles";
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`;
 

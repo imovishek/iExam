@@ -17,7 +17,7 @@ import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, Labe
 import { exams, announcements, paper, questions } from "../../../utitlities/dummy";
 import QuestionPaper from "./components/QuestionPaper";
 import Questions from "./components/Questions";
-import Announcements from "../../Courses/CoursesForStudents/components/Announcements";
+import Announcements from "../../Courses/Student/components/Announcements";
 const { Option } = Select;
 
 const InputWrapper = styled(Input)`

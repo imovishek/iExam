@@ -1,15 +1,15 @@
-import CheckAuthentication from "../CheckAuthentication/CheckAuthentication";
-import NavBar from "../NavBar/NavBar";
+import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
+import NavBar from "../../NavBar/NavBar";
 import { connect } from "react-redux";
-import { BodyWrapper, Container } from "../../utitlities/styles";
+import { BodyWrapper, Container } from "../../../utitlities/styles";
 import React, { useEffect, useState } from "react";
-import api from '../../utitlities/api';
-import { onUpdateCourses } from "./actions";
+import api from '../../../utitlities/api';
+import { onUpdateCourses } from "../actions";
 import styled from "styled-components";
 import CourseTable from "./CourseTable";
 import { Button } from "antd";
 import CreateEditCourseModal from "./CreateEditCourseModal";
-import { setUserAction } from "../Login/actions";
+import { setUserAction } from "../../Login/actions";
 
 
 const LabelWrapper = styled.div`

@@ -1,23 +1,23 @@
-import CheckAuthentication from "../CheckAuthentication/CheckAuthentication";
-import NavBar from "../NavBar/NavBar";
+import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
+import NavBar from "../../NavBar/NavBar";
 import { connect } from "react-redux";
 import _ from 'underscore';
-import { BodyWrapper, Container } from "../../utitlities/styles";
+import { BodyWrapper, Container } from "../../../utitlities/styles";
 import React, { useEffect, useState } from "react";
-import api from '../../utitlities/api';
+import api from '../../../utitlities/api';
 import styled from "styled-components";
 import moment from 'moment';
 import { Button, Input, Select, DatePicker } from "antd";
 import EnrolledStudents from "./components/EnrolledStudents";
 import Exams from "./components/Exams";
 import EnrollmentRequest from "./components/EnrollmentRequest";
-import { getDuration, getObjectByAddingID } from "../../utitlities/common.functions";
+import { getDuration, getObjectByAddingID } from "../../../utitlities/common.functions";
 import { useParams } from "react-router";
-import Loading from '../Common/Loading';
+import Loading from '../../Common/Loading';
 import { goBack } from "connected-react-router";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../styles/pageStyles";
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../../styles/pageStyles";
 const { Option } = Select;
 
 const InputWrapper = styled(Input)`
