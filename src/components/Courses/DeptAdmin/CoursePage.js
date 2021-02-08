@@ -194,7 +194,8 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
                   </ButtonStyled>
                 </RightButtonWrapper>
               </TileHeaderWrapper>
-              <EnrolledStudents students={course.enrolledStudents} />
+              <EnrolledStudents students={course.enrolledStudents} 
+              course = {course} updateCourseOnUi = {updateCourseOnUi}/>
             </BodyRow>
             <BodyRow>
               <TileHeaderWrapper>
