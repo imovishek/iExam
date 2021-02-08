@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { setNavigaitonTabAction } from './actions';
 import { push } from 'connected-react-router';
 import { hasPageAccess } from '../../utitlities/constants';
+import { faMendeley } from '@fortawesome/free-brands-svg-icons';
 
 const BodyWrapper = styled.div`
   display: inline-block;
@@ -85,6 +86,14 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
             <TextWrapper>
               <FontAwesomeIconWrapper icon={faAnchor} />
               Exams
+            </TextWrapper>
+          </LinkWrapper>
+        }
+        { hasPageAccess[userType] && hasPageAccess[userType].Students &&
+          <LinkWrapper onClick={() => redirectTo('students')} selected={tabKey === "students"}>
+            <TextWrapper>
+              <FontAwesomeIconWrapper icon={faMendeley} />
+              Students
             </TextWrapper>
           </LinkWrapper>
         }
