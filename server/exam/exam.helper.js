@@ -15,7 +15,11 @@ exports.getExamByID = (_id) =>
 
 
 exports.getExams = (query) =>
-  Exam.find(query);
+  Exam.find(query)
+    .populate("course")
+    .populate("questions")
+    .populate("participants")
+    .populate("bannedParticipants");
 
 
 // UPDATE
