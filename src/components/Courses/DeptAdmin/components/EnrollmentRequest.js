@@ -4,6 +4,8 @@ import _ from 'underscore';
 import { Popconfirm } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import api, { updateCourse } from "../../../../utitlities/api";
+import { useState } from "react";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -44,7 +46,20 @@ const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
 
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ student }) => {
+const Card = ({ student, course, updateCourseOnUi }) => {
+
+  const approveEnrollRequestHandler = async (e) => {
+    await api.updateCourse(course, {
+      $push: {
+        enrolledStudents: student._id
+      },
+      $pull: {
+        pendingEnrollStudents: student._id
+      }
+    });
+    await updateCourseOnUi();
+  }
+
   return (
     <Row columns="repeat(2, 1fr) 20px">
       <Wrapper>{student.registrationNo}</Wrapper>
@@ -53,6 +68,7 @@ const Card = ({ student }) => {
       <FontAwesomeIconWrapper
         icon={faCheckCircle}
         color="green"
+        onClick={approveEnrollRequestHandler}
       />
       </Wrapper>
     </Row>
@@ -60,7 +76,7 @@ const Card = ({ student }) => {
 };
 
 const EnrollmentRequest = ({
-  students
+  students, course, updateCourseOnUi
 }) => {
   return (
     <Container>
@@ -70,7 +86,8 @@ const EnrollmentRequest = ({
         <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
-      {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} />)}
+      {_.map(students, (student, index) => <Card key={`student_${index}`} 
+      student={student} course={course} updateCourseOnUi={updateCourseOnUi} />)}
     </Container>
   );
 };
