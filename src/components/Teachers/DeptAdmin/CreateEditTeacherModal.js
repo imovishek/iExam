@@ -4,7 +4,8 @@ import teacherValidator from '../teacher.validation';
 import { Modal, Input, Select, DatePicker } from "antd";
 import moment from "moment";
 import _ from "underscore";
-import { joiObjectParser } from "../../../utitlities/common.functions";
+import { joiObjectParser, isValidEmail, deepCopy } from "../../../utitlities/common.functions";
+import api from "../../../utitlities/api";
 
 const { Option } = Select;
 
@@ -32,6 +33,7 @@ const ErrorWrapper = styled.p`
   font-size: 11px;
   color: #d40909;
   margin-left: 5px;
+  height: 20px;
 `;
 
 const CreateEditTeacherModal = ({
@@ -39,7 +41,8 @@ const CreateEditTeacherModal = ({
   visible,
   setVisibility,
   createTeacher,
-  updateTeacher
+  updateTeacher,
+  previousEmail
 }) => {
   const isEditing = !(!selectedTeacher);
   const title = isEditing ? 'Edit Teacher' : 'Create Teacher';
@@ -55,13 +58,19 @@ const CreateEditTeacherModal = ({
       password : "superuser",
       userType : "teacher"
     },
+    userType: 'teacher',
     questions: []
   };
-  const [teacher, setTeacher] = useState(isEditing ? selectedTeacher : defaultTeacher);
+
+  const [teacher, setTeacher] = useState(isEditing ?
+    { ...selectedTeacher, email: selectedTeacher.credential.email } :
+    defaultTeacher);
+
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    setTeacher(selectedTeacher || defaultTeacher);
+    const editTeacher = selectedTeacher ? { ...selectedTeacher, email: selectedTeacher.credential.email } : null;
+    setTeacher(editTeacher || defaultTeacher);
   }, [isEditing, selectedTeacher]);
 
   const setValue = (key, value) => {
@@ -76,6 +85,7 @@ const CreateEditTeacherModal = ({
       ...errors
     };
     delete newErrors[key];
+
     setTeacher(newTeacher);
     setErrors(newErrors);
   };
@@ -86,14 +96,55 @@ const CreateEditTeacherModal = ({
     setErrors({});
   };
 
-  const onSubmit = () => {
-    const errors = joiObjectParser(teacher, teacherValidator);
-    setErrors(errors);
-    if (!_.isEmpty(errors)) {
+  const emailInvalidLabel = 'Email is invalid';
+  const emailAlreadyExistLabel = 'Email Already Exists';
+
+  const checkCredentialOnChange = async (email) => {
+    if (!email) return;
+    if (previousEmail === email) return;
+    if (!isValidEmail(email)) {
+      const newErrors = { ...errors, email: emailInvalidLabel};
+      setErrors(newErrors);
       return;
     }
+    const { payload } = await api.getCredentials({ email });
+    if (payload.length) {
+      const newErrors = { ...errors, email: emailAlreadyExistLabel};
+      setErrors(newErrors);
+    }
+  };
+
+  const getErrorCheckingCredentials = async () => {
+    const email = teacher.email;
+    if (!email) return {};
+    if (previousEmail === email) return {};
+    if (!isValidEmail(email)) {
+      return { email: emailInvalidLabel};
+    }
+    const { payload } = await api.getCredentials({ email });
+    if (payload.length) {
+      return { email: emailAlreadyExistLabel};
+    }
+  }
+
+  const checkCredentialOnChangeDebounced = _.debounce(checkCredentialOnChange, 300);
+
+  const onSubmit = async () => {
+    let newErrors = joiObjectParser(teacher, teacherValidator);
+    if (teacher.email && !isValidEmail(teacher.email)) {
+      newErrors.email = 'Email is invalid';
+    }
+    const credError = await getErrorCheckingCredentials(teacher.email);
+    newErrors = { ...credError, ...newErrors };
+    setErrors(newErrors)
+    if (!_.isEmpty(newErrors)) {
+      return;
+    }
+
     if (isEditing) updateTeacher(teacher);
-    else createTeacher(teacher);
+    else {
+      createTeacher(teacher);
+    }
     closeModal();
   };
 
@@ -146,7 +197,10 @@ const CreateEditTeacherModal = ({
             placeholder="Email"
             value={teacher.credential.email}
             style={{ width: 270 }}
-            onChange={(e) => setValue('email', e.target.value)}
+            onChange={(e) => {
+              setValue('email', e.target.value);
+              checkCredentialOnChangeDebounced(e.target.value);
+            }}
           />
           <ErrorWrapper> {errors['email']} </ErrorWrapper>
         </ColumnWrapper>

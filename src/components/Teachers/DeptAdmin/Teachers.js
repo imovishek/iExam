@@ -2,12 +2,13 @@ import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
 import NavBar from "../../NavBar/NavBar";
 import { connect } from "react-redux";
 import { BodyWrapper, Container } from "../../../utitlities/styles";
+import { deepCopy } from "../../../utitlities/common.functions";
 import React, { useEffect, useState } from "react";
 import api from '../../../utitlities/api';
 import { onUpdateTeachers } from "../actions";
 import styled from "styled-components";
 import TeacherTable from "./TeacherTable";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import CreateEditTeacherModal from "./CreateEditTeacherModal";
 import { setUserAction } from "../../Login/actions";
 
@@ -46,11 +47,19 @@ const Teachers = ({ teachers, user, dispatch }) => {
     }, [isTeachersChanged]);
 
     const createTeacherHandler = async (teacher) => {
-      setLoading(true);
-      const {payload : newTeacher} = await api.createTeacher(teacher);
-      const { payload: newUser } = await api.updateUserByID(user._id, { $push: { teacherIDs: newTeacher._id } });
-      dispatch(setUserAction(newUser));
-      setTeacherChanged(true);
+      try {
+        setLoading(true);
+        const {payload : newTeacher} = await api.createTeacher(teacher);
+        const { payload: newUser } = await api.updateUserByID(user._id, { $push: { teacherIDs: newTeacher._id } });
+        dispatch(setUserAction(newUser));
+        setTeacherChanged(true);
+      }
+      catch (err) {
+        message.error("Server Error Try again later!");
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     const updateTeacherHandler = async (teacher) => {
@@ -87,7 +96,7 @@ const Teachers = ({ teachers, user, dispatch }) => {
                         teachers={teachers}
                         isLoading={isLoading}
                         setTeacherToEdit={(selectedTeacher) => {
-                          setSelectedTeacher(selectedTeacher);
+                          setSelectedTeacher(deepCopy(selectedTeacher));
                         }}
                         showCreateEditModal={(value) => setShowCreateEditModal(value)}
                         deleteTeacher={deleteTeacherHandler}
@@ -99,6 +108,7 @@ const Teachers = ({ teachers, user, dispatch }) => {
                       setVisibility={setShowCreateEditModal}
                       createTeacher={createTeacherHandler}
                       updateTeacher={updateTeacherHandler}
+                      previousEmail={selectedTeacher ? selectedTeacher.credential.email : null}
                     />
                 </Container>
             </BodyWrapper>

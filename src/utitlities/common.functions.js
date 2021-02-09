@@ -55,3 +55,11 @@ export const getObjectByAddingID = (obj = {}) => {
   });
   return newObj;
 }
+
+export const isValidEmail = (email) => {
+  if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,63})+$/.test(email))
+    return true;
+  else return false;
+};
+
+export const deepCopy = obj => JSON.parse(JSON.stringify(obj));

@@ -78,6 +78,16 @@ const Login = ({ setUser, dispatch }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const onEnterLogin = () => {
+    setIsLoading(true);
+    tryToLogin(email, password);
+  }
+
+  const handleKeypress = (e) => {
+    if (e.charCode === 13) {
+      onEnterLogin();
+    }
+  };
 
   return (
     <BodyWrapper>
@@ -94,16 +104,14 @@ const Login = ({ setUser, dispatch }) => {
           placeholder="Enter password"
           type='password'
           value={password}
+          onKeyPress={handleKeypress}
           onChange={(e) => setPassword(e.target.value)}
         />
 
         <div>
           <ButtonWrapper
             type="primary"
-            onClick={() => {
-              setIsLoading(true);
-              tryToLogin(email, password);
-            }}
+            onClick={onEnterLogin}
           >
             Enter
           </ButtonWrapper>
