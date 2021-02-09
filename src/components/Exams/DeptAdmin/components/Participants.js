@@ -3,6 +3,7 @@ import styled from "styled-components";
 import _ from 'underscore';
 import { Button, Popconfirm } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import api from "../../../../utitlities/api";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -36,7 +37,24 @@ const Row = styled.div`
   grid-template-columns: ${props => props.columns || 'auto'};
 `;
 const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ student }) => {
+const Card = ({ student, exam, updateExamParticipantOnUI}) => {
+
+  const banStudentButtonHandler = async (e) => {
+    const update = {
+      $push: {
+        bannedParticipants: student._id
+      }
+    };
+    if (_.any(exam.bannedParticipants, enst => enst._id === student._id)) delete update.$push;
+    await api.updateExam(exam, {
+      ...update,
+      $pull: {
+        participants: student._id
+      }
+    });
+    await updateExamParticipantOnUI();
+  }
+
   return (
     <Row columns="repeat(2, 1fr) 50px">
       <Wrapper>{student.registrationNo}</Wrapper>
@@ -46,7 +64,7 @@ const Card = ({ student }) => {
         title="Are you sure？"
         okText="Yes"
         cancelText="No"
-        onConfirm={() => {}}
+        onConfirm={banStudentButtonHandler}
       >
         <ButtonStyled danger> Ban </ButtonStyled>
       </Popconfirm>
@@ -56,7 +74,7 @@ const Card = ({ student }) => {
 };
 
 const Participants = ({
-  students
+  students, exam, updateExamParticipantOnUI
 }) => {
   return (
     <Container>
@@ -66,7 +84,7 @@ const Participants = ({
         <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
-      {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} />)}
+      {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
     </Container>
   );
 };
