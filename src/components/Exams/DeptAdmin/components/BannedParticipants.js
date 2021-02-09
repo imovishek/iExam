@@ -4,6 +4,7 @@ import _ from 'underscore';
 import { Popconfirm, Button } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import api from "../../../../utitlities/api";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -48,20 +49,36 @@ const ButtonStyled = styled(Button)`
 `;
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ student }) => {
+const Card = ({ student, exam, updateExamParticipantOnUI }) => {
+
+  const unbanStudentButtonHandler = async (e) => {
+    const update = {
+      $push: {
+        participants: student._id
+      }
+    };
+    if (_.any(exam.participants, enst => enst._id === student._id)) delete update.$push;
+    await api.updateExam(exam, {
+      ...update,
+      $pull: {
+        bannedParticipants: student._id
+      }
+    });
+    await updateExamParticipantOnUI();
+  }
   return (
     <Row columns="repeat(2, 1fr) 70px">
       <Wrapper>{student.registrationNo}</Wrapper>
       <Wrapper>{getName(student)}</Wrapper>
       <Wrapper>
-        <ButtonStyled type="primary"> Unban </ButtonStyled>
+        <ButtonStyled onClick = {unbanStudentButtonHandler} type="primary"> Unban </ButtonStyled>
       </Wrapper>
     </Row>
   );
 };
 
 const BannedParticipants = ({
-  students
+  students, exam, updateExamParticipantOnUI
 }) => {
   return (
     <Container>
@@ -71,7 +88,7 @@ const BannedParticipants = ({
         <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
-      {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} />)}
+      {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
     </Container>
   );
 };

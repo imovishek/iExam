@@ -24,6 +24,15 @@ export const getExams = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/exams`, 'get', {}, query)
   .then(res => res.data);
 
+export const updateExam = async (exam, update) =>
+requestApiAndGetResponse(`${apiUrl}/exam/${exam._id || 'random'}`, 'put', {
+  query: {
+    _id: exam._id
+  },
+  update: update || exam
+})
+.then(res => res.data);
+
 export const getCourseByID = (id) =>
   requestApiAndGetResponse(`${apiUrl}/course/${id}`, 'get')
   .then(res => res.data);
@@ -129,6 +138,7 @@ const api = {
   getUserByID,
   getExamByID,
   getExams,
+  updateExam,
   getCredentials,
   getStudentsByBatch
 };

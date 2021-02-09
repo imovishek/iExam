@@ -58,6 +58,17 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     }
   }, [id]);
 
+  const updateExamParticipantOnUI = async() => {
+    try {
+      setIsLoading(true);
+      const { payload = {} } = await api.getExamByID(id);
+      setExam(payload);
+    } catch(err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
   const setValue = (key, value) => {
     const newExam = {
       ...exam,
@@ -159,11 +170,11 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
             </BodyRow>
             <BodyRow>
               <TileHeaderWrapper><LabelWrapper>Participants</LabelWrapper></TileHeaderWrapper>
-              <Participants students={exam.participants} />
+              <Participants students={exam.participants} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>
             </BodyRow>
             <BodyRow>
               <TileHeaderWrapper><LabelWrapper>Banned Participants</LabelWrapper></TileHeaderWrapper>
-              <BannedParticipants students={exam.bannedParticipants} />
+              <BannedParticipants students={exam.bannedParticipants} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>
             </BodyRow>
           </Row>
         </Container>
