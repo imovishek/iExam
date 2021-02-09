@@ -18,6 +18,7 @@ import { goBack } from "connected-react-router";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../../styles/pageStyles";
+import ImportStudentsModal from "./ImportStudentsModal";
 const { Option } = Select;
 
 const InputWrapper = styled(Input)`
@@ -48,6 +49,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
   const [isLoading, setLoading] = useState(false);
   const [course, setCourse] = useState({});
   const [teachers, setTeachers] = useState({});
+  const [showImportStudentModal, setShowImportStudentModal] = useState(false);
   const { departmentName } = user.department || {};
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -100,6 +102,13 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
       <BodyWrapper>
         <NavBar />
         <Container>
+          <ImportStudentsModal
+            visible={showImportStudentModal}
+            setVisibility={setShowImportStudentModal}
+            course={course}
+            updateCourseOnUi={updateCourseOnUi}
+            user={user}
+          />
           {isLoading && <Loading isLoading={isLoading}/>}
           {/* <Header>{departmentName}</Header> */}
           <TileHeaderWrapper>
@@ -189,7 +198,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
               <TileHeaderWrapper>
                 <LabelWrapper>Enrolled Students</LabelWrapper>
                 <RightButtonWrapper>
-                  <ButtonStyled type="primary">
+                  <ButtonStyled type="primary" onClick={() => setShowImportStudentModal(true)}>
                     Import
                   </ButtonStyled>
                 </RightButtonWrapper>
@@ -201,8 +210,11 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
               <TileHeaderWrapper>
                 <LabelWrapper>Enrollment Request</LabelWrapper>
               </TileHeaderWrapper>
-              <EnrollmentRequest students={course.pendingEnrollStudents}
-               course={course} updateCourseOnUi = {updateCourseOnUi}/>
+              <EnrollmentRequest
+                students={course.pendingEnrollStudents}
+                course={course}
+                updateCourseOnUi={updateCourseOnUi}
+              />
             </BodyRow>
             <BodyRow>
               <TileHeaderWrapper>

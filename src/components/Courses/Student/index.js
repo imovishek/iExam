@@ -58,7 +58,7 @@ const Courses = ({ user, dispatch }) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCoursesChanged, user.courseIDs]);
+  }, [isCoursesChanged]);
 
   const createCourseHandler = async (course) => {
     setLoading(true);
@@ -68,6 +68,10 @@ const Courses = ({ user, dispatch }) => {
     dispatch(setUserAction(newUser));
     setCourseChanged(true);
   };
+
+  const updateCoursesOnUI = async() => {
+    setCourseChanged(true);
+  }
 
   const updateCourseHandler = async (course) => {
     await api.updateCourse(course);
@@ -91,13 +95,10 @@ const Courses = ({ user, dispatch }) => {
           <PageHeader>Courses</PageHeader>
           <CourseTableWrapper>
             <CourseTable
+              user={user}
               courses={courses}
               isLoading={isLoading}
-              setCourseToEdit={(selectedCourse) => {
-                setSelectedCourse(selectedCourse);
-              }}
-              showCreateEditModal={(value) => setShowCreateEditModal(value)}
-              deleteCourse={deleteCourseHandler}
+              updateCoursesOnUI={updateCoursesOnUI}
             />
           </CourseTableWrapper>
         </Container>

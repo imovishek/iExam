@@ -47,12 +47,15 @@ const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ student, course, updateCourseOnUi }) => {
-
   const approveEnrollRequestHandler = async (e) => {
-    await api.updateCourse(course, {
+    const update = {
       $push: {
         enrolledStudents: student._id
-      },
+      }
+    };
+    if (_.any(course.enrolledStudents, enst => enst._id === student._id)) delete update.$push;
+    await api.updateCourse(course, {
+      ...update,
       $pull: {
         pendingEnrollStudents: student._id
       }
