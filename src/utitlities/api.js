@@ -105,6 +105,12 @@ export const deleteTeacher = async (teacher) =>
   requestApiAndGetResponse(`${apiUrl}/teacher/${teacher._id || 'random'}`, 'delete')
   .then(res => res.data);
 
+export const createExam = async (exam) =>
+  requestApiAndGetResponse(`${apiUrl}/exams`, 'post', {
+    exam
+  })
+  .then(res => res.data);
+
 export const updateDeptAdminByID = async (_id, body) =>
   requestApiAndGetResponse(`${apiUrl}/deptAdmin/${_id}`, 'put', {
     update: body
@@ -160,6 +166,7 @@ const api = {
   getUserByID,
   getExamByID,
   getExams,
+  createExam,
   updateExam,
   getCredentials,
   getStudentsByBatch

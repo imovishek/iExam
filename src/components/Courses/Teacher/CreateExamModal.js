@@ -44,6 +44,7 @@ const CreateExamModal = ({
   selectedExam,
   visible,
   setVisibility,
+  courseId,
   createExam,
   updateExam
 }) => {
@@ -52,15 +53,14 @@ const CreateExamModal = ({
   const defaultExam = {
     title: '',
     examCode: '',
+    course: courseId,
     department : {
       departmentCode : "CSE",
       departmentName : "Computer Science and Engineering"
     },
-    exams: [],
-    enrolledStudents: [],
-    pendingEnrollStudents: [],
-    assignedTeacher: null,
     startDate: null,
+    totalMarks: 100,
+    endDate: moment("01/02/2021"),
     status: null 
   };
   const [exam, setExam] = useState(isEditing ? selectedExam : defaultExam);
@@ -115,21 +115,29 @@ const CreateExamModal = ({
       onCancel={() => closeModal()}
       okText={!isEditing ? "Save" : "Update"}
     >
-      <Row columns="1fr 1fr">
+      <Row columns="1fr 1fr 1fr">
         <ColumnWrapper>
           <LabelWrapper>Title</LabelWrapper>
           <InputWrapper
             placeholder="Exam Title"
             value={exam.title}
-            style={{ width: 270 }}
             onChange={(e) => setValue('title', e.target.value)}
           />
           <ErrorWrapper> {errors['title']} </ErrorWrapper>
         </ColumnWrapper>
         <ColumnWrapper>
+          <LabelWrapper>Total marks</LabelWrapper>
+          <InputWrapper
+            placeholder="Total marks"
+            value={exam.totalMarks}
+            onChange={(e) => setValue('totalMarks', e.target.value)}
+          />
+          <ErrorWrapper> {errors['totalMarks']} </ErrorWrapper>
+        </ColumnWrapper>
+        <ColumnWrapper>
           <LabelWrapper>Status</LabelWrapper>
           <Select
-            style={{ width: 270 }}
+            style={{ width: "100%" }}
             placeholder="Select a status"
             value={exam.status}
             onChange={(value) => setValue('status', value)}
