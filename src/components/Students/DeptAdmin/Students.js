@@ -7,8 +7,9 @@ import api from '../../../utitlities/api';
 import { onUpdateStudents } from "../actions";
 import styled from "styled-components";
 import StudentTable from "./StudentTable";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import CreateEditStudentModal from "./CreateEditStudentModal";
+import { setUserAction } from "../../Login/actions";
 
 
 const StudentTableWrapper = styled.div`
@@ -45,10 +46,19 @@ const Students = ({ students, user, dispatch }) => {
     }, [isStudentsChanged]);
 
     const createStudentHandler = async (student) => {
-      setLoading(true);
-      await api.createStudent(student);
-      // await api.updateDeptAdmin(user._id, { studentIDs: { $push: student._id } });
-      setStudentChanged(true);
+      try {
+        setLoading(true);
+        const {payload : newStudent} = await api.createStudent(student);
+        const { payload: newUser } = await api.updateUserByID(user._id, { $push: { studentIDs: newStudent._id } });
+        dispatch(setUserAction(newUser));
+        setStudentChanged(true);
+      }
+      catch (err) {
+        message.error("Server Error Try again later!");
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     const updateStudentHandler = async (student) => {
@@ -91,13 +101,13 @@ const Students = ({ students, user, dispatch }) => {
                         deleteStudent={deleteStudentHandler}
                       />
                     </StudentTableWrapper>
-                    {/* <CreateEditStudentModal
+                    <CreateEditStudentModal
                       visible={showCreateEditModal}
                       selectedStudent={selectedStudent}
                       setVisibility={setShowCreateEditModal}
                       createStudent={createStudentHandler}
                       updateStudent={updateStudentHandler}
-                    /> */}
+                    />
                 </Container>
             </BodyWrapper>
             

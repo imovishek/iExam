@@ -16,6 +16,8 @@ const StudentCard = ({ dispatch, student, setStudentToEdit, showCreateEditModal,
         <TableRow>
             <TableRowChild> { student.firstName } </TableRowChild>
             <TableRowChild> { student.lastName } </TableRowChild>
+            <TableRowChild> { student.registrationNo } </TableRowChild>
+            <TableRowChild> { student.credential.email } </TableRowChild>
             <TableRowChild> { student.department.departmentCode } </TableRowChild>
             <TableRowChild>
                 <OperationWrapper>
@@ -61,6 +63,8 @@ const StudentTable = ({
       <TableHeader>
         <TableHeaderChild> First Name </TableHeaderChild>
         <TableHeaderChild> Last Name </TableHeaderChild>
+        <TableHeaderChild> Registration No </TableHeaderChild>
+        <TableHeaderChild> Email ID </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>

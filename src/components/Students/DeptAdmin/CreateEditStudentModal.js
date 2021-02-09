@@ -4,7 +4,8 @@ import studentValidator from '../student.validation';
 import { Modal, Input, Select, DatePicker } from "antd";
 import moment from "moment";
 import _ from "underscore";
-import { joiObjectParser } from "../../../utitlities/common.functions";
+import { joiObjectParser, isValidEmail, deepCopy } from "../../../utitlities/common.functions";
+import api from "../../../utitlities/api";
 
 const { Option } = Select;
 
@@ -32,6 +33,7 @@ const ErrorWrapper = styled.p`
   font-size: 11px;
   color: #d40909;
   margin-left: 5px;
+  height: 20px;
 `;
 
 const CreateEditStudentModal = ({
@@ -39,29 +41,36 @@ const CreateEditStudentModal = ({
   visible,
   setVisibility,
   createStudent,
-  updateStudent
+  updateStudent,
+  previousEmail
 }) => {
   const isEditing = !(!selectedStudent);
   const title = isEditing ? 'Edit Student' : 'Create Student';
   const defaultStudent = {
-    title: '',
-    studentCode: '',
+    firstName: '',
+    lastName: '',
+    registrationNo: '',
     department : {
       departmentCode : "CSE",
       departmentName : "Computer Science and Engineering"
     },
-    exams: [],
-    enrolledStudents: [],
-    pendingEnrollStudents: [],
-    assignedStudent: null,
-    startDate: null,
-    status: null 
+    credential : {
+      email : '',
+      password : "superuser",
+      userType : "student"
+    },
+    userType: 'student'
   };
-  const [student, setStudent] = useState(isEditing ? selectedStudent : defaultStudent);
+
+  const [student, setStudent] = useState(isEditing ?
+    { ...selectedStudent, email: selectedStudent.credential.email } :
+    defaultStudent);
+
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    setStudent(selectedStudent || defaultStudent);
+    const editStudent = selectedStudent ? { ...selectedStudent, email: selectedStudent.credential.email } : null;
+    setStudent(editStudent || defaultStudent);
   }, [isEditing, selectedStudent]);
 
   const setValue = (key, value) => {
@@ -69,10 +78,14 @@ const CreateEditStudentModal = ({
       ...student,
       [key]: value
     };
+    if(key === 'email'){
+      newStudent.credential.email = value;
+    }
     const newErrors = {
       ...errors
     };
     delete newErrors[key];
+
     setStudent(newStudent);
     setErrors(newErrors);
   };
@@ -83,14 +96,56 @@ const CreateEditStudentModal = ({
     setErrors({});
   };
 
-  const onSubmit = () => {
-    const errors = joiObjectParser(student, studentValidator);
-    setErrors(errors);
-    if (!_.isEmpty(errors)) {
+  const emailInvalidLabel = 'Email is invalid';
+  const emailAlreadyExistLabel = 'Email Already Exists';
+
+  const checkCredentialOnChange = async (email) => {
+    if (!email) return;
+    if (previousEmail === email) return;
+    if (!isValidEmail(email)) {
+      const newErrors = { ...errors, email: emailInvalidLabel};
+      setErrors(newErrors);
       return;
     }
-    if (isEditing) updateStudent(student);
-    else createStudent(student);
+    const { payload } = await api.getCredentials({ email });
+    if (payload.length) {
+      const newErrors = { ...errors, email: emailAlreadyExistLabel};
+      setErrors(newErrors);
+    }
+  };
+
+  const getErrorCheckingCredentials = async () => {
+    const email = student.email;
+    if (!email) return {};
+    if (previousEmail === email) return {};
+    if (!isValidEmail(email)) {
+      return { email: emailInvalidLabel};
+    }
+    const { payload } = await api.getCredentials({ email });
+    if (payload.length) {
+      return { email: emailAlreadyExistLabel};
+    }
+  }
+
+  const checkCredentialOnChangeDebounced = _.debounce(checkCredentialOnChange, 300);
+
+  const onSubmit = async () => {
+    let newErrors = joiObjectParser(student, studentValidator);
+    if (student.email && !isValidEmail(student.email)) {
+      newErrors.email = 'Email is invalid';
+    }
+    const credError = await getErrorCheckingCredentials(student.email);
+    newErrors = { ...credError, ...newErrors };
+    setErrors(newErrors)
+    if (!_.isEmpty(newErrors)) {
+      return;
+    }
+
+    if (isEditing) 
+      updateStudent(student);
+    else {
+      createStudent(student);
+    }
     closeModal();
   };
 
@@ -107,86 +162,63 @@ const CreateEditStudentModal = ({
     >
       <Row columns="1fr 1fr">
         <ColumnWrapper>
-          <LabelWrapper>Title</LabelWrapper>
+          <LabelWrapper>First Name</LabelWrapper>
           <InputWrapper
-            placeholder="Student Title"
-            value={student.title}
+            placeholder="First Name"
+            value={student.firstName}
             style={{ width: 270 }}
-            onChange={(e) => setValue('title', e.target.value)}
+            onChange={(e) => setValue('firstName', e.target.value)}
           />
-          <ErrorWrapper> {errors['title']} </ErrorWrapper>
+          <ErrorWrapper> {errors['firstName']} </ErrorWrapper>
         </ColumnWrapper>
         <ColumnWrapper>
-          <LabelWrapper>Student Code</LabelWrapper>
+          <LabelWrapper>Last Name</LabelWrapper>
           <InputWrapper
-            placeholder="Student Code"
-            value={student.studentCode}
+            placeholder="Last Name"
+            value={student.lastName}
             style={{ width: 270 }}
-            onChange={(e) => setValue('studentCode', e.target.value)}
+            onChange={(e) => setValue('lastName', e.target.value)}
           />
-          <ErrorWrapper> {errors['studentCode']} </ErrorWrapper>
+          <ErrorWrapper> {errors['lastName']} </ErrorWrapper>
         </ColumnWrapper>        
       </Row>
       <Row columns="1fr 1fr">
         <ColumnWrapper>
+          <LabelWrapper>Registration Number</LabelWrapper>
+          <InputWrapper
+            placeholder="Registration Number"
+            value={student.registrationNo}
+            style={{ width: 270 }}
+            onChange={(e) => setValue('registrationNo', e.target.value)}
+          />
+          <ErrorWrapper> {errors['registrationNo']} </ErrorWrapper>
+        </ColumnWrapper>
+        <ColumnWrapper>
+          <LabelWrapper>Email</LabelWrapper>
+          <InputWrapper
+            placeholder="Email"
+            value={student.credential.email}
+            style={{ width: 270 }}
+            onChange={(e) => {
+              setValue('email', e.target.value);
+              checkCredentialOnChangeDebounced(e.target.value);
+            }}
+          />
+          <ErrorWrapper> {errors['email']} </ErrorWrapper>
+        </ColumnWrapper>
+      </Row>
+      <Row columns="1fr">
+        <ColumnWrapper>
           <LabelWrapper>Department</LabelWrapper>
           <Select
             defaultValue="CSE" 
-            style={{ width: 270 }}
+            style={{ width: 300 }}
           >
             <Option value="CSE">Computer Science And Engineering</Option>
           </Select>
         </ColumnWrapper>
-        <ColumnWrapper>
-          <LabelWrapper>Start Date</LabelWrapper>
-          <DatePicker
-            allowClear
-            placeholder="Start Date"
-            value={!student.startDate ? '' : moment(student.startDate)}
-            style={{ width: 270 }}
-            format="DD/MM/YYYY"
-            onChange={(d) => setValue('startDate', d)}
-          />
-          <ErrorWrapper> {errors['startDate']} </ErrorWrapper>
-        </ColumnWrapper>
       </Row>
-      <Row columns="1fr 1fr">
-        <ColumnWrapper>
-          <LabelWrapper>Assignee</LabelWrapper>
-          <Select
-            showSearch
-            style={{ width: 270 }}
-            placeholder="Assign a student"
-            optionFilterProp="children"
-            onChange={()=>{}}
-            onFocus={()=>{}}
-            onBlur={()=>{}}
-            onSearch={()=>{}}
-            filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            <Option value="zzz">Saiful Islam</Option>
-            <Option value="lucy">Enamul Hasan</Option>
-            <Option value="tom">Arnam Sen Sharma</Option>
-          </Select>
-        </ColumnWrapper>
-        <ColumnWrapper>
-          <LabelWrapper>Status</LabelWrapper>
-          <Select
-            style={{ width: 270 }}
-            placeholder="Select a status"
-            value={student.status}
-            onChange={(value) => setValue('status', value)}
-          >
-            <Option value="upcoming">Upcoming</Option>
-            <Option value="running">Running</Option>
-            <Option value="ended">Ended</Option>
-          </Select>
-          <ErrorWrapper> {errors['status']} </ErrorWrapper>
-        </ColumnWrapper>
-      </Row>
-    </Modal>
+      </Modal>
   )
 };
 
