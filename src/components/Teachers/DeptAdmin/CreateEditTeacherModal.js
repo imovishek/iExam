@@ -4,7 +4,8 @@ import teacherValidator from '../teacher.validation';
 import { Modal, Input, Select, DatePicker } from "antd";
 import moment from "moment";
 import _ from "underscore";
-import { joiObjectParser } from "../../../utitlities/common.functions";
+import { joiObjectParser, isValidEmail, deepCopy } from "../../../utitlities/common.functions";
+import api from "../../../utitlities/api";
 
 const { Option } = Select;
 
@@ -32,6 +33,7 @@ const ErrorWrapper = styled.p`
   font-size: 11px;
   color: #d40909;
   margin-left: 5px;
+  height: 20px;
 `;
 
 const CreateEditTeacherModal = ({
@@ -39,29 +41,36 @@ const CreateEditTeacherModal = ({
   visible,
   setVisibility,
   createTeacher,
-  updateTeacher
+  updateTeacher,
+  previousEmail
 }) => {
   const isEditing = !(!selectedTeacher);
   const title = isEditing ? 'Edit Teacher' : 'Create Teacher';
   const defaultTeacher = {
-    title: '',
-    teacherCode: '',
+    firstName: '',
+    lastName: '',
     department : {
       departmentCode : "CSE",
       departmentName : "Computer Science and Engineering"
     },
-    exams: [],
-    enrolledStudents: [],
-    pendingEnrollStudents: [],
-    assignedTeacher: null,
-    startDate: null,
-    status: null 
+    credential : {
+      email : '',
+      password : "superuser",
+      userType : "teacher"
+    },
+    userType: 'teacher',
+    questions: []
   };
-  const [teacher, setTeacher] = useState(isEditing ? selectedTeacher : defaultTeacher);
+
+  const [teacher, setTeacher] = useState(isEditing ?
+    { ...selectedTeacher, email: selectedTeacher.credential.email } :
+    defaultTeacher);
+
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    setTeacher(selectedTeacher || defaultTeacher);
+    const editTeacher = selectedTeacher ? { ...selectedTeacher, email: selectedTeacher.credential.email } : null;
+    setTeacher(editTeacher || defaultTeacher);
   }, [isEditing, selectedTeacher]);
 
   const setValue = (key, value) => {
@@ -69,10 +78,14 @@ const CreateEditTeacherModal = ({
       ...teacher,
       [key]: value
     };
+    if(key === 'email'){
+      newTeacher.credential.email = value;
+    }
     const newErrors = {
       ...errors
     };
     delete newErrors[key];
+
     setTeacher(newTeacher);
     setErrors(newErrors);
   };
@@ -83,14 +96,55 @@ const CreateEditTeacherModal = ({
     setErrors({});
   };
 
-  const onSubmit = () => {
-    const errors = joiObjectParser(teacher, teacherValidator);
-    setErrors(errors);
-    if (!_.isEmpty(errors)) {
+  const emailInvalidLabel = 'Email is invalid';
+  const emailAlreadyExistLabel = 'Email Already Exists';
+
+  const checkCredentialOnChange = async (email) => {
+    if (!email) return;
+    if (previousEmail === email) return;
+    if (!isValidEmail(email)) {
+      const newErrors = { ...errors, email: emailInvalidLabel};
+      setErrors(newErrors);
       return;
     }
+    const { payload } = await api.getCredentials({ email });
+    if (payload.length) {
+      const newErrors = { ...errors, email: emailAlreadyExistLabel};
+      setErrors(newErrors);
+    }
+  };
+
+  const getErrorCheckingCredentials = async () => {
+    const email = teacher.email;
+    if (!email) return {};
+    if (previousEmail === email) return {};
+    if (!isValidEmail(email)) {
+      return { email: emailInvalidLabel};
+    }
+    const { payload } = await api.getCredentials({ email });
+    if (payload.length) {
+      return { email: emailAlreadyExistLabel};
+    }
+  }
+
+  const checkCredentialOnChangeDebounced = _.debounce(checkCredentialOnChange, 300);
+
+  const onSubmit = async () => {
+    let newErrors = joiObjectParser(teacher, teacherValidator);
+    if (teacher.email && !isValidEmail(teacher.email)) {
+      newErrors.email = 'Email is invalid';
+    }
+    const credError = await getErrorCheckingCredentials(teacher.email);
+    newErrors = { ...credError, ...newErrors };
+    setErrors(newErrors)
+    if (!_.isEmpty(newErrors)) {
+      return;
+    }
+
     if (isEditing) updateTeacher(teacher);
-    else createTeacher(teacher);
+    else {
+      createTeacher(teacher);
+    }
     closeModal();
   };
 
@@ -107,24 +161,24 @@ const CreateEditTeacherModal = ({
     >
       <Row columns="1fr 1fr">
         <ColumnWrapper>
-          <LabelWrapper>Title</LabelWrapper>
+          <LabelWrapper>First Name</LabelWrapper>
           <InputWrapper
-            placeholder="Teacher Title"
-            value={teacher.title}
+            placeholder="First Name"
+            value={teacher.firstName}
             style={{ width: 270 }}
-            onChange={(e) => setValue('title', e.target.value)}
+            onChange={(e) => setValue('firstName', e.target.value)}
           />
-          <ErrorWrapper> {errors['title']} </ErrorWrapper>
+          <ErrorWrapper> {errors['firstName']} </ErrorWrapper>
         </ColumnWrapper>
         <ColumnWrapper>
-          <LabelWrapper>Teacher Code</LabelWrapper>
+          <LabelWrapper>Last Name</LabelWrapper>
           <InputWrapper
-            placeholder="Teacher Code"
-            value={teacher.teacherCode}
+            placeholder="Last Name"
+            value={teacher.lastName}
             style={{ width: 270 }}
-            onChange={(e) => setValue('teacherCode', e.target.value)}
+            onChange={(e) => setValue('lastName', e.target.value)}
           />
-          <ErrorWrapper> {errors['teacherCode']} </ErrorWrapper>
+          <ErrorWrapper> {errors['lastName']} </ErrorWrapper>
         </ColumnWrapper>        
       </Row>
       <Row columns="1fr 1fr">
@@ -138,55 +192,20 @@ const CreateEditTeacherModal = ({
           </Select>
         </ColumnWrapper>
         <ColumnWrapper>
-          <LabelWrapper>Start Date</LabelWrapper>
-          <DatePicker
-            allowClear
-            placeholder="Start Date"
-            value={!teacher.startDate ? '' : moment(teacher.startDate)}
+          <LabelWrapper>Email</LabelWrapper>
+          <InputWrapper
+            placeholder="Email"
+            value={teacher.credential.email}
             style={{ width: 270 }}
-            format="DD/MM/YYYY"
-            onChange={(d) => setValue('startDate', d)}
+            onChange={(e) => {
+              setValue('email', e.target.value);
+              checkCredentialOnChangeDebounced(e.target.value);
+            }}
           />
-          <ErrorWrapper> {errors['startDate']} </ErrorWrapper>
+          <ErrorWrapper> {errors['email']} </ErrorWrapper>
         </ColumnWrapper>
       </Row>
-      <Row columns="1fr 1fr">
-        <ColumnWrapper>
-          <LabelWrapper>Assignee</LabelWrapper>
-          <Select
-            showSearch
-            style={{ width: 270 }}
-            placeholder="Assign a teacher"
-            optionFilterProp="children"
-            onChange={()=>{}}
-            onFocus={()=>{}}
-            onBlur={()=>{}}
-            onSearch={()=>{}}
-            filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            <Option value="zzz">Saiful Islam</Option>
-            <Option value="lucy">Enamul Hasan</Option>
-            <Option value="tom">Arnam Sen Sharma</Option>
-          </Select>
-        </ColumnWrapper>
-        <ColumnWrapper>
-          <LabelWrapper>Status</LabelWrapper>
-          <Select
-            style={{ width: 270 }}
-            placeholder="Select a status"
-            value={teacher.status}
-            onChange={(value) => setValue('status', value)}
-          >
-            <Option value="upcoming">Upcoming</Option>
-            <Option value="running">Running</Option>
-            <Option value="ended">Ended</Option>
-          </Select>
-          <ErrorWrapper> {errors['status']} </ErrorWrapper>
-        </ColumnWrapper>
-      </Row>
-    </Modal>
+      </Modal>
   )
 };
 

@@ -16,6 +16,10 @@ export const getCourses = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/courses`, 'get', {}, query)
   .then(res => res.data);
 
+export const getCredentials = async (query) =>
+  requestApiAndGetResponse(`${apiUrl}/credentials`, 'get', {}, query)
+  .then(res => res.data);
+
 export const getExams = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/exams`, 'get', {}, query)
   .then(res => res.data);
@@ -52,7 +56,7 @@ export const getStudents = async (query) =>
   .then(res => res.data);
 
 export const createTeacher = async (teacher) =>
-  requestApiAndGetResponse(`${apiUrl}/courses`, 'post', {
+  requestApiAndGetResponse(`${apiUrl}/teachers`, 'post', {
     teacher
   })
   .then(res => res.data);
@@ -120,7 +124,8 @@ const api = {
   updateUserByID,
   getUserByID,
   getExamByID,
-  getExams
+  getExams,
+  getCredentials,
 };
 
 export default api;

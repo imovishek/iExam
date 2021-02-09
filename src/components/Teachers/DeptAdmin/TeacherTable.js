@@ -17,6 +17,7 @@ const TeacherCard = ({ dispatch, teacher, setTeacherToEdit, showCreateEditModal,
             <TableRowChild> { teacher.firstName } </TableRowChild>
             <TableRowChild> { teacher.lastName } </TableRowChild>
             <TableRowChild> { teacher.department.departmentCode } </TableRowChild>
+            <TableRowChild> { teacher.credential.email } </TableRowChild>
             <TableRowChild>
                 <OperationWrapper>
                   <Button onClick={() => {
@@ -62,6 +63,7 @@ const TeacherTable = ({
         <TableHeaderChild> First Name </TableHeaderChild>
         <TableHeaderChild> Last Name </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
+        <TableHeaderChild> Email </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
       { !isLoading && _.map(paginatedTeachers, (teacher, index) => (
