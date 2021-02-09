@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../../styles/pageStyles";
 import ImportStudentsModal from "./ImportStudentsModal";
 import CreateExamModal from "./CreateExamModal";
+import { courses } from "../../../utitlities/dummy";
 const { Option } = Select;
 
 const InputWrapper = styled(Input)`
@@ -96,6 +97,15 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
     const { payload = {} } = await api.getCourseByID(id);
     setLoading(false);
     setCourse(payload);
+  }
+
+  const createExamHandler = async (exam) => {
+    setLoading(true);
+    const { payload: newExam } = await api.createExam(exam);
+    const { payload: newCourse } = await api.updateCourse({_id: id}, { $push: { exams: newExam._id } });
+    const { payload = {} } = await api.getCourseByID(id);
+    setCourse(payload);
+    setLoading(false);
   }
 
   return (
@@ -238,7 +248,8 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
           <CreateExamModal
             visible={showCreateExamModal}
             setVisibility={setShowCreateExam}
-            createExam={() => {}}
+            createExam={createExamHandler}
+            courseId = {id}
           />
         </Container>
       </BodyWrapper>
