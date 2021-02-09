@@ -59,6 +59,25 @@ export const getStudentsByBatch = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/students/batch`, 'get', {}, query)
   .then(res => res.data);
 
+export const createStudent = async (student) =>
+  requestApiAndGetResponse(`${apiUrl}/students`, 'post', {
+    student
+  })
+  .then(res => res.data);
+
+export const updateStudent = async (student) =>
+  requestApiAndGetResponse(`${apiUrl}/student/${student._id || 'random'}`, 'put', {
+    query: {
+      _id: student._id
+    },
+    update: student
+  })
+  .then(res => res.data);
+
+export const deleteStudent = async (student) =>
+  requestApiAndGetResponse(`${apiUrl}/student/${student._id || 'random'}`, 'delete')
+  .then(res => res.data);
+
 export const createTeacher = async (teacher) =>
   requestApiAndGetResponse(`${apiUrl}/teachers`, 'post', {
     teacher
@@ -122,6 +141,9 @@ const api = {
   updateTeacher,
   deleteTeacher,
   getTeachers,
+  createStudent,
+  updateStudent,
+  deleteStudent,
   getStudents,
   getCourseByID,
   updateDeptAdminByID,
