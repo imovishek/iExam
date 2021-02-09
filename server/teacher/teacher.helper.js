@@ -1,13 +1,14 @@
 const Teacher = require('./teacher.model');
+const Credential = require('../credential/credential.model');
 const _ = require('underscore');
-const bcryptjs = require('bcryptjs');
-function hash(password) {
-  return bcryptjs.hash(password, 10);
-}
+const bcrypt = require('bcryptjs');
+
+
 // CREATE
 exports.createTeacher = async (teacher) => {
   const { credential } = teacher;
-  credential.password = hash(credential.password);
+  const salt = await bcrypt.genSalt(10);
+  credential.password = await bcrypt.hash(credential.password, salt);
   const cred = await Credential.create(credential);
   teacher.credential = cred;
   return Teacher.create(teacher);
@@ -22,8 +23,13 @@ exports.getTeachers = (query) =>
 
 
 // UPDATE
-exports.updateTeacherByID = (_id, body) =>
-  Teacher.findOneAndUpdate({ _id }, body, { new: true });
+exports.updateTeacherByID = async (_id, body) => {
+  if (body.credential && body.credential.email) {
+    const prevTeacher = await Teacher.findOne({ _id });
+    await Credential.findOneAndUpdate({ email: prevTeacher.credential.email }, { email: body.credential.email });
+  }
+  return Teacher.findOneAndUpdate({ _id }, body, { new: true });
+}
 
 exports.updateTeachers = (query, body) =>
   Teacher.updateMany(query, body, { new: true });
