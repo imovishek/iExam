@@ -107,6 +107,7 @@ const Students = ({ students, user, dispatch }) => {
                       setVisibility={setShowCreateEditModal}
                       createStudent={createStudentHandler}
                       updateStudent={updateStudentHandler}
+                      previousEmail={selectedStudent ? selectedStudent.credential.email : null}
                     />
                 </Container>
             </BodyWrapper>
