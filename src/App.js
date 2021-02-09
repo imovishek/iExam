@@ -4,6 +4,8 @@ import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
 import Logout from './components/Logout/Logout';
 import CoursesForAdmin from './components/Courses/DeptAdmin/Courses';
+import CoursePageForTeacher from './components/Courses/Teacher/CoursePage';
+import CoursesForTeacher from './components/Courses/Teacher/Courses';
 import CoursePageForAdmin from './components/Courses/DeptAdmin/CoursePage';
 import { connect } from 'react-redux';
 import { hasPageAccess } from './utitlities/constants';
@@ -56,6 +58,8 @@ const App = ({ user, dispatch }) => {
         { userType === "deptAdmin" && <Route path="/students" component={StudentsForAdmin} /> }
         { userType === "deptAdmin" && <Route path="/exam/:id" component={ExamPageForAdmin} /> }
         { userType === "teacher" && <Route path="/question/:id" component={QuestionPageForTeacher} /> }
+        { userType === "teacher" && <Route path="/courses" component={CoursesForTeacher} /> }
+        { userType === "teacher" && <Route path="/course/:id" component={CoursePageForTeacher} /> }
         <Route path="/" component={Dashboard} />
       </Switch>
   );
