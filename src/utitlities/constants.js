@@ -9,6 +9,10 @@ export const hasPageAccess = {
     student: {
         Exams: true,
         Courses: true,
+    },
+    teacher: {
+        Exams: true,
+        Courses: true,
     }
 };
 
