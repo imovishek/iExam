@@ -34,5 +34,12 @@ router
     studentController.deleteStudentByID
   );
 
+router
+  .route('/students/batch')
+  .get(
+    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    studentController.getStudentsByBatch
+  )
+
 
 module.exports = router;

@@ -29,6 +29,19 @@ exports.getStudentByID = async (req, res) => {
   }
 };
 
+exports.getStudentsByBatch = async (req, res) => {
+  const { batch, departmentCode } = req.query;
+  try {
+    const result = await studentHelper.getStudents({ registrationNo: { $regex: new RegExp(`^${batch}`) }, 'department.departmentCode': departmentCode });
+    res.status(httpStatuses.OK).send({ payload: result });
+  } catch (err) {
+    console.log(err);
+    res
+    .status(httpStatuses.INTERNAL_SERVER_ERROR)
+    .send({ error: true, message: err.message });
+  }
+};
+
 // CREATE STUDENT
 exports.createStudent = async (req, res) => {
   const { student } = req.body;
