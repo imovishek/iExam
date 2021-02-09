@@ -55,6 +55,10 @@ export const getStudents = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/students`, 'get', {}, query)
   .then(res => res.data);
 
+export const getStudentsByBatch = async (query) =>
+  requestApiAndGetResponse(`${apiUrl}/students/batch`, 'get', {}, query)
+  .then(res => res.data);
+
 export const createTeacher = async (teacher) =>
   requestApiAndGetResponse(`${apiUrl}/teachers`, 'post', {
     teacher
@@ -126,6 +130,7 @@ const api = {
   getExamByID,
   getExams,
   getCredentials,
+  getStudentsByBatch
 };
 
 export default api;
