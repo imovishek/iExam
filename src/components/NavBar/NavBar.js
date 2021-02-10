@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCoffee, faBox, faAnchor } from '@fortawesome/free-solid-svg-icons';
+import { faCoffee, faBox, faAnchor, faLongArrowAltUp, faSignOutAlt, faCog } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import { setNavigaitonTabAction } from './actions';
 import { push } from 'connected-react-router';
 import { hasPageAccess } from '../../utitlities/constants';
 import { faMendeley } from '@fortawesome/free-brands-svg-icons';
+import { LabelWrapper } from '../styles/pageStyles';
 
 const BodyWrapper = styled.div`
   display: inline-block;
@@ -15,12 +16,14 @@ const BodyWrapper = styled.div`
   height: 100vh;
   background: #4b555d;
   box-shadow: 4px 0px 3px 0px rgba(0,0,0,0.36);
+  min-height: 300px;
   `;
 
 const SubWrapper = styled.div`
   padding: 30px 10px;
   margin-left: 20px;
   margin-right: 20px;
+  min-height: 300px;
 `;
 
 
@@ -45,9 +48,31 @@ const LinkWrapper = styled.div`
 
 const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   margin: auto;
-  margin-right: 4px;
+  margin-right: 5px;
   height: 18px;
   width: 50px;
+  cursor: pointer;
+  :hover{
+    color: #40a9aa;
+  }
+`;
+
+const FooterIconWraper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const FooterWraper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: calc(100vh -  190px);
+`;
+
+const LabelHeader = styled.label`
+  color: white;
+  margin-bottom: 10px;
 `;
 
 const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
@@ -97,6 +122,20 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
             </TextWrapper>
           </LinkWrapper>
         }
+
+        <FooterWraper>
+          <FooterIconWraper>
+            <LabelHeader >{user.firstName} {user.lastName}</LabelHeader>
+          </FooterIconWraper>
+          <FooterIconWraper>
+            <div>
+              <FontAwesomeIconWrapper color = "white" icon={faCog} />
+              <FontAwesomeIconWrapper color = "white" icon={faSignOutAlt} />
+            </div>
+          </FooterIconWraper>
+        </FooterWraper>
+        
+          
       </SubWrapper>
     </BodyWrapper>
   )
