@@ -11,7 +11,6 @@ const examSchema = new Schema({
 	startDate: { type: Date, required: true },
 	startTime: { type: String, required: true },
 	duration: { type: String, required: true },
-	status: { type: String, required: true },
 	department: {
 		type: departmentSchema,
 		required: true
