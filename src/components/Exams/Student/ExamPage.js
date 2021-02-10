@@ -99,7 +99,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
           )}
           {!showingPaper && (
             <Row columns=".7fr .3fr">
-              <Questions onShowingPaper={() => setShowingPaper(true)} questions={questions}/>
+              <Questions onShowingPaper={() => setShowingPaper(true)} questions={exam.questions}/>
               <Announcements announcements={announcements} />
             </Row>
           )}

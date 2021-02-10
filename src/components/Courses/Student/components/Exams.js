@@ -1,7 +1,8 @@
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 import _ from 'underscore';
-import { stFormatDate, getDuration } from "../../../../utitlities/common.functions";
+import { stFormatDate, getTimeDifferenceExam, splitDuration } from "../../../../utitlities/common.functions";
+import { useState, useEffect } from "react";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -55,12 +56,21 @@ const HeaderRow = styled.div`
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ exam }) => {
+  const [detailDuration, setDetailDuration] = useState(getTimeDifferenceExam(exam)); 
+  useEffect(() => {
+    console.log('Starting new interval...........');
+    setInterval(() => {
+      setDetailDuration(getTimeDifferenceExam(exam));
+    }, 1000);
+  }, []);
+  
   return (
-    <Row columns="repeat(4, 1fr)">
+    <Row columns="repeat(4, 1fr) 200px">
       <Wrapper>{exam.title}</Wrapper>
       <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
-      <Wrapper>{getDuration(exam.startDate, exam.endDate)}</Wrapper>
+      <Wrapper>{splitDuration(exam.duration)}</Wrapper>
       <Wrapper>{exam.status}</Wrapper>
+      <Wrapper>{detailDuration}</Wrapper>
     </Row>
   );
 };
@@ -70,11 +80,12 @@ const Exams = ({
 }) => {
   return (
     <Container>
-      <HeaderRow columns="repeat(4, 1fr)">
+      <HeaderRow columns="repeat(4, 1fr) 200px">
         <HeaderLabel>Title</HeaderLabel>
         <HeaderLabel>Start Date</HeaderLabel>
         <HeaderLabel>Duration</HeaderLabel>
         <HeaderLabel>Status</HeaderLabel>
+        <HeaderLabel>Start In</HeaderLabel>
       </HeaderRow>
       <Body>
         {_.map(exams, (exam, index) => <Card key={`exam_${index}`} exam={exam} />)}

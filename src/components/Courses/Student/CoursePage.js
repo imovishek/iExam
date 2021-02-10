@@ -90,7 +90,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
           <Row columns=".7fr .3fr">
             <div>
               <LabelWrapper>Exams</LabelWrapper>
-              <Exams exams={exams}/>
+              <Exams exams={course.exams}/>
             </div>
             <div>
               <LabelWrapper>Announcements</LabelWrapper>

@@ -4,7 +4,7 @@ import moment from 'moment';
 import CheckAuthentication from "../components/CheckAuthentication/CheckAuthentication";
 import { BodyWrapper } from "./styles";
 import NavBar from "../components/NavBar/NavBar";
-import { ignoreKeys } from './constants';
+import { ignoreKeys, timeFormat } from './constants';
 
 export const joiObjectParser = (object, validator) => {
   const { error } = Joi.validate(object, validator, {
@@ -28,6 +28,17 @@ export const getDuration = (d1, d2) => {
   if (!d1 || !d2) return 'N/A';
   return `${moment(d2).diff(d1, 'minutes')} minutes`;
 }
+
+export const splitStartTime = (startTime) => {
+  return startTime;
+}
+
+export const splitDuration = (duration) => {
+  const [hour, minute] = duration.split(':');
+  if (hour === "00") return `${Number(minute)} minute${minute === "01" ? '' : 's'}`;
+  return `${Number(hour)} hour${hour === "01" ? '' : 's'} and ${Number(minute)} minute${minute === "01" ? '' : 's'}`;
+}
+
 export const useNavAuthentication = (Component) => (
   <div>
     <CheckAuthentication />
@@ -63,3 +74,43 @@ export const isValidEmail = (email) => {
 };
 
 export const deepCopy = obj => JSON.parse(JSON.stringify(obj));
+
+// const combineDateAndTime = function(date, time) {
+//   timeString = time.getHours() + ':' + time.getMinutes() + ':00';
+//   var year = date.getFullYear(); var month = date.getMonth() + 1; 
+//   // Jan is 0, dec is 11 
+//   var day = date.getDate(); 
+//   var dateString = '' + year + '-' + month + '-' + day; 
+//   var combined = new Date(dateString + ' ' + timeString); 
+//   return combined;
+// };
+const getDetailsDuration = (d1, d2) => {
+  let seconds = moment(d2).diff(d1, 'seconds');
+  if (seconds < 0) return 'Ended';
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  let ret = '';
+  if (hours > 1.5) {
+    return  Math.round(seconds / 3600) + ' hours';
+  }
+  if (hours >= 0.01) {
+    ret = ret + hours + ' hours';
+  }
+  if (minutes >= 0.01) {
+    ret = ret + ' ' + minutes + ' minutes';
+  }
+  seconds = seconds % 60;
+  if (seconds >= 0.01) {
+    ret = ret + ' ' + seconds + ' seconds';
+  }
+
+  return ret;
+  
+}
+export const getTimeDifferenceExam = (exam) => {
+  const { startDate, startTime, duration } = exam;
+  const dateString = moment(startDate).format('YYYY-MM-DD');
+  const timeString = moment(startTime, timeFormat).format('HH:mm:ss');
+  const startDateWithTime = new Date(dateString + ' ' + timeString)
+  return getDetailsDuration(moment(), moment(startDateWithTime));
+}

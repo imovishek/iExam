@@ -42,14 +42,15 @@ const Row = styled.div`
 `;
 
 const QuestionBody = ({
-  question
+  question,
+  setQuestionValue
 }) => {
-
+  console.log(question.body);
   return (
     <Container>
       <SunEditor
         onImageUpload={() => {}}
-        defaultValue="<p>The editor's default value</p>"
+        defaultValue={question.body}
         setOptions={{
           toolbarContainer : '#toolbar_container',
           showPathLabel : false,
@@ -70,6 +71,10 @@ const QuestionBody = ({
               console.log(contents);
           }
         }}
+        onChange={(content) => {
+          setQuestionValue('body', content);
+        }
+      }
       />
     </Container>
   );

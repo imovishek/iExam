@@ -12,47 +12,24 @@ import { connect } from "react-redux";
 import { smartLabel } from "../../../utitlities/common.functions";
 import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from "../../styles/tableStyles";
 
+const TableRowStyled = styled(TableRow)`
+  cursor: pointer;
+  :hover {
+    background: #e4e4e4;
+  }
+`;
+
 const getName = obj => `${obj.firstName} ${obj.lastName}`;
 
 const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, deleteCourse }) => {
     return (
-        <TableRow>
+        <TableRowStyled onClick={() => dispatch(push(`/course/${course._id}`))}>
             <TableRowChild> { course.title } </TableRowChild>
             <TableRowChild> { course.courseCode } </TableRowChild>
             <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
             <TableRowChild> { course.department.departmentCode } </TableRowChild>
             <TableRowChild> { smartLabel(course.status) } </TableRowChild>
-            <TableRowChild>
-              <OperationWrapper>
-                <Button onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  dispatch(push(`/course/${course._id}`));
-                  // setCourseToEdit(_.create('', course));
-                  // showCreateEditModal(true);
-                }}>Edit</Button>
-                
-                <Popconfirm
-                  title="Are you sure？"
-                  okText="Yes"
-                  cancelText="No"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  onConfirm={(e) => {
-                    deleteCourse(course);
-                  }}
-                >
-                  <FontAwesomeIconWrapper
-                    icon={faTrash}
-                    color="#e85120"
-                  />
-                </Popconfirm>
-              
-            </OperationWrapper>
-          </TableRowChild>
-        </TableRow>
+        </TableRowStyled>
     )
 };
 
@@ -86,7 +63,6 @@ const CourseTable = ({
         <TableHeaderChild> Assigned Teacher </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild> Status </TableHeaderChild>
-        <TableHeaderChild></TableHeaderChild>
       </TableHeader>
       {(isNoData && !isLoading) && <NoData />}
       { !isLoading && _.map(paginatedCourses, (course, index) => (

@@ -21,13 +21,21 @@ import Loading from './components/Common/Loading';
 import ExamsForStudent from './components/Exams/Student/index';
 import CoursesForStudent from './components/Courses/Student';
 import CoursePageForStudents from './components/Courses/Student/CoursePage';
+import ExamPageForTeacher from './components/Exams/Teacher/ExamPage';
 import ExamPageForStudents from './components/Exams/Student/ExamPage';
+import { push } from 'connected-react-router';
 
 require('dotenv').config();
 const loadUser = async (dispatch) => {
   const localUser = jwt.decode(localStorage.token);
-  const { payload: user } = await api.getUserByID(localUser._id);
-  dispatch(setUserAction(user));
+  try {
+    const { payload: user } = await api.getUserByID(localUser._id);
+    dispatch(setUserAction(user));
+  } catch (err) {
+    console.log(err);
+    localStorage.clear();
+    dispatch(push('/login'));
+  }
 }
 const loadInit = async (dispatch) => {
   await loadUser(dispatch);
@@ -57,9 +65,11 @@ const App = ({ user, dispatch }) => {
         { userType === "deptAdmin" && <Route path="/teachers" component={TeachersForAdmin} /> }
         { userType === "deptAdmin" && <Route path="/students" component={StudentsForAdmin} /> }
         { userType === "deptAdmin" && <Route path="/exam/:id" component={ExamPageForAdmin} /> }
-        { userType === "teacher" && <Route path="/question/:id" component={QuestionPageForTeacher} /> }
+        { userType === "teacher" && <Route path="/question/:questionID" component={QuestionPageForTeacher} /> }
+        { userType === "teacher" && <Route path="/exam/:examID/question/:questionID" component={QuestionPageForTeacher} /> }
         { userType === "teacher" && <Route path="/courses" component={CoursesForTeacher} /> }
         { userType === "teacher" && <Route path="/course/:id" component={CoursePageForTeacher} /> }
+        { userType === "teacher" && <Route path="/exam/:id" component={ExamPageForTeacher} /> }
         <Route path="/" component={Dashboard} />
       </Switch>
   );
