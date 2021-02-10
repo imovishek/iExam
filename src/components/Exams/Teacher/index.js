@@ -12,7 +12,7 @@ import { setUserAction } from "../../Login/actions";
 import { Row, BodyRow, LabelWrapper } from "../../styles/pageStyles";
 import ExamsTable from "./ExamsTable";
 import { exams } from "../../../utitlities/dummy";
-import { smartLabel } from "../../../utitlities/common.functions";
+import { smartLabel, getExamStatus } from "../../../utitlities/common.functions";
 const { TabPane } = Tabs;
 const PageHeader = styled.div`
   font-weight: 600;
@@ -39,7 +39,7 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
             })
             console.log(exams);
             setExamsObj(
-              _.groupBy(exams, exam => exam.status.toLowerCase())
+              _.groupBy(exams, exam => getExamStatus(exam).toLowerCase())
             )
             setExams(exams);
           } catch (err) {

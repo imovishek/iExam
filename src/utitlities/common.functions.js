@@ -84,8 +84,11 @@ export const deepCopy = obj => JSON.parse(JSON.stringify(obj));
 //   var combined = new Date(dateString + ' ' + timeString); 
 //   return combined;
 // };
-const getDetailsDuration = (d1, d2) => {
+const getDetailsDuration = (d1, d2, duration) => {
   let seconds = moment(d2).diff(d1, 'seconds');
+  const hh = duration.split(':')[0], mm = duration.split(':')[1];
+  const durationTime = Number(hh) * 60 + mm;
+  if (seconds<0 && -seconds <= durationTime*60 ) return 'Started';
   if (seconds < 0) return 'Ended';
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
@@ -111,6 +114,23 @@ export const getTimeDifferenceExam = (exam) => {
   const { startDate, startTime, duration } = exam;
   const dateString = moment(startDate).format('YYYY-MM-DD');
   const timeString = moment(startTime, timeFormat).format('HH:mm:ss');
-  const startDateWithTime = new Date(dateString + ' ' + timeString)
-  return getDetailsDuration(moment(), moment(startDateWithTime));
+  const startDateWithTime = new Date(dateString + ' ' + timeString);
+  return getDetailsDuration(moment(), moment(startDateWithTime), duration);
+}
+
+export const getExamStatus = exam => {
+  const { startDate, startTime, duration } = exam;
+  const dateString = moment(startDate).format('YYYY-MM-DD');
+  const timeString = moment(startTime, timeFormat).format('HH:mm:ss');
+  const startDateWithTime = new Date(dateString + ' ' + timeString);
+  console.log(dateString + ' ' + timeString)
+  if (moment(new Date()).isAfter(moment(startDateWithTime))) {
+    const diffInMinutes = moment(new Date()).diff(startDateWithTime, 'minutes');
+    const hh = duration.split(':')[0], mm = duration.split(':')[1];
+    const durationTime = Number(hh) * 60 + mm;
+    console.log(duration, durationTime);
+    if (diffInMinutes < durationTime) return 'running';
+    return 'ended';
+  }
+  return 'upcoming';
 }

@@ -4,7 +4,7 @@ import examValidator from '../exam.validation';
 import { Modal, Input, Select, DatePicker, TimePicker } from "antd";
 import moment from "moment";
 import _ from "underscore";
-import { joiObjectParser, deepCopy } from "../../../utitlities/common.functions";
+import { joiObjectParser, deepCopy, getExamStatus } from "../../../utitlities/common.functions";
 import api from "../../../utitlities/api";
 
 const { Option } = Select;
@@ -136,9 +136,9 @@ const CreateExamModal = ({
           <LabelWrapper>Status</LabelWrapper>
           <Select
             style={{ width: "100%" }}
-            placeholder="Select a status"
-            value={exam.status}
-            onChange={(value) => setValue('status', value)}
+            placeholder="Please Provide Start date"
+            disabled="true"
+            value={getExamStatus(exam)}
           >
             <Option value="upcoming">Upcoming</Option>
             <Option value="running">Running</Option>

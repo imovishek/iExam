@@ -9,14 +9,14 @@ import React, { useState, useEffect } from "react";
 import { deleteExam } from "../../../utitlities/api";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
-import { smartLabel } from "../../../utitlities/common.functions";
+import { smartLabel, getExamStatus } from "../../../utitlities/common.functions";
 import { TableRow, TableRowChild, OperationWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from "../../styles/tableStyles";
 
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`;
 
 const ExamCard = ({ dispatch, exam, setExamToEdit, showCreateEditModal, deleteExam }) => {
-    const { status } = exam;
+  const status = getExamStatus(exam);
     const shouldEnter = (status || '').toLowerCase() === "ended" || (status || '').toLowerCase() === "running";
     return (
         <TableRow>

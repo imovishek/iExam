@@ -1,7 +1,7 @@
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 import _ from 'underscore';
-import { stFormatDate, getTimeDifferenceExam, splitDuration } from "../../../../utitlities/common.functions";
+import { stFormatDate, getTimeDifferenceExam, splitDuration, getExamStatus, smartLabel } from "../../../../utitlities/common.functions";
 import { useState, useEffect } from "react";
 
 const SearchStyled = styled(Search)`
@@ -69,7 +69,7 @@ const Card = ({ exam }) => {
       <Wrapper>{exam.title}</Wrapper>
       <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
       <Wrapper>{splitDuration(exam.duration)}</Wrapper>
-      <Wrapper>{exam.status}</Wrapper>
+      <Wrapper>{smartLabel(getExamStatus(exam))}</Wrapper>
       <Wrapper>{detailDuration}</Wrapper>
     </Row>
   );
