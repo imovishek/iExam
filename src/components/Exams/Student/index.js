@@ -12,7 +12,7 @@ import { setUserAction } from "../../Login/actions";
 import { Row, BodyRow, LabelWrapper } from "../../styles/pageStyles";
 import ExamsTable from "./ExamsTable";
 import { exams } from "../../../utitlities/dummy";
-import { smartLabel } from "../../../utitlities/common.functions";
+import { smartLabel, getExamStatus } from "../../../utitlities/common.functions";
 const { TabPane } = Tabs;
 const PageHeader = styled.div`
   font-weight: 600;
@@ -35,7 +35,7 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
             const { payload = [] } = await api.getExams({});
             console.log(payload);
             setExamsObj(
-              _.groupBy(payload, exam => exam.status.toLowerCase())
+              _.groupBy(payload, exam => getExamStatus(exam).toLowerCase())
             )
             setExams(payload);
           } catch (err) {

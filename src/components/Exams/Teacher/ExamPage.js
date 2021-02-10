@@ -17,7 +17,7 @@ import { goBack, push } from "connected-react-router";
 import moment from 'moment';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { getObjectByAddingID } from "../../../utitlities/common.functions";
+import { getObjectByAddingID, getExamStatus } from "../../../utitlities/common.functions";
 import Loading from "../../Common/Loading";
 
 const { Option } = Select;
@@ -133,8 +133,8 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
             <HeaderRow>
               <LabelWrapper>Status</LabelWrapper>
               <SelectStyled
-                value={exam.status ? exam.status.toLowerCase() : ''}
-                onChange={(value) => setValue('status', value)}
+                disabled="true"
+                value={getExamStatus(exam)}
               >
                 <Option key="upcoming" value="upcoming"> Upcoming </Option>
                 <Option key="running" value="running"> Running </Option>

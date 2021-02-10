@@ -1,7 +1,7 @@
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 import _ from 'underscore';
-import { stFormatDate, getDuration, splitStartTime, splitDuration, smartLabel } from "../../../../utitlities/common.functions";
+import { stFormatDate, getDuration, splitStartTime, splitDuration, smartLabel, getExamStatus } from "../../../../utitlities/common.functions";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -39,7 +39,7 @@ const Card = ({ exam }) => {
       <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
       <Wrapper>{splitStartTime(exam.startTime)}</Wrapper>
       <Wrapper>{splitDuration(exam.duration)}</Wrapper>
-      <Wrapper>{smartLabel(exam.status)}</Wrapper>
+      <Wrapper>{smartLabel(getExamStatus(exam))}</Wrapper>
     </Row>
   );
 };

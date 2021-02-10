@@ -8,7 +8,6 @@ const schema = Joi.object({
     duration: Joi.string().required().label("Duration is required"),
     totalMarks: Joi.number().required().label("Total Marks is required"),
     startDate: Joi.date().format('DD/MM/YYYY').required().label("Start Date is required"),
-    status: Joi.string().required().label("Status is required")
 });
 
 export default schema;

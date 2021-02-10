@@ -7,7 +7,7 @@ import api from '../../../utitlities/api';
 import styled from "styled-components";
 import { Button, DatePicker, Input, Select } from "antd";
 import { students, questions, exams, courses } from "../../../utitlities/dummy";
-import { stFormatDate, getDuration } from "../../../utitlities/common.functions";
+import { stFormatDate, getDuration, getExamStatus } from "../../../utitlities/common.functions";
 import Questions from "./components/Questions";
 import Participants from "./components/Participants";
 import BannedParticipants from "./components/BannedParticipants";
@@ -117,8 +117,8 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
             <HeaderRow>
               <LabelWrapper>Status</LabelWrapper>
               <SelectStyled
-                value={exam.status ? exam.status.toLowerCase() : ''}
-                onChange={(value) => setValue('status', value)}
+                disabled
+                value={getExamStatus(exam)}
               >
                 <Option key="upcoming" value="upcoming"> Upcoming </Option>
                 <Option key="running" value="running"> Running </Option>

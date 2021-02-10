@@ -1,7 +1,7 @@
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 import _ from 'underscore';
-import { stFormatDate, getDuration, splitDuration, splitStartTime } from "../../../../utitlities/common.functions";
+import { stFormatDate, getDuration, splitDuration, splitStartTime, getExamStatus, smartLabel } from "../../../../utitlities/common.functions";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
 
@@ -45,7 +45,7 @@ const Card = ({ exam, dispatch }) => {
       <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
       <Wrapper>{splitStartTime(exam.startTime)}</Wrapper>
       <Wrapper>{splitDuration(exam.duration)}</Wrapper>
-      <Wrapper>{exam.status}</Wrapper>
+      <Wrapper>{smartLabel(getExamStatus(exam))}</Wrapper>
     </Row>
   );
 };
