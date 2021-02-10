@@ -5,6 +5,8 @@ import { Popconfirm, Button } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import api from "../../../../utitlities/api";
+import { useEffect, useState } from "react";
+
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -80,15 +82,38 @@ const Card = ({ student, exam, updateExamParticipantOnUI }) => {
 const BannedParticipants = ({
   students, exam, updateExamParticipantOnUI
 }) => {
+  const [ searchStudents, setSearchStudents ] = useState(students);
+  useEffect(() => {
+    setSearchStudents(students);
+  }, [students]);
+  const handleSearch = (value) => {
+    const pattern = value
+      .trim()
+      .replace(/ +/g, "")
+      .toLowerCase();
+
+    const afterSearchStudents = _.filter(students, student =>
+      `${student.firstName}${student.lastName}${student.registrationNo}`
+        .trim()
+        .replace(/ +/g, "")
+        .toLowerCase()
+        .includes(pattern)
+    );
+    setSearchStudents(afterSearchStudents);
+  }
   return (
     <Container>
-      <SearchStyled placeholder="Search" />
+      <SearchStyled
+       allowClear
+       placeholder="Search"
+       onChange={(e) => handleSearch(e.target.value)}
+      />
       <Row columns="repeat(2, 1fr) 70px">
         <HeaderLabel>Regi No.</HeaderLabel>
         <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
-      {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
+      {_.map(searchStudents, (student, index) => <Card key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
     </Container>
   );
 };
