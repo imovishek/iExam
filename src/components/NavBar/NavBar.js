@@ -7,6 +7,9 @@ import { push } from 'connected-react-router';
 import { hasPageAccess } from '../../utitlities/constants';
 import { faMendeley } from '@fortawesome/free-brands-svg-icons';
 import { LabelWrapper } from '../styles/pageStyles';
+import Logout from '../Logout/Logout';
+import React, {useState} from 'react';
+import UserInfoModal from '../UserSettings/User/UserInfoModal';
 
 const BodyWrapper = styled.div`
   display: inline-block;
@@ -81,6 +84,7 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
     dispatch(push(`/${path}`));
   };
   const { userType } = user;
+  const [showUserInfoModal, setShowUserInfoModal] = useState(false);
   return (
     <BodyWrapper>
       <SubWrapper>
@@ -129,13 +133,23 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
           </FooterIconWraper>
           <FooterIconWraper>
             <div>
-              <FontAwesomeIconWrapper color = "white" icon={faCog} />
-              <FontAwesomeIconWrapper color = "white" icon={faSignOutAlt} />
+              <FontAwesomeIconWrapper
+                onClick={() => {
+                  setShowUserInfoModal(true);
+                }} 
+                color = "white" icon={faCog} />
+              <FontAwesomeIconWrapper onClick={() => redirectTo('logout')} color = "white" icon={faSignOutAlt} />
             </div>
           </FooterIconWraper>
         </FooterWraper>
         
-          
+        <UserInfoModal
+          visible={showUserInfoModal}
+          selectedUser={user}
+          setVisibility={setShowUserInfoModal}
+          createUser={() => {}}
+          updateUser={() => {}}
+        />
       </SubWrapper>
     </BodyWrapper>
   )
