@@ -10,14 +10,20 @@ exports.getCourseByID = (_id) =>
   Course.findOne({ _id })
     .populate("enrolledStudents")
     .populate("pendingEnrollStudents")
-    .populate("exams")
+    .populate({
+      path: 'exams',
+      populate: { path: 'course', model: 'Course' }
+    })
     .populate("assignedTeacher");
 
 exports.getCourses = (query) =>
   Course.find(query)
     .populate("enrolledStudents")
     .populate("pendingEnrollStudents")
-    .populate("exams")
+    .populate({
+      path: 'exams',
+      populate: { path: 'course', model: 'Course' }
+    })
     .populate("assignedTeacher");
 
 
