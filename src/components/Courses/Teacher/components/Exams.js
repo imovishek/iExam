@@ -1,7 +1,9 @@
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 import _ from 'underscore';
-import { stFormatDate, getDuration } from "../../../../utitlities/common.functions";
+import { stFormatDate, getDuration, splitDuration, splitStartTime } from "../../../../utitlities/common.functions";
+import { push } from "connected-react-router";
+import { connect } from "react-redux";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -30,33 +32,40 @@ const Row = styled.div`
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
   user-select: none;
+  cursor: pointer;
+  :hover {
+    background: #e4e4e4;
+  }
 `;
 const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ exam }) => {
+const Card = ({ exam, dispatch }) => {
   return (
-    <Row columns="repeat(4, 1fr)">
+    <Row columns="repeat(5, 1fr)" onClick={() => dispatch(push(`/exam/${exam._id}`))}>
       <Wrapper>{exam.title}</Wrapper>
       <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
-      <Wrapper>{getDuration(exam.startDate, exam.endDate)}</Wrapper>
+      <Wrapper>{splitStartTime(exam.startTime)}</Wrapper>
+      <Wrapper>{splitDuration(exam.duration)}</Wrapper>
       <Wrapper>{exam.status}</Wrapper>
     </Row>
   );
 };
 
 const Exams = ({
-  exams
+  exams, dispatch
 }) => {
   return (
     <Container>
-      <Row columns="repeat(4, 1fr)">
+      <Row columns="repeat(5, 1fr)">
         <HeaderLabel>Title</HeaderLabel>
-        <HeaderLabel>Start Date</HeaderLabel>
+        <HeaderLabel>Date</HeaderLabel>
+        <HeaderLabel>Start Time</HeaderLabel>
         <HeaderLabel>Duration</HeaderLabel>
         <HeaderLabel>Status</HeaderLabel>
       </Row>
-      {_.map(exams, (exam, index) => <Card key={`exam_${index}`} exam={exam} />)}
+      {_.map(exams, (exam, index) => <Card dispatch={dispatch} key={`exam_${index}`} exam={exam} />)}
     </Container>
   );
 };
 
-export default Exams;
+const mapDispatchToProps = (dispatch) => ({ dispatch });
+export default connect(null, mapDispatchToProps)(Exams);

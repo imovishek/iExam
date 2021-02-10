@@ -131,6 +131,30 @@ export const getExamByID = (id) =>
   requestApiAndGetResponse(`${apiUrl}/exam/${id}`, 'get')
   .then(res => res.data);
 
+
+export const getQuestionByID = (id) =>
+  requestApiAndGetResponse(`${apiUrl}/question/${id}`, 'get')
+  .then(res => res.data);
+
+export const createQuestion = async (question) =>
+  requestApiAndGetResponse(`${apiUrl}/questions`, 'post', {
+    question
+  })
+  .then(res => res.data);
+
+export const updateQuestion = async (question, update) =>
+  requestApiAndGetResponse(`${apiUrl}/question/${question._id}`, 'put', {
+    query: {
+      _id: question._id
+    },
+    update: update || question
+  })
+  .then(res => res.data);
+
+export const deleteQuestion = async (question) =>
+  requestApiAndGetResponse(`${apiUrl}/question/${question._id}`, 'delete')
+  .then(res => res.data);
+
 export const requestApiAndGetResponse = (url, method = 'get', body = {}, query = {}) => {
   const token = localStorage.getItem('token');
   const headers = {
@@ -149,8 +173,9 @@ const api = {
   apiLogin,
   getCourses,
   createCourse,
-  requestApiAndGetResponse,
+  getCourseByID,
   updateCourse,
+  requestApiAndGetResponse,
   deleteCourse,
   createTeacher,
   updateTeacher,
@@ -160,7 +185,6 @@ const api = {
   updateStudent,
   deleteStudent,
   getStudents,
-  getCourseByID,
   updateDeptAdminByID,
   updateUserByID,
   getUserByID,
@@ -169,7 +193,11 @@ const api = {
   createExam,
   updateExam,
   getCredentials,
-  getStudentsByBatch
+  getStudentsByBatch,
+  createQuestion,
+  getQuestionByID,
+  updateQuestion,
+  deleteQuestion
 };
 
 export default api;

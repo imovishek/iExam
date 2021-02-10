@@ -1,9 +1,13 @@
-const Joi = require('@hapi/joi');
+const BaseJoi = require('@hapi/joi');
+const Extension = require('joi-date-extensions');
+const Joi = BaseJoi.extend(Extension);
 
 const schema = Joi.object({
     title: Joi.string().required().label("Title is required"),
-    // courseCode: Joi.string().required().label("Course Code is required"),
-    // startDate: Joi.date().required().label("Start Date is required"),
+    startTime: Joi.string().required().label("Start Time is required"),
+    duration: Joi.string().required().label("Duration is required"),
+    totalMarks: Joi.number().required().label("Total Marks is required"),
+    startDate: Joi.date().format('DD/MM/YYYY').required().label("Start Date is required"),
     status: Joi.string().required().label("Status is required")
 });
 

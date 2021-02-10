@@ -4,7 +4,7 @@ import examValidator from '../exam.validation';
 import { Modal, Input, Select, DatePicker, TimePicker } from "antd";
 import moment from "moment";
 import _ from "underscore";
-import { joiObjectParser } from "../../../utitlities/common.functions";
+import { joiObjectParser, deepCopy } from "../../../utitlities/common.functions";
 import api from "../../../utitlities/api";
 
 const { Option } = Select;
@@ -59,20 +59,18 @@ const CreateExamModal = ({
       departmentName : "Computer Science and Engineering"
     },
     startDate: null,
+    startTime: "10:00 AM",
+    duration: "00:30",
     totalMarks: 100,
-    endDate: moment("01/02/2021"),
     status: null 
   };
-  const [exam, setExam] = useState(isEditing ? selectedExam : defaultExam);
-  const [teachers, setTeachers] = useState({});
-  const [errors, setErrors] = useState({});
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(async () => {
-    setExam(selectedExam || defaultExam);
-    const { payload: fetchedTeachers = [] } = await api.getTeachers({});
-    setTeachers(fetchedTeachers);
-  }, [isEditing, selectedExam]);
+  const timeFormat = "hh:mm A";
+  const durationFormat = "HH:mm";
+
+  const [exam, setExam] = useState(deepCopy({ ...defaultExam }));
+  const [teachers, setTeachers] = useState({});
+  const [errors, setErrors] = useState({})
 
   const setValue = (key, value) => {
     const newExam = {
@@ -89,7 +87,7 @@ const CreateExamModal = ({
 
   const closeModal = () => {
     setVisibility(false);
-    setExam(defaultExam);
+    setExam(deepCopy({ ...defaultExam }));
     setErrors({});
   };
 
@@ -151,9 +149,9 @@ const CreateExamModal = ({
       </Row>
       <Row columns="1fr 1fr 1fr">
         <ColumnWrapper>
-          <LabelWrapper>Start Date</LabelWrapper>
+          <LabelWrapper>Date</LabelWrapper>
           <DatePicker
-            allowClear
+            allowClear={false}
             placeholder="Start Date"
             value={!exam.startDate ? '' : moment(exam.startDate)}
             style={{ width: 270 }}
@@ -161,15 +159,26 @@ const CreateExamModal = ({
             onChange={(d) => setValue('startDate', d)}
           />
           <ErrorWrapper> {errors['startDate']} </ErrorWrapper>
-          <ErrorWrapper> {errors['examCode']} </ErrorWrapper>
         </ColumnWrapper>   
         <ColumnWrapper>
-          <LabelWrapper>Time</LabelWrapper>
-          <TimePicker defaultValue={moment('12:08', "HH:mm")} format={"HH:mm"} />
+          <LabelWrapper>Start Time</LabelWrapper>
+          <TimePicker
+            allowClear={false}
+            value={moment(exam.startTime, timeFormat)}
+            format={timeFormat}
+            onSelect={(v) => setValue('startTime', v.format(timeFormat))}
+          />
+          <ErrorWrapper> {errors['startTime']} </ErrorWrapper>
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Duration</LabelWrapper>
-          <TimePicker defaultValue={moment('12:08', "HH:mm")} format={"HH:mm"} />
+          <TimePicker
+            allowClear={false}
+            value={moment(exam.duration, durationFormat)}
+            format={durationFormat}
+            onSelect={(v) => setValue('duration', v.format(durationFormat))}
+          />
+          <ErrorWrapper> {errors['duration']} </ErrorWrapper>
         </ColumnWrapper>
         
       </Row>

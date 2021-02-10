@@ -1,7 +1,7 @@
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 import _ from 'underscore';
-import { stFormatDate, getDuration } from "../../../../utitlities/common.functions";
+import { stFormatDate, getDuration, splitStartTime, splitDuration, smartLabel } from "../../../../utitlities/common.functions";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -34,11 +34,12 @@ const Row = styled.div`
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ exam }) => {
   return (
-    <Row columns="repeat(4, 1fr)">
+    <Row columns="repeat(5, 1fr)">
       <Wrapper>{exam.title}</Wrapper>
       <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
-      <Wrapper>{getDuration(exam.startDate, exam.endDate)}</Wrapper>
-      <Wrapper>{exam.status}</Wrapper>
+      <Wrapper>{splitStartTime(exam.startTime)}</Wrapper>
+      <Wrapper>{splitDuration(exam.duration)}</Wrapper>
+      <Wrapper>{smartLabel(exam.status)}</Wrapper>
     </Row>
   );
 };
@@ -48,9 +49,10 @@ const Exams = ({
 }) => {
   return (
     <Container>
-      <Row columns="repeat(4, 1fr)">
+      <Row columns="repeat(5, 1fr)">
         <HeaderLabel>Title</HeaderLabel>
-        <HeaderLabel>Start Date</HeaderLabel>
+        <HeaderLabel>Date</HeaderLabel>
+        <HeaderLabel>Start Time</HeaderLabel>
         <HeaderLabel>Duration</HeaderLabel>
         <HeaderLabel>Status</HeaderLabel>
       </Row>

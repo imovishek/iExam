@@ -22,3 +22,5 @@ export const ignoreKeys = {
     __v: true,
     department: true,
 };
+export const timeFormat = "hh:mm A";
+export const durationFormat = "HH:mm";

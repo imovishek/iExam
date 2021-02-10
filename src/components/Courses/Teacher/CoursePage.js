@@ -101,6 +101,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
 
   const createExamHandler = async (exam) => {
     setLoading(true);
+    exam.participants = _.map(course.enrolledStudents, enst => enst._id);
     const { payload: newExam } = await api.createExam(exam);
     const { payload: newCourse } = await api.updateCourse({_id: id}, { $push: { exams: newExam._id } });
     const { payload = {} } = await api.getCourseByID(id);
