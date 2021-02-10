@@ -219,11 +219,6 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
             <BodyRow>
               <TileHeaderWrapper>
                 <LabelWrapper>Exams</LabelWrapper>
-                <RightButtonWrapper>
-                  <ButtonStyled type="primary">
-                    Create Exam
-                  </ButtonStyled>
-                </RightButtonWrapper>
               </TileHeaderWrapper>
               <Exams exams={course.exams} />
             </BodyRow>
