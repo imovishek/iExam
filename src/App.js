@@ -19,6 +19,7 @@ import QuestionPageForTeacher from './components/Question/Teacher/QuestionPage';
 import api from './utitlities/api';
 import Loading from './components/Common/Loading';
 import ExamsForStudent from './components/Exams/Student/index';
+import ExamsForTeacher from './components/Exams/Teacher/index';
 import CoursesForStudent from './components/Courses/Student';
 import CoursePageForStudents from './components/Courses/Student/CoursePage';
 import ExamPageForTeacher from './components/Exams/Teacher/ExamPage';
@@ -70,6 +71,7 @@ const App = ({ user, dispatch }) => {
         { userType === "teacher" && <Route path="/courses" component={CoursesForTeacher} /> }
         { userType === "teacher" && <Route path="/course/:id" component={CoursePageForTeacher} /> }
         { userType === "teacher" && <Route path="/exam/:id" component={ExamPageForTeacher} /> }
+        { userType === "teacher" && <Route path="/exams" component={ExamsForTeacher} /> }
         <Route path="/" component={Dashboard} />
       </Switch>
   );
