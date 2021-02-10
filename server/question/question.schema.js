@@ -11,10 +11,13 @@ const questionSchema = new Schema({
         type: String, // MCQM, MCQS, BROAD, PROGQUE
         required: true
     },
-    options: [String],
-    answer: [String],
+    options: [{
+        value: String,
+        isAnswer: { type: Boolean, required: true }
+    }],
+    answer: String,
     body: String,
-    securityType: { type: String, required: true },
+    securityType: { type: String, default: 'public', required: true },
     teacherAccess: [Schema.Types.ObjectId],
     department: {
         type: departmentSchema,

@@ -9,7 +9,8 @@ const { Schema } = mongoose;
 const examSchema = new Schema({
 	title: { type: String, required: true },
 	startDate: { type: Date, required: true },
-	endDate: { type: Date, required: true },
+	startTime: { type: String, required: true },
+	duration: { type: String, required: true },
 	status: { type: String, required: true },
 	department: {
 		type: departmentSchema,

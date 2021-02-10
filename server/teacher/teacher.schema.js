@@ -16,7 +16,7 @@ const teacherSchema =new Schema({
         required: true
     },
     credential: { type: credentialSchema, required: true },
-    questions: [questionSchema],
+    questionIDs: [Schema.Types.ObjectId],
     userAccess: [String]
 },
 {
