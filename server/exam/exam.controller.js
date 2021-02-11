@@ -1,5 +1,8 @@
 const examHelper = require('./exam.helper');
+const studentHelper = require('../student/student.helper');
+const questionHelper = require('../question/question.helper');
 const { httpStatuses } = require('../constants');
+const _ = require('underscore');
 
 // GET EXAM
 
@@ -21,6 +24,88 @@ exports.getExamByID = async (req, res) => {
   try {
     const result = await examHelper.getExamByID(id);
     res.status(httpStatuses.OK).send({ payload: result });
+  } catch (err) {
+    console.log(err);
+    res
+    .status(httpStatuses.INTERNAL_SERVER_ERROR)
+    .send({ error: true, message: err.message });
+  }
+};
+
+exports.getExamByIDWithUserPaper = async (req, res) => {
+  const { id } = req.params;
+  const { _id } = req.user;
+  const { student } = req.query;
+  const studentID = student ? student : req.user._id;
+  console.log(studentID, req.user._id);
+  let newPaper = null;
+  try {
+    const result = await examHelper.getExamByID(id);
+    const papers = _.filter(result.papers, paper => String(paper.student) === studentID);
+    let paper = null;
+    console.log(result.papers, papers);
+    if (papers.length === 1) {
+      paper = papers[0];
+      const studentObj = await studentHelper.getStudentByID(paper.student);
+      const newAnswers = await Promise.all(_.map(paper.answers, async answer => {
+        const { question } = answer;
+        const ret = {};
+        const questionObj = await questionHelper.getQuestionByID(question);
+        ret.question = questionObj;
+        ret.answer = answer.answer;
+        ret.marks = answer.marks
+        return ret;
+      }));
+      paper.answers = newAnswers;
+      console.log(paper.answers);
+      paper.student = studentObj;
+      newPaper = {
+        student: studentObj,
+        answers: newAnswers,
+        totalMarks: paper.totalMarks
+      };
+    }
+    res.status(httpStatuses.OK).send({ payload: { exam: result, paper: newPaper } });
+  } catch (err) {
+    console.log(err);
+    res
+    .status(httpStatuses.INTERNAL_SERVER_ERROR)
+    .send({ error: true, message: err.message });
+  }
+};
+
+exports.updateExamPaperForStudent = async (req, res) => {
+  const { id } = req.params;
+  const { _id } = req.user;
+  const { paper } = req.body;
+  console.log('65', paper);
+  try {
+      delete paper.totalMarks;
+      _.forEach(paper.answers, answer => { delete answer.marks });
+      await examHelper.updateExamByID(id, { $pull: { papers: { student: req.user._id } } });
+      const result = await examHelper.updateExamByID(id, { $push: { papers: paper } });
+
+      console.log('65', result.papers);
+      res.status(httpStatuses.OK).send({ payload: { exam: result } });
+  } catch (err) {
+    console.log(err);
+    res
+    .status(httpStatuses.INTERNAL_SERVER_ERROR)
+    .send({ error: true, message: err.message });
+  }
+};
+
+exports.updateExamPaperForTeacher = async (req, res) => {
+  const { id } = req.params;
+  const { _id } = req.user;
+  const { paper } = req.body;
+  if (req.user.userType !== 'teacher') throw new Error('User requested is not authorized!');
+  try {
+      await examHelper.updateExamByID(id, { $pull: { papers: { student: paper.student } } });
+      const result = await examHelper.updateExamByID(id, { $push: { papers: paper } }); // need to fix bug about if at the same time update teacher and student happens
+
+      console.log('65', result.papers);
+      res.status(httpStatuses.OK).send({ payload: { exam: result } });
   } catch (err) {
     console.log(err);
     res

@@ -23,8 +23,10 @@ const examSchema = new Schema({
 		student: { type: Schema.Types.ObjectId, ref: 'Student' },
 		answers: [{
 			question: Schema.Types.ObjectId,
-			answer: [String]
-		}]
+			marks: Number,
+			answer: String
+		}],
+		totalMarks: Number
 	}],
 	totalMarks: Number
 },
