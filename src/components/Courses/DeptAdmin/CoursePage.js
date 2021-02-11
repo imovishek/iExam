@@ -89,7 +89,6 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
   const handleUpdateCourse = async (course) => {
     setLoading(true);
     const newCourse = getObjectByAddingID(course);
-    console.log(newCourse);
     await api.updateCourse(newCourse);
     const { payload = {} } = await api.getCourseByID(id);
     setLoading(false);

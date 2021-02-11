@@ -141,7 +141,6 @@ const MCQ = ({
                 style={{marginLeft: '30px'}}
                 danger
                 onClick={() => {
-                  console.log(index);
                   const newOptions = _.filter(options, (option, opIndex) => {
                     return opIndex !== index;
                   });

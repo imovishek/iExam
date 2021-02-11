@@ -74,7 +74,6 @@ const ImportStudentsModal = ({
       setLoading(true);
       let { payload: students } = await api.getStudentsByBatch({ batch, departmentCode: user.department.departmentCode });
       students = _.filter(students, student => !_.any(course.enrolledStudents, enst => enst._id === student._id));
-      console.log(students);
       const ids = _.map(students, student => student._id);
       await api.updateCourse(course, {
         $push: {

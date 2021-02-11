@@ -66,7 +66,6 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
     marks: 10,
     department: user.department
   };
-  console.log(examID, questionID);
   const [question, setQuestion] = useState(deepCopy(defaultQuestion));
   const [errors, setErrors] = useState({})
   const [isLoading, setLoading] = useState(false);
@@ -74,10 +73,8 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     const { payload: teachers } = await api.getTeachers({});
-    console.log(teachers);
     const obj = {};
     _.map(teachers, teacher => {obj[teacher._id] = getName(teacher)});
-    console.log(question.authorID, obj)
     setTeachersObj(obj);
   }, [question.authorID]);
 
@@ -85,7 +82,6 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
   useEffect(async () => {
     if (questionID !== 'new') {
       try {
-        console.log(questionID, examID);
         const { payload: newQuestion } = await api.getQuestionByID(questionID);
         setQuestion({
           _id: newQuestion._id,

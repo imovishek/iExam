@@ -49,7 +49,14 @@ const ButtonStyled = styled(Button)`
   height: 25px;
   background: green;
 `;
-
+const Body = styled.div`
+  overflow: auto;
+  height: calc(100vh - 380px);
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+`;
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ student, exam, updateExamParticipantOnUI }) => {
 
@@ -113,7 +120,9 @@ const BannedParticipants = ({
         <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
-      {_.map(searchStudents, (student, index) => <Card key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
+      <Body>
+        {_.map(searchStudents, (student, index) => <Card key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
+      </Body>
     </Container>
   );
 };

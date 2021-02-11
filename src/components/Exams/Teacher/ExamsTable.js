@@ -27,9 +27,9 @@ const ExamCard = ({ dispatch, exam, setExamToEdit, showCreateEditModal, deleteEx
           <TableRowChild> { exam.department.departmentCode } </TableRowChild>
           <TableRowChild>
             <OperationWrapper>
+              {
               <Button
                 type="primary"
-                disabled={!shouldEnter}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -37,6 +37,7 @@ const ExamCard = ({ dispatch, exam, setExamToEdit, showCreateEditModal, deleteEx
                   // setExamToEdit(_.create('', exam));
                   // showCreateEditModal(true);
                 }}>Enter</Button>
+              }
             </OperationWrapper>
           </TableRowChild>
         </TableRow>

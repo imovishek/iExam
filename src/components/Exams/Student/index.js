@@ -33,7 +33,6 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
           try {
             setLoading(true);
             const { payload = [] } = await api.getExams({});
-            console.log(payload);
             setExamsObj(
               _.groupBy(payload, exam => getExamStatus(exam).toLowerCase())
             )
@@ -55,10 +54,10 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
                 <Container>
                   <PageHeader>Exams</PageHeader>
 
-                  <Tabs defaultActiveKey="0" tabPosition="left" style={{ height: 220 }}>
+                  <Tabs defaultActiveKey="0" tabPosition="left" style={{ height: 450 }}>
                     {_.map(['upcoming', 'running', 'ended'], (v, i) => (
                       <TabPane tab={smartLabel(v)} key={i}>
-                        <ExamsTable exams={examsObj[v]} isLoading={isLoading} />
+                        <ExamsTable noEnterButton={v == "upcoming"} exams={examsObj[v]} isLoading={isLoading} />
                       </TabPane>
                     ))}
                   </Tabs>

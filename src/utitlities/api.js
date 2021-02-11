@@ -169,6 +169,18 @@ export const requestApiAndGetResponse = (url, method = 'get', body = {}, query =
   });
 }
 
+export const getExamByIDWithPaper = (id, studentID) =>
+  requestApiAndGetResponse(`${apiUrl}/exam/${id}/paper${studentID ? `?student=${studentID}` : ''}`, 'get')
+  .then(res => res.data);
+
+export const updateExamPaperForStudent = (id, paper) =>
+  requestApiAndGetResponse(`${apiUrl}/exam/${id}/paper`, 'put', { paper })
+  .then(res => res.data);
+
+export const updateExamPaperForTeacher = (id, paper) =>
+  requestApiAndGetResponse(`${apiUrl}/exam/${id}/evaluatepaper`, 'put', { paper })
+  .then(res => res.data);
+
 const api = {
   apiLogin,
   getCourses,
@@ -197,7 +209,10 @@ const api = {
   createQuestion,
   getQuestionByID,
   updateQuestion,
-  deleteQuestion
+  deleteQuestion,
+  getExamByIDWithPaper,
+  updateExamPaperForStudent,
+  updateExamPaperForTeacher,
 };
 
 export default api;
