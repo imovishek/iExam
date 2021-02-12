@@ -31,7 +31,7 @@ const Wrapper = styled.div`
 
 const Body = styled.div`
   overflow: auto;
-  height: calc(100vh - 340px);
+  height: calc(100vh - 440px);
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
