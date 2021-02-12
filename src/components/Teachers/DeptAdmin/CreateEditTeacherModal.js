@@ -190,7 +190,6 @@ const CreateEditTeacherModal = ({
             style={{ width: 270 }}
             onChange={(e) => {
               setValue('shortName', e.target.value);
-              checkCredentialOnChangeDebounced(e.target.value);
             }}
           />
           <ErrorWrapper> {errors['shortName']} </ErrorWrapper>
