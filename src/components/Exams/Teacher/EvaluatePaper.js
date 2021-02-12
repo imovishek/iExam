@@ -43,7 +43,7 @@ const SelectStyled = styled(Select)`
 const TileBodyWrapper = styled.div`
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: 260px 1fr;
   height: calc(100vh - 120px);
   background: #f9f9f9;
 `
