@@ -8,18 +8,10 @@ exports.createPaper = (paper) =>
 // GET
 exports.getPaperByID = (_id) =>
   Paper.findOne({ _id })
-    .populate("course")
-    .populate("questions")
-    .populate("participants")
-    .populate("bannedParticipants");
 
 
 exports.getPapers = (query) =>
   Paper.find(query)
-    .populate("course")
-    .populate("questions")
-    .populate("participants")
-    .populate("bannedParticipants");
 
 
 // UPDATE

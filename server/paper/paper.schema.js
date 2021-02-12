@@ -1,17 +1,15 @@
 const mongoose = require('mongoose');
 
-const studentSchema = require('../student/student.schema');
-const questionSchema = require('../question/question.schema');
-const departmentSchema = require('../department/department.schema');
-
 const { Schema } = mongoose;
 
 const paperSchema = new Schema({
-	student: { type: Schema.Types.ObjectId, ref: 'Student' },
+	student: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
 	answers: [{
-		question: { type: Schema.Types.ObjectId, ref: 'Question' },
+		questionID: { type: Schema.Types.ObjectId, required: true }, // Do not populate this
 		answer: String,
-	}]
+		marks: Number,
+	}],
+	totalMarks: Number,
 },
 {
 	timestamps: true,
