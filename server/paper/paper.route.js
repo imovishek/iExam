@@ -3,53 +3,43 @@ const router = express.Router();
 const expressJWT = require('express-jwt');
 
 const config = require('../../config/config');
-const examController = require('./exam.controller');
+const paperController = require('./paper.controller');
 
 router
-  .route('/exams')
+  .route('/papers')
   .get(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    examController.getExams
+    paperController.getPapers
   ).post(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    examController.createExam
+    paperController.createPaper
   ).put(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    examController.updateExams
+    paperController.updatePapers
   ).delete(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    examController.deleteExams
+    paperController.deletePapers
   );
 
 router
-  .route('/exam/:id')
+  .route('/paper/:id')
   .get(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    examController.getExamByID
+    paperController.getPaperByID
   ).put(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    examController.updateExamByID
+    paperController.updatePaperByID
   ).delete(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    examController.deleteExamByID
+    paperController.deletePaperByID
   );
 
 router
-  .route('/exam/:id/paper')
+  .route('/paper/:id/paper')
   .get(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    examController.getExamByIDWithUserPaper
-  )
-  .put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    examController.updateExamPaperForStudent
+    paperController.getPaperByIDWithUserPaper
   )
 
-router
-  .route('/exam/:id/evaluatepaper')
-  .put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    examController.updateExamPaperForTeacher
-  )
 
 module.exports = router;

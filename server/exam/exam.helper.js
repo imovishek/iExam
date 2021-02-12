@@ -11,7 +11,8 @@ exports.getExamByID = (_id) =>
     .populate("course")
     .populate("questions")
     .populate("participants")
-    .populate("bannedParticipants");
+    .populate("bannedParticipants")
+    .populate("papers");
 
 
 exports.getExams = (query) =>
@@ -19,7 +20,8 @@ exports.getExams = (query) =>
     .populate("course")
     .populate("questions")
     .populate("participants")
-    .populate("bannedParticipants");
+    .populate("bannedParticipants")
+    .populate("papers");
 
 
 // UPDATE

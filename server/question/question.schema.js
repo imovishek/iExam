@@ -6,7 +6,7 @@ const departmentSchema = require('../department/department.schema');
 const questionSchema = new Schema({
     title: { type: String, required: true },
     marks: { type: Number, required: true },
-    authorID: { type: Schema.Types.ObjectId, required: true },
+    authorID: { type: Schema.Types.ObjectId, required: true, ref: 'Teacher' },
     type: {
         type: String, // MCQM, MCQS, BROAD, PROGQUE
         required: true

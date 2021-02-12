@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-const studentSchema = require('../student/student.schema');
-const questionSchema = require('../question/question.schema');
 const departmentSchema = require('../department/department.schema');
 
 const { Schema } = mongoose;
@@ -17,22 +15,18 @@ const examSchema = new Schema({
 	},
 	course: { type: Schema.Types.ObjectId, ref: 'Course' },
 	questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
-	participants: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
 	bannedParticipants: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
-	papers: [{
-		student: { type: Schema.Types.ObjectId, ref: 'Student' },
-		answers: [{
-			question: Schema.Types.ObjectId,
-			answer: [String]
-		}]
-	}],
+	papers: [{ type: Schema.Types.ObjectId, ref: 'Paper' }],
 	totalMarks: Number
 },
-	{
-		timestamps: true,
-		toObject: { getters: true, virtuals: true },
-		toJSON: { getters: true, virtuals: true },
-		strict: true
-	});
+{
+	timestamps: true,
+	toObject: { getters: true, virtuals: true },
+	toJSON: { getters: true, virtuals: true },
+	strict: true
+});
+
+// Virtual fields
+// participants === course.enrolledStudents
 
 module.exports = examSchema;
