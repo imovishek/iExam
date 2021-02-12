@@ -1,6 +1,7 @@
 const examHelper = require('./exam.helper');
 const studentHelper = require('../student/student.helper');
 const questionHelper = require('../question/question.helper');
+const courseHelper = require('../course/course.helper');
 const { httpStatuses } = require('../constants');
 const _ = require('underscore');
 
@@ -18,11 +19,25 @@ exports.getExams = async (req, res) => {
       .send({ error: true, message: err.message });
   }
 };
-
+const getExamWithParticipants = async (result) => {
+  const course = await courseHelper.getCourseByID(result.course._id);
+  const participants = _.filter(course.enrolledStudents, st => !_.any(result.bannedParticipants, pt => String(pt._id) === String(st._id)));
+  console.log(course.enrolledStudents, result.bannedParticipants);
+  result.participants = participants;
+  return result;
+}
 exports.getExamByID = async (req, res) => {
   const { id } = req.params;
   try {
     const result = await examHelper.getExamByID(id);
+    const course = await courseHelper.getCourseByID(result.course._id);
+    const participants = _.filter(course.enrolledStudents, st => !_.any(result.bannedParticipants, pt => String(pt._id) === String(st._id)));
+    console.log(course.enrolledStudents, result.bannedParticipants);
+    result.participants = participants;
+    const ret = {
+      ...result,
+      participants
+    };
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
@@ -65,7 +80,8 @@ exports.getExamByIDWithUserPaper = async (req, res) => {
         totalMarks: paper.totalMarks
       };
     }
-    res.status(httpStatuses.OK).send({ payload: { exam: result, paper: newPaper } });
+    const updatedExam = await getExamWithParticipants(result);
+    res.status(httpStatuses.OK).send({ payload: { exam: updatedExam, paper: newPaper } });
   } catch (err) {
     console.log(err);
     res
