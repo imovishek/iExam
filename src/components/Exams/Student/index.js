@@ -32,11 +32,15 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
         if (isExamsChanged) {
           try {
             setLoading(true);
-            const { payload = [] } = await api.getExams({});
+            const { payload: mycourses } = await api.getCourses({ enrolledStudents: user._id });
+            let exams = []
+            _.each(mycourses, course => {
+              exams = exams.concat(course.exams)
+            })
             setExamsObj(
-              _.groupBy(payload, exam => getExamStatus(exam).toLowerCase())
+              _.groupBy(exams, exam => getExamStatus(exam).toLowerCase())
             )
-            setExams(payload);
+            setExams(exams);
           } catch (err) {
             console.log(err);
           } finally {

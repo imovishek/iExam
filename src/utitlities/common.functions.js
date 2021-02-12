@@ -87,7 +87,7 @@ export const deepCopy = obj => JSON.parse(JSON.stringify(obj));
 const getDetailsDuration = (d1, d2, duration, multiply = 1) => {
   let seconds = moment(d2).diff(d1, 'seconds');
   const hh = duration.split(':')[0], mm = duration.split(':')[1];
-  const durationTime = Number(hh) * 60 + mm;
+  const durationTime = Number(Number(hh) * 60) + Number(mm);
   if (seconds<0 && -seconds <= durationTime*60 ) return 'Started';
   if (multiply === -1 && seconds < 0) {
     seconds *= -1;
@@ -130,7 +130,8 @@ export const getExamStatus = exam => {
   if (moment(new Date()).isAfter(moment(startDateWithTime))) {
     const diffInMinutes = moment(new Date()).diff(startDateWithTime, 'minutes');
     const hh = duration.split(':')[0], mm = duration.split(':')[1];
-    const durationTime = Number(hh) * 60 + mm;
+    const durationTime = Number(Number(hh) * 60) + Number(mm);
+    console.log('Diff in minutes--------', diffInMinutes, durationTime);
     if (diffInMinutes < durationTime) return 'running';
     return 'ended';
   }

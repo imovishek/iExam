@@ -45,6 +45,7 @@ const Row = styled.div`
 const BodyRow = styled.div`
   display: grid;
   grid-gap: 10px;
+  height: 30px;
   grid-template-columns: ${props => props.columns || 'auto'};
   cursor: pointer;
   :hover {
@@ -54,18 +55,16 @@ const BodyRow = styled.div`
 
 const Body = styled.div`
   overflow: auto;
-  height: calc(100vh - 380px);
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
   }
 `
 const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShowing = false }) => {
-
+const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShowing = false, papers }) => {
+  const arr = _.filter(papers, paper => student._id === paper.student);
+  const paper = arr[0];
   const banStudentButtonHandler = async (e) => {
-    e.stopPropagation();
-    e.preventDefault();
     const update = {
       $push: {
         bannedParticipants: student._id
@@ -82,35 +81,18 @@ const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShow
   }
 
   return (
-    <BodyRow onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 50px">
+    <BodyRow onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 1fr">
       <Wrapper>{student.registrationNo}</Wrapper>
       <Wrapper>{getName(student)}</Wrapper>
       <Wrapper>
-        {!isBanNotShowing && 
-        <Popconfirm
-          title="Are you sure？"
-          okText="Yes"
-          cancelText="No"
-          onConfirm={banStudentButtonHandler}
-          onCancel={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-          }}
-        >
-          <ButtonStyled danger> Ban </ButtonStyled>
-        </Popconfirm>
-      }
+        {paper && paper.totalMarks}
       </Wrapper>
     </BodyRow>
   );
 };
 
-const Participants = ({
-  students, exam, updateExamParticipantOnUI, dispatch, isBanNotShowing = false
+const ResultTable = ({
+  students, exam, updateExamParticipantOnUI, dispatch, papers
 }) => {
   const [ searchStudents, setSearchStudents ] = useState(students);
   useEffect(() => {
@@ -138,17 +120,17 @@ const Participants = ({
        placeholder="Search"
        onChange={(e) => handleSearch(e.target.value)}
       />
-      <Row columns="repeat(2, 1fr) 50px">
+      <Row columns="repeat(2, 1fr) 1fr">
         <HeaderLabel>Regi No.</HeaderLabel>
         <HeaderLabel>Name</HeaderLabel>
-        <HeaderLabel></HeaderLabel>
+        <HeaderLabel>TotalMarks</HeaderLabel>
       </Row>
       <Body>
-        {_.map(searchStudents, (student, index) => <Card isBanNotShowing={isBanNotShowing} dispatch={dispatch} key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
+        {_.map(searchStudents, (student, index) => <Card papers={papers} dispatch={dispatch} key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
       </Body>
     </Container>
   );
 };
 
 const mapDispatchToProps = dispatch => ({ dispatch });
-export default connect(null, mapDispatchToProps)(Participants);
+export default connect(null, mapDispatchToProps)(ResultTable);

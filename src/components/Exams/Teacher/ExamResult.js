@@ -17,6 +17,7 @@ import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, Labe
 import QuestionPaper from "./components/QuestionPaper";
 import Loading from "../../Common/Loading";
 import Participants from './components/Participants';
+import ResultTable from "./components/ResultTable";
 const { Option } = Select;
 
 const InputWrapper = styled(Input)`
@@ -43,18 +44,18 @@ const SelectStyled = styled(Select)`
 const TileBodyWrapper = styled.div`
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: 1fr;
   height: calc(100vh - 120px);
   background: #f9f9f9;
 `
 
 const getNameWithShort = obj => `${obj.firstName} ${obj.lastName} (${obj.shortName || ''})`;
 
-const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
+const ExamResult = ({ dispatch, user, hasBack = true }) => {
   
   const { examID, studentID } = useParams();
   console.log(examID, studentID);
-  if (!studentID || !examID) dispatch(goBack());
+  if (!examID) dispatch(goBack());
   const [isLoading, setIsLoading] = useState(true);
   const [exam, setExam] = useState({});
   const [teachers, setTeachers] = useState({});
@@ -151,26 +152,13 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
                   <FontAwesomeIcon icon={faArrowLeft} size="lg"/>
                 </FontAwesomeIconWrapper>
               }
-              <PageHeader>Exam</PageHeader>
+              <PageHeader>Exam Result</PageHeader>
             </div>
-              {showingPaper &&
-                <RightButtonWrapper>
-                  {(paper.answers && paper.answers.length !== 0) && <span>Total Marks {paper.totalMarks} </span>}
-                  <ButtonStyled
-                    disabled={!(paper.answers && paper.answers.length !== 0)}
-                    type="primary" onClick={submitPaperEvaluationHandler}>
-                    Submit Evaluation
-                  </ButtonStyled>
-                </RightButtonWrapper>
-              }
+            
           </TileHeaderWrapper>
           <TileBodyWrapper>
-            <Participants students={exam.participants} exam={exam} isBanNotShowing/>
-            {showingPaper && (
-              <div>
-                <QuestionPaper isLoading={isLoading} setPaper={setPaper} disabled={getExamStatus(exam) === "ended"} exam={exam} paper={paper}/>
-              </div>
-            )}
+            <ResultTable papers={exam.papers} students={exam.participants} exam={exam} isBanNotShowing/>
+            
             {/* {!showingPaper && (
               <Row columns=".7fr .3fr">
                 <Questions exam={exam} onShowingPaper={() => setShowingPaper(true)} questions={exam.questions}/>
@@ -194,4 +182,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
   
-export default connect(mapStateToProps, mapDispatchToProps)(EvaluatePaper);
+export default connect(mapStateToProps, mapDispatchToProps)(ExamResult);

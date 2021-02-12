@@ -192,7 +192,18 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               />
             </HeaderRow>
           </Row>
-
+          <Row columns="1fr">
+            <div>
+              <RightButtonWrapper>
+                    <ButtonStyled type="primary" onClick={() => dispatch(push(`/exam/${id}/result`))}>
+                      Results
+                    </ButtonStyled>
+                    <ButtonStyled type="primary" onClick={() => dispatch(push(`/exam/${id}/paper/arena`))}>
+                      Enter Arena
+                    </ButtonStyled>
+                  </RightButtonWrapper>   
+            </div>
+            </Row>
           <Row columns="1.2fr .7fr .7fr">
             <BodyRow>
               <TileHeaderWrapper>

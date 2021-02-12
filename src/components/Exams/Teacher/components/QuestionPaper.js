@@ -9,6 +9,7 @@ import MCQBody from "./MCQBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { questions } from "../../../../utitlities/dummy";
+import Loading from "../../../Common/Loading";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -167,7 +168,8 @@ const QuestionPaper = ({
   disabled = true,
   exam,
   paper,
-  setPaper
+  setPaper,
+  isLoading
 }) => {
   const [answers, setAnswers] = useState(paper.answers);
   const setAnswerValue = (index, key, value) => {
@@ -184,11 +186,12 @@ const QuestionPaper = ({
     setAnswers(paper.answers)
   }, [paper])
   console.log('here', paper);
-  if (paper && paper.questions && paper.questions.length === 0) {
+  if (!isLoading && paper && paper.answers && paper.answers.length === 0) {
     return <NoData>Did not answer any questions :( </NoData>
   }
   return (
     <Container>
+      {isLoading && <Loading isLoading={isLoading}/>}
       {_.map(answers, (answer, index) => <SingleQuestion disabled={disabled} index={index} setAnswerValue={setAnswerValue} exam={exam} question={answer.question} answer={answer.answer} marks={answer.marks} />)}
     </Container>
   );
