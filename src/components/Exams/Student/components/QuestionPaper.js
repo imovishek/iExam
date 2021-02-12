@@ -4,7 +4,7 @@ import _ from 'underscore';
 import { stFormatDate, getDuration, getExamStatus } from "../../../../utitlities/common.functions";
 import { LabelWrapper, RightButtonWrapper, Row } from "../../../styles/pageStyles";
 import { Button, Input, Radio } from "antd";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MCQBody from "./MCQBody";
 
 const SearchStyled = styled(Search)`
@@ -76,7 +76,7 @@ export const RadioWrapper = styled.div`
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const SingleQuestion = ({
   disabled,
-  question,
+  question = {},
   index,
   answer,
   exam,
@@ -132,18 +132,32 @@ const SingleQuestion = ({
 const QuestionPaper = ({
   disabled,
   exam,
-  paper
+  paper,
+  questions
 }) => {
   const [answers, setAnswers] = useState(paper.answers);
   const setAnswerValue = (index, key, value) => {
     const newAnswers = [...answers];
     newAnswers[index][key] = value;
     setAnswers(newAnswers);
-  }
+  };
+
+  const [questionsObj, setQuestionsObj] = useState({});
+  useEffect(() => {
+    const newQuestionsObj = {};
+    _.forEach(questions, question => {
+      newQuestionsObj[question._id] = question;
+    })
+    setQuestionsObj(newQuestionsObj);
+  }, [questions]);
+
+  useEffect(() => {
+    setAnswers(paper.answers);
+  }, [paper.answers])
 
   return (
     <Container>
-      {_.map(answers, (answer, index) => <SingleQuestion disabled={disabled} index={index} setAnswerValue={setAnswerValue} exam={exam} question={answer.question} answer={answer.answer} />)}
+      {_.map(answers, (answer, index) => <SingleQuestion key={index} disabled={disabled} index={index} setAnswerValue={setAnswerValue} exam={exam} question={questionsObj[answer.questionID]} answer={answer.answer} />)}
     </Container>
   );
 };

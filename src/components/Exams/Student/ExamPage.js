@@ -60,26 +60,28 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [paper, setPaper] = useState({})
   const { departmentName } = user.department || {};
   
-  const createPaperForMe = (exam) => {
-    const newPaper = {
-      student: user,
-      answers: []
-    };
-    _.forEach(exam.questions, question => {
-      newPaper.answers.push({
-        question: deepCopy(question),
-        answer: ''
-      })
+  const createPaperForMe = (exam, newPaper) => {
+    const answerObj = {};
+    _.map(newPaper.answers, answer => {
+      answerObj[answer.questionID] = {
+        answer: answer.answer,
+        marks: answer.marks,
+      }
     });
+    newPaper.answers = _.map(exam.questions, question => ({
+        questionID: question._id,
+        answer: (answerObj[question._id] || {}).answer || '',
+        marks: (answerObj[question._id] || {}).marks || 0,
+      })
+    );
     return newPaper;
   };
   const updateExamOnUI = async () => {
       const { payload = {} } = await api.getExamByIDWithPaper(id);
-      const { exam, paper } = payload;
+      const { exam: updatedExam, paper: updatedPaper } = payload;
       const { payload: fetchedTeachers = [] } = await api.getTeachers({});
-      console.log(exam, paper);
-      setExam(exam);
-      setPaper(paper ? paper : createPaperForMe(exam))
+      setExam(updatedExam);
+      setPaper(createPaperForMe(updatedExam, updatedPaper))
       setTeachers(fetchedTeachers);
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,22 +95,10 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     }
   }, [id]);
 
-  const setValue = (key, value) => {
-    const newExam = {
-      ...exam,
-      [key]: value
-    };
-    setExam(newExam);
-  };
-
   const submitPaperHandler = async () => {
     setIsLoading(true);
     const cleanPaper = {
-      student: user._id,
-      answers: _.map(paper.answers, answer => ({
-        question: answer.question._id,
-        answer: answer.answer,
-      }))
+      ...paper
     };
     try {
       const { payload: nowExam } = await api.getExamByID(id);
@@ -116,9 +106,8 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
         await updateExamOnUI();
         return message.error("Sorry exam ended you can't submit now")
       }
-      const { payload } = await api.updateExamPaperForStudent(id, cleanPaper);
+      await api.updateExamPaperForStudent(id, cleanPaper);
       await updateExamOnUI();
-      console.log('-----------', payload);
       message.success('Submitted Successfully');
     } catch (err) {
       console.log(err);
@@ -157,7 +146,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
           <TileBodyWrapper>
             {showingPaper && (
               <div>
-                <QuestionPaper disabled={getExamStatus(exam) === "ended"} exam={exam} paper={paper}/>
+                <QuestionPaper disabled={getExamStatus(exam) === "ended"} exam={exam} paper={paper} questions={exam.questions}/>
               </div>
             )}
             {!showingPaper && (

@@ -84,7 +84,7 @@ const InlineBlock = styled.div`
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const SingleQuestion = ({
   disabled,
-  question,
+  question = {},
   index,
   answer,
   exam,
@@ -169,30 +169,43 @@ const QuestionPaper = ({
   exam,
   paper,
   setPaper,
-  isLoading
+  isLoading,
+  questions
 }) => {
   const [answers, setAnswers] = useState(paper.answers);
+  const [questionsObj, setQuestionsObj] = useState({});
+  useEffect(() => {
+    const newQuestionsObj = {};
+    _.forEach(questions, question => {
+      newQuestionsObj[question._id] = question;
+    })
+    setQuestionsObj(newQuestionsObj);
+  }, [questions]);
+
+  useEffect(() => {
+    setAnswers(paper.answers)
+  }, [paper, paper.answers]);
+
+
+
   const setAnswerValue = (index, key, value) => {
     const newAnswers = [...answers];
     newAnswers[index][key] = value;
     if (key === 'marks') {
       const totalMarks = _.reduce(paper.answers, (sum, answer) => sum+Number(answer.marks || '0'), 0);
-      console.log('hi', totalMarks);
       setPaper({ ...paper, totalMarks });
     }
     setAnswers(newAnswers);
   }
-  useEffect(() => {
-    setAnswers(paper.answers)
-  }, [paper])
-  console.log('here', paper);
+  
+  
   if (!isLoading && paper && paper.answers && paper.answers.length === 0) {
     return <NoData>Did not answer any questions :( </NoData>
   }
   return (
     <Container>
       {isLoading && <Loading isLoading={isLoading}/>}
-      {_.map(answers, (answer, index) => <SingleQuestion disabled={disabled} index={index} setAnswerValue={setAnswerValue} exam={exam} question={answer.question} answer={answer.answer} marks={answer.marks} />)}
+      {_.map(answers, (answer, index) => <SingleQuestion disabled={disabled} index={index} setAnswerValue={setAnswerValue} exam={exam} question={questionsObj[answer.questionID]} answer={answer.answer} marks={answer.marks} />)}
     </Container>
   );
 };

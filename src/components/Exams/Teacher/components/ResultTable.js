@@ -17,6 +17,7 @@ const SearchStyled = styled(Search)`
 
 const Container = styled.div`
   overflow: auto;
+  height: 100%;
 `;
 
 const HeaderLabel = styled.div`
@@ -32,20 +33,18 @@ const Wrapper = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
-const ButtonStyled = styled(Button)`
-  padding: 1px 1px;
-  height: 25px;
-`;
+
 const Row = styled.div`
   display: grid;
+  border-radius: 5px;
   grid-gap: 10px;
+  padding: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
 `;
 
-const BodyRow = styled.div`
+const BodyRow = styled(Row)`
   display: grid;
   grid-gap: 10px;
-  height: 30px;
   grid-template-columns: ${props => props.columns || 'auto'};
   cursor: pointer;
   :hover {
@@ -55,6 +54,8 @@ const BodyRow = styled.div`
 
 const Body = styled.div`
   overflow: auto;
+  height: calc(100% - 120px);
+  
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
@@ -64,6 +65,10 @@ const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShowing = false, papers }) => {
   const arr = _.filter(papers, paper => student._id === paper.student);
   const paper = arr[0];
+  let count = 0;
+  _.each(paper ? paper.answers : null, answer => {
+    if (answer && answer.answer) count += 1;
+  });
   const banStudentButtonHandler = async (e) => {
     const update = {
       $push: {
@@ -81,11 +86,12 @@ const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShow
   }
 
   return (
-    <BodyRow onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 1fr">
+    <BodyRow onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 1fr 1fr">
       <Wrapper>{student.registrationNo}</Wrapper>
       <Wrapper>{getName(student)}</Wrapper>
+      <Wrapper> {count} </Wrapper>
       <Wrapper>
-        {paper && paper.totalMarks}
+        {paper ? paper.totalMarks : "0"}
       </Wrapper>
     </BodyRow>
   );
@@ -115,14 +121,19 @@ const ResultTable = ({
   }
   return (
     <Container>
-      <SearchStyled
-       allowClear
-       placeholder="Search"
-       onChange={(e) => handleSearch(e.target.value)}
-      />
-      <Row columns="repeat(2, 1fr) 1fr">
+      <Row columns="270px 100px">
+        <SearchStyled
+          allowClear
+          placeholder="Search"
+          onChange={(e) => handleSearch(e.target.value)}
+        />
+
+      </Row>
+     
+      <Row columns="repeat(2, 1fr) 1fr 1fr">
         <HeaderLabel>Regi No.</HeaderLabel>
         <HeaderLabel>Name</HeaderLabel>
+        <HeaderLabel>Answered Questions</HeaderLabel>
         <HeaderLabel>TotalMarks</HeaderLabel>
       </Row>
       <Body>

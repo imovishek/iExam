@@ -60,7 +60,7 @@ const ExamTable = ({
   dispatch
 }) => {
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(5);
   const [total, setTotal] = useState(1);
   const paginatedExams = exams.slice((current-1)*pageSize, current*pageSize);
 

@@ -25,7 +25,7 @@ const MCQBody = ({
   return (
     <div>
       {options.map((option, index) => (
-        <RadioWrapper rows="auto auto">
+        <RadioWrapper key={index} rows="auto auto">
           <Radio
             disabled={disabled}
             checked={checkObj[index]}

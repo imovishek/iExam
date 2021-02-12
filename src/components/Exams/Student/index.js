@@ -58,7 +58,7 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
                 <Container>
                   <PageHeader>Exams</PageHeader>
 
-                  <Tabs defaultActiveKey="0" tabPosition="left" style={{ height: 450 }}>
+                  <Tabs defaultActiveKey="1" tabPosition="left" style={{ height: 450 }}>
                     {_.map(['upcoming', 'running', 'ended'], (v, i) => (
                       <TabPane tab={smartLabel(v)} key={i}>
                         <ExamsTable noEnterButton={v == "upcoming"} exams={examsObj[v]} isLoading={isLoading} />

@@ -12,7 +12,7 @@ export const HeaderRow = styled.div`
 
 export const BodyRow = styled.div`
   padding: 10px;
-  height: calc(100vh - 240px);
+  height: calc(100vh - 340px);
   margin-bottom: 20px;
   margin-top: 30px;
   border: 1px solid rgba(10, 10, 10, 0.3);

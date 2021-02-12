@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import { students } from "../../../../utitlities/dummy";
+import { useParams } from "react-router";
 
 
 const SearchStyled = styled(Search)`
@@ -17,6 +18,8 @@ const SearchStyled = styled(Search)`
 
 const Container = styled.div`
   overflow: auto;
+  height: 100%;
+  position: relative;
 `;
 
 const HeaderLabel = styled.div`
@@ -26,8 +29,8 @@ const HeaderLabel = styled.div`
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 30px;
   font-size: 12px;
+  height: 30px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -39,30 +42,43 @@ const ButtonStyled = styled(Button)`
 const Row = styled.div`
   display: grid;
   grid-gap: 10px;
+  padding: 3px;
+  border-radius: 5px;
   grid-template-columns: ${props => props.columns || 'auto'};
 `;
 
 const BodyRow = styled.div`
+  padding: 3px;
+  border-radius: 5px;
+  user-select: none;
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
+  background: ${props => props.isSelected ? '#a3b1bd' : 'none'};
   cursor: pointer;
   :hover {
-    background: #e4e4e4;
+    background: ${props => props.isSelected ? '#a3b1bd' : '#e4e4e4'};
   }
 `;
 
 const Body = styled.div`
   overflow: auto;
-  height: calc(100vh - 380px);
+  position: absolute;
+  height: calc(100% - 140px);
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
   }
-`
-const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShowing = false }) => {
+`;
 
+const TextCenter = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+const getName = obj => `${obj.firstName} ${obj.lastName}`
+const Card = ({ dispatch, student, totalMarks, exam, updateExamParticipantOnUI, isBanNotShowing = false }) => {
+  const { examID, studentID } = useParams();
   const banStudentButtonHandler = async (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -82,35 +98,16 @@ const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShow
   }
 
   return (
-    <BodyRow onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 50px">
+    <BodyRow isSelected={studentID === student._id} onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 80px">
       <Wrapper>{student.registrationNo}</Wrapper>
       <Wrapper>{getName(student)}</Wrapper>
-      <Wrapper>
-        {!isBanNotShowing && 
-        <Popconfirm
-          title="Are you sure？"
-          okText="Yes"
-          cancelText="No"
-          onConfirm={banStudentButtonHandler}
-          onCancel={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-          }}
-        >
-          <ButtonStyled danger> Ban </ButtonStyled>
-        </Popconfirm>
-      }
-      </Wrapper>
+      <Wrapper> <TextCenter>{totalMarks || 0} </TextCenter> </Wrapper>
     </BodyRow>
   );
 };
 
 const Participants = ({
-  students, exam, updateExamParticipantOnUI, dispatch, isBanNotShowing = false
+  students, exam, updateExamParticipantOnUI, dispatch, paper
 }) => {
   const [ searchStudents, setSearchStudents ] = useState(students);
   useEffect(() => {
@@ -131,6 +128,15 @@ const Participants = ({
     );
     setSearchStudents(afterSearchStudents);
   }
+  const [marksObj, setMarksObj] = useState({});
+
+  useEffect(() => {
+    const newMarksObj = {};
+    _.each(exam.papers, paper => {
+      newMarksObj[paper.student] = paper.totalMarks;
+    });
+    setMarksObj(newMarksObj);
+  }, [exam.papers])
   return (
     <Container>
       <SearchStyled
@@ -138,13 +144,13 @@ const Participants = ({
        placeholder="Search"
        onChange={(e) => handleSearch(e.target.value)}
       />
-      <Row columns="repeat(2, 1fr) 50px">
+      <Row columns="repeat(2, 1fr) 80px">
         <HeaderLabel>Regi No.</HeaderLabel>
         <HeaderLabel>Name</HeaderLabel>
-        <HeaderLabel></HeaderLabel>
+        <HeaderLabel><TextCenter> Total Marks </TextCenter></HeaderLabel>
       </Row>
       <Body>
-        {_.map(searchStudents, (student, index) => <Card isBanNotShowing={isBanNotShowing} dispatch={dispatch} key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
+        {_.map(searchStudents, (student, index) => <Card dispatch={dispatch} totalMarks={marksObj[student._id]} key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
       </Body>
     </Container>
   );

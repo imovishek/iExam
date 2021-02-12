@@ -57,24 +57,9 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
   if (!studentID || !examID) dispatch(goBack());
   const [isLoading, setIsLoading] = useState(true);
   const [exam, setExam] = useState({});
-  const [teachers, setTeachers] = useState({});
   const [showingPaper, setShowingPaper] = useState(true);
   const [paper, setPaper] = useState({})
-  const { departmentName } = user.department || {};
-  
-  const createPaperForMe = (exam) => {
-    const newPaper = {
-      student: user,
-      answers: []
-    };
-    _.forEach(exam.questions, question => {
-      newPaper.answers.push({
-        question: deepCopy(question),
-        answer: ''
-      })
-    });
-    return newPaper;
-  };
+
   const updateExamOnUI = async () => {
       if (studentID === "arena") {
         setPaper({ questions: [] });
@@ -85,11 +70,8 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
       }
       const { payload = {} } = await api.getExamByIDWithPaper(examID, studentID);
       const { exam, paper } = payload;
-      const { payload: fetchedTeachers = [] } = await api.getTeachers({});
-      console.log(exam, paper);
       setExam(exam);
       setPaper(paper ? { ...paper } : { answers: [] });
-      setTeachers(fetchedTeachers);
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -103,25 +85,12 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
     }
   }, [examID, studentID]);
 
-  const setValue = (key, value) => {
-    const newExam = {
-      ...exam,
-      [key]: value
-    };
-    setExam(newExam);
-  };
-
   const submitPaperEvaluationHandler = async () => {
     setIsLoading(true);
     const totalMarks = _.reduce(paper.answers, (sum, answer) => sum+Number(answer.marks || '0'), 0);
-    console.log(totalMarks);
+
     const cleanPaper = {
-      student: studentID,
-      answers: _.map(paper.answers, answer => ({
-        question: answer.question._id,
-        answer: answer.answer,
-        marks: answer.marks,
-      })),
+      ...paper,
       totalMarks
     };
     try {
@@ -168,7 +137,14 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
             <Participants students={exam.participants} exam={exam} isBanNotShowing/>
             {showingPaper && (
               <div>
-                <QuestionPaper isLoading={isLoading} setPaper={setPaper} disabled={getExamStatus(exam) === "ended"} exam={exam} paper={paper}/>
+                <QuestionPaper
+                  isLoading={isLoading}
+                  setPaper={setPaper}
+                  disabled={getExamStatus(exam) === "ended"}
+                  exam={exam}
+                  paper={paper}
+                  questions={exam.questions}
+                />
               </div>
             )}
             {/* {!showingPaper && (
