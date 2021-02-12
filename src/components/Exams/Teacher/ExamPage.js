@@ -46,11 +46,15 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   if (!id) dispatch(goBack());
   const [isLoading, setIsLoading] = useState(true);
   const [exam, setExam] = useState({});
-
+  const [teachersObj, setTeachersObj] = useState({});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     try {
       let { payload = {} } = await api.getExamByID(id);
+      const { payload: teachers = [] } = await api.getTeachers({});
+      const obj = {};
+      teachers.map(teacher => {obj[teacher._id] = teacher});
+      setTeachersObj(obj);
       if(!payload) payload = {};
       setExam(payload);
     } catch(err) {
@@ -74,7 +78,9 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const onExamUpdateHandler = async () => {
     setIsLoading(true);
     try {
-      await api.updateExam(exam, getObjectByAddingID(exam));
+      const newExam = { ...exam };
+      delete newExam.papers;
+      await api.updateExam(exam, getObjectByAddingID(newExam));
       await updateExamParticipantOnUI();
       message.success('Successfully Updated!');
     } catch (err) {
@@ -186,7 +192,18 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               />
             </HeaderRow>
           </Row>
-
+          <Row columns="1fr">
+            <div>
+              <RightButtonWrapper>
+                    <ButtonStyled type="primary" onClick={() => dispatch(push(`/exam/${id}/result`))}>
+                      Results
+                    </ButtonStyled>
+                    <ButtonStyled type="primary" onClick={() => dispatch(push(`/exam/${id}/paper/arena`))}>
+                      Enter Arena
+                    </ButtonStyled>
+                  </RightButtonWrapper>   
+            </div>
+            </Row>
           <Row columns="1.2fr .7fr .7fr">
             <BodyRow>
               <TileHeaderWrapper>
@@ -200,7 +217,10 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                     </ButtonStyled>
                   </RightButtonWrapper>
                 </TileHeaderWrapper>
-              <Questions exam={exam} questions={exam.questions} />
+                <div>
+                  <Questions onUpdateExamUI={updateExamParticipantOnUI} teachersObj={teachersObj} exam={exam} questions={exam.questions} />
+                </div>
+              
             </BodyRow>
             <BodyRow>
               <TileHeaderWrapper><LabelWrapper>Participants</LabelWrapper></TileHeaderWrapper>

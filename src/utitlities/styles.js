@@ -11,8 +11,12 @@ export const Container = styled.div`
     display: inline-block;
     padding: 30px 20px;
     height: 100%;
-    overflow: scroll;
+    overflow: auto;
     flex-grow: 100;
+    ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
 `;
 
 export const Text = styled.div`

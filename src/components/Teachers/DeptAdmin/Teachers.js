@@ -38,7 +38,6 @@ const Teachers = ({ teachers, user, dispatch }) => {
         const { teacherIDs = [] } = user;
         api.getTeachers({ _id: { $in: teacherIDs } })
         .then(({ payload }) => {
-            console.log(payload);
             dispatch(onUpdateTeachers(payload));
             setTeacherChanged(false);
             setLoading(false);

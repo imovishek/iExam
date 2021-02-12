@@ -12,6 +12,9 @@ import { connect } from "react-redux";
 import { smartLabel, getExamStatus } from "../../../utitlities/common.functions";
 import { TableRow, TableRowChild, OperationWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from "../../styles/tableStyles";
 
+const TableBodyWrapper = styled.div`
+  overflow: auto;
+`;
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`;
 
@@ -27,9 +30,9 @@ const ExamCard = ({ dispatch, exam, setExamToEdit, showCreateEditModal, deleteEx
           <TableRowChild> { exam.department.departmentCode } </TableRowChild>
           <TableRowChild>
             <OperationWrapper>
+            { shouldEnter &&
               <Button
                 type="primary"
-                disabled={!shouldEnter}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -37,6 +40,7 @@ const ExamCard = ({ dispatch, exam, setExamToEdit, showCreateEditModal, deleteEx
                   // setExamToEdit(_.create('', exam));
                   // showCreateEditModal(true);
                 }}>Enter</Button>
+              }
             </OperationWrapper>
           </TableRowChild>
         </TableRow>
@@ -56,7 +60,7 @@ const ExamTable = ({
   dispatch
 }) => {
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(5);
   const [total, setTotal] = useState(1);
   const paginatedExams = exams.slice((current-1)*pageSize, current*pageSize);
 
@@ -76,16 +80,19 @@ const ExamTable = ({
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
       {(isNoData && !isLoading) && <NoData />}
-      { !isLoading && _.map(paginatedExams, (exam, index) => (
-          <ExamCard
-            key={`exams_${index}`}
-            exam={exam}
-            setExamToEdit={setExamToEdit}
-            showCreateEditModal={showCreateEditModal}
-            deleteExam={deleteExam}
-            dispatch={dispatch}
-          />
-      ))}
+      <TableBodyWrapper>
+        { !isLoading && _.map(paginatedExams, (exam, index) => (
+            <ExamCard
+              key={`exams_${index}`}
+              exam={exam}
+              setExamToEdit={setExamToEdit}
+              showCreateEditModal={showCreateEditModal}
+              deleteExam={deleteExam}
+              dispatch={dispatch}
+            />
+        ))}
+      </TableBodyWrapper>
+      
       { (!isLoading && !isNoData) &&
         <Pagination
           current={current}

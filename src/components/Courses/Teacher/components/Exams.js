@@ -28,13 +28,15 @@ const Wrapper = styled.div`
 `;
 
 const Row = styled.div`
+  padding: 10px;
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
   user-select: none;
+  border-radius: 5px;
   cursor: pointer;
   :hover {
-    background: #e4e4e4;
+    background: ${p => p.header ? 'none' : '#e4e4e4'};
   }
 `;
 const getName = obj => `${obj.firstName} ${obj.lastName}`
@@ -55,7 +57,7 @@ const Exams = ({
 }) => {
   return (
     <Container>
-      <Row columns="repeat(5, 1fr)">
+      <Row header columns="repeat(5, 1fr)">
         <HeaderLabel>Title</HeaderLabel>
         <HeaderLabel>Date</HeaderLabel>
         <HeaderLabel>Start Time</HeaderLabel>

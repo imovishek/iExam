@@ -58,7 +58,6 @@ const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ exam }) => {
   const [detailDuration, setDetailDuration] = useState(getTimeDifferenceExam(exam)); 
   useEffect(() => {
-    console.log('Starting new interval...........');
     setInterval(() => {
       setDetailDuration(getTimeDifferenceExam(exam));
     }, 1000);

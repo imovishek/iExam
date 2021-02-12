@@ -1,11 +1,13 @@
 import Search from "antd/lib/input/Search";
 import styled from "styled-components";
 import _ from 'underscore';
-import { Popconfirm, Button } from "antd";
+import { Button, Popconfirm } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import api from "../../../../utitlities/api";
 import { useEffect, useState } from "react";
+import { push } from "connected-react-router";
+import { connect } from "react-redux";
+import { students } from "../../../../utitlities/dummy";
 
 
 const SearchStyled = styled(Search)`
@@ -15,6 +17,7 @@ const SearchStyled = styled(Search)`
 
 const Container = styled.div`
   overflow: auto;
+  height: 100%;
 `;
 
 const HeaderLabel = styled.div`
@@ -33,61 +36,69 @@ const Wrapper = styled.div`
 
 const Row = styled.div`
   display: grid;
+  border-radius: 5px;
   grid-gap: 10px;
+  padding: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
 `;
 
-const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
+const BodyRow = styled(Row)`
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: ${props => props.columns || 'auto'};
   cursor: pointer;
-  margin: auto;
-  margin-left: 5px;
-  width: 15px;
-  height: 15px;
+  :hover {
+    background: #e4e4e4;
+  }
 `;
-const ButtonStyled = styled(Button)`
-  padding: 1px 1px;
-  height: 25px;
-  background: green;
-`;
+
 const Body = styled.div`
   overflow: auto;
-  height: calc(100vh - 380px);
+  height: calc(100% - 120px);
+  
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
   }
-`;
+`
 const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ student, exam, updateExamParticipantOnUI }) => {
-
-  const unbanStudentButtonHandler = async (e) => {
+const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShowing = false, papers }) => {
+  const arr = _.filter(papers, paper => student._id === paper.student);
+  const paper = arr[0];
+  let count = 0;
+  _.each(paper ? paper.answers : null, answer => {
+    if (answer && answer.answer) count += 1;
+  });
+  const banStudentButtonHandler = async (e) => {
     const update = {
       $push: {
-        participants: student._id
+        bannedParticipants: student._id
       }
     };
-    if (_.any(exam.participants, enst => enst._id === student._id)) delete update.$push;
+    if (_.any(exam.bannedParticipants, enst => enst._id === student._id)) delete update.$push;
     await api.updateExam(exam, {
       ...update,
       $pull: {
-        bannedParticipants: student._id
+        participants: student._id
       }
     });
     await updateExamParticipantOnUI();
   }
+
   return (
-    <Row columns="repeat(2, 1fr) 70px">
+    <BodyRow onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 1fr 1fr">
       <Wrapper>{student.registrationNo}</Wrapper>
       <Wrapper>{getName(student)}</Wrapper>
+      <Wrapper> {count} </Wrapper>
       <Wrapper>
-        <ButtonStyled onClick = {unbanStudentButtonHandler} type="primary"> Unban </ButtonStyled>
+        {paper ? paper.totalMarks : "0"}
       </Wrapper>
-    </Row>
+    </BodyRow>
   );
 };
 
-const BannedParticipants = ({
-  students, exam, updateExamParticipantOnUI
+const ResultTable = ({
+  students, exam, updateExamParticipantOnUI, dispatch, papers
 }) => {
   const [ searchStudents, setSearchStudents ] = useState(students);
   useEffect(() => {
@@ -110,21 +121,27 @@ const BannedParticipants = ({
   }
   return (
     <Container>
-      <SearchStyled
-       allowClear
-       placeholder="Search"
-       onChange={(e) => handleSearch(e.target.value)}
-      />
-      <Row columns="repeat(2, 1fr) 70px">
+      <Row columns="270px 100px">
+        <SearchStyled
+          allowClear
+          placeholder="Search"
+          onChange={(e) => handleSearch(e.target.value)}
+        />
+
+      </Row>
+     
+      <Row columns="repeat(2, 1fr) 1fr 1fr">
         <HeaderLabel>Regi No.</HeaderLabel>
         <HeaderLabel>Name</HeaderLabel>
-        <HeaderLabel></HeaderLabel>
+        <HeaderLabel>Answered Questions</HeaderLabel>
+        <HeaderLabel>TotalMarks</HeaderLabel>
       </Row>
       <Body>
-        {_.map(searchStudents, (student, index) => <Card key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
+        {_.map(searchStudents, (student, index) => <Card papers={papers} dispatch={dispatch} key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
       </Body>
     </Container>
   );
 };
 
-export default BannedParticipants;
+const mapDispatchToProps = dispatch => ({ dispatch });
+export default connect(null, mapDispatchToProps)(ResultTable);

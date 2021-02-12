@@ -3,9 +3,13 @@ import styled from "styled-components";
 import _ from 'underscore';
 import { stFormatDate, getDuration, getExamStatus } from "../../../../utitlities/common.functions";
 import { LabelWrapper, RightButtonWrapper, Row } from "../../../styles/pageStyles";
-import { Button, Input, Radio } from "antd";
-import React, { useState, useEffect } from "react";
+import { Button, Input, Radio, Tooltip } from "antd";
+import { useState, useEffect } from "react";
 import MCQBody from "./MCQBody";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
+import { questions } from "../../../../utitlities/dummy";
+import Loading from "../../../Common/Loading";
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -14,7 +18,8 @@ const SearchStyled = styled(Search)`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  height: calc(100vh - 120px);
+  overflow: auto;
 `;
 
 const BodyWrapper = styled.div`
@@ -72,7 +77,10 @@ export const RadioWrapper = styled.div`
   margin-bottom: 10px;
   border: 1px solid #b3b3b3;
 `;
-
+const InlineBlock = styled.div`
+  margin-left: 10px;
+  margin-bottom: 30px;
+`
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const SingleQuestion = ({
   disabled,
@@ -80,7 +88,8 @@ const SingleQuestion = ({
   index,
   answer,
   exam,
-  setAnswerValue
+  setAnswerValue,
+  marks,
 }) => {
   const status = getExamStatus(exam);
   const isEditing = status === "running";
@@ -117,7 +126,7 @@ const SingleQuestion = ({
         <BodyWrapper> 
           <AddPadding>
             { isEditing && 
-              <Input.TextArea disabled={disabled} style={{width: '500px'}} value={answer} onChange={(e) => setAnswerValue(index, 'answer', e.target.value)} rows={4} />
+              <Input.TextArea disabled={disabled} style={{width: '500px'}} value={answer} onChange={(e) => {}} rows={4} />
             }
             { !isEditing &&
               <div dangerouslySetInnerHTML={{ __html: answer }} />
@@ -125,23 +134,45 @@ const SingleQuestion = ({
           </AddPadding>
         </BodyWrapper>
       )}
+      <InlineBlock>
+        <Input
+          style={{ width: 100 }}
+          value={marks}
+          onChange={(e) => setAnswerValue(index, 'marks', e.target.value)}
+          placeholder="Set Marks"
+        /> {
+          isMCQ && <Tooltip title="Evaluate">
+            <FontAwesomeIcon style={{display: 'inline', cursor: 'pointer', marginLeft: '10px'}} icon={faSyncAlt} size="lg" color="green"
+              onClick={() => {
+                if (question.options[Number(answer)].isAnswer) {
+                  setAnswerValue(index, 'marks', question.marks);
+                } else {
+                  setAnswerValue(index, 'marks', 0);
+                }
+              }}
+            />
+          </Tooltip>
+        }
+      </InlineBlock>
     </QuestionWrapper>
   );
 };
-
+const NoData = styled.div`
+  font-size: 24px;
+  color: #9a9a9a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 const QuestionPaper = ({
-  disabled,
+  disabled = true,
   exam,
   paper,
+  setPaper,
+  isLoading,
   questions
 }) => {
   const [answers, setAnswers] = useState(paper.answers);
-  const setAnswerValue = (index, key, value) => {
-    const newAnswers = [...answers];
-    newAnswers[index][key] = value;
-    setAnswers(newAnswers);
-  };
-
   const [questionsObj, setQuestionsObj] = useState({});
   useEffect(() => {
     const newQuestionsObj = {};
@@ -152,12 +183,29 @@ const QuestionPaper = ({
   }, [questions]);
 
   useEffect(() => {
-    setAnswers(paper.answers);
-  }, [paper.answers])
+    setAnswers(paper.answers)
+  }, [paper, paper.answers]);
 
+
+
+  const setAnswerValue = (index, key, value) => {
+    const newAnswers = [...answers];
+    newAnswers[index][key] = value;
+    if (key === 'marks') {
+      const totalMarks = _.reduce(paper.answers, (sum, answer) => sum+Number(answer.marks || '0'), 0);
+      setPaper({ ...paper, totalMarks });
+    }
+    setAnswers(newAnswers);
+  }
+  
+  
+  if (!isLoading && paper && paper.answers && paper.answers.length === 0) {
+    return <NoData>Did not answer any questions :( </NoData>
+  }
   return (
     <Container>
-      {_.map(answers, (answer, index) => <SingleQuestion key={index} disabled={disabled} index={index} setAnswerValue={setAnswerValue} exam={exam} question={questionsObj[answer.questionID]} answer={answer.answer} />)}
+      {isLoading && <Loading isLoading={isLoading}/>}
+      {_.map(answers, (answer, index) => <SingleQuestion disabled={disabled} index={index} setAnswerValue={setAnswerValue} exam={exam} question={questionsObj[answer.questionID]} answer={answer.answer} marks={answer.marks} />)}
     </Container>
   );
 };

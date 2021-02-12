@@ -36,7 +36,6 @@ const Questions = ({ questions, user, dispatch }) => {
         const { questionIDs = [] } = user;
         api.getQuestions(questionIDs)
         .then(({ payload }) => {
-            console.log(payload);
             dispatch(onUpdateQuestions(payload));
             setQuestionChanged(false);
             setLoading(false);

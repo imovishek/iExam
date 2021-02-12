@@ -10,13 +10,14 @@ import { LabelWrapper } from '../styles/pageStyles';
 import Logout from '../Logout/Logout';
 import React, {useState} from 'react';
 import UserInfoModal from '../UserSettings/User/UserInfoModal';
+import { Tooltip } from 'antd';
 
 const BodyWrapper = styled.div`
   display: inline-block;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
   background: #4b555d;
   box-shadow: 4px 0px 3px 0px rgba(0,0,0,0.36);
   min-height: 300px;
@@ -27,6 +28,8 @@ const SubWrapper = styled.div`
   margin-left: 20px;
   margin-right: 20px;
   min-height: 300px;
+  position: relative;
+  height: 100%;
 `;
 
 
@@ -70,12 +73,17 @@ const FooterWraper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  height: calc(100vh -  190px);
+  position: absolute;
+  bottom: 50px;
+  width: 140px;
 `;
 
 const LabelHeader = styled.label`
   color: white;
   margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
@@ -133,12 +141,17 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
           </FooterIconWraper>
           <FooterIconWraper>
             <div>
-              <FontAwesomeIconWrapper
-                onClick={() => {
-                  setShowUserInfoModal(true);
-                }} 
-                color = "white" icon={faCog} />
-              <FontAwesomeIconWrapper onClick={() => redirectTo('logout')} color = "white" icon={faSignOutAlt} />
+              <Tooltip title = "Profile">
+                <FontAwesomeIconWrapper
+                  style={{marginRight: '20px'}}
+                  onClick={() => {
+                    setShowUserInfoModal(true);
+                  }} 
+                  color = "white" icon={faCog} size="lg"/>
+              </Tooltip>
+              <Tooltip title = "Logout">
+                <FontAwesomeIconWrapper onClick={() => redirectTo('logout')} color = "white" icon={faSignOutAlt} size="lg" />
+              </Tooltip>
             </div>
           </FooterIconWraper>
         </FooterWraper>

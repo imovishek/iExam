@@ -149,10 +149,16 @@ const UserInfoModal = ({
       onCancel={() => closeModal()}
       okText={!isEditing ? "Save" : "Update"}
     >
-      <FontAwesomeIconWrapper 
-        onClick={() => {
-        setUserEditing(true)
-      }} icon={faUserEdit} />
+      <Row columns="1fr">
+        <FontAwesomeIconWrapper 
+          onClick={() => {
+            setUserEditing(!isUserEditing)
+          }}
+          icon={faUserEdit}
+        />
+      </Row>
+      
+      <Row columns="1fr 1fr"></Row>
       <Row columns="1fr 1fr">
         <ColumnWrapper>
           <LabelWrapper>First Name</LabelWrapper>

@@ -25,6 +25,8 @@ import CoursePageForStudents from './components/Courses/Student/CoursePage';
 import ExamPageForTeacher from './components/Exams/Teacher/ExamPage';
 import ExamPageForStudents from './components/Exams/Student/ExamPage';
 import { push } from 'connected-react-router';
+import EvaluatePaper from './components/Exams/Teacher/EvaluatePaper';
+import ExamResult from './components/Exams/Teacher/ExamResult';
 
 require('dotenv').config();
 const loadUser = async (dispatch) => {
@@ -69,7 +71,9 @@ const App = ({ user, dispatch }) => {
         { userType === "teacher" && <Route path="/question/:questionID" component={QuestionPageForTeacher} /> }
         { userType === "teacher" && <Route path="/exam/:examID/question/:questionID" component={QuestionPageForTeacher} /> }
         { userType === "teacher" && <Route path="/courses" component={CoursesForTeacher} /> }
+        { userType === "teacher" && <Route path="/exam/:examID/paper/:studentID" component={EvaluatePaper} /> }
         { userType === "teacher" && <Route path="/course/:id" component={CoursePageForTeacher} /> }
+        { userType === "teacher" && <Route path="/exam/:examID/result" component={ExamResult} /> }
         { userType === "teacher" && <Route path="/exam/:id" component={ExamPageForTeacher} /> }
         { userType === "teacher" && <Route path="/exams" component={ExamsForTeacher} /> }
         <Route path="/" component={Dashboard} />

@@ -16,6 +16,14 @@ const Container = styled.div`
   overflow: auto;
 `;
 
+const Body = styled.div`
+  overflow: auto;
+  height: calc(100vh - 480px);
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+`;
+
 const HeaderLabel = styled.div`
   color: grey;
 `;
@@ -103,12 +111,19 @@ const EnrolledStudents = ({
        onChange={(e) => handleSearch(e.target.value)}
       />
       <Row columns="repeat(2, 1fr) 20px">
-      <HeaderLabel>Regi No.</HeaderLabel>
+        <HeaderLabel>Regi No.</HeaderLabel>
         <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
-      {_.map(searchStudents, (student, index) => <Card key={`student_${index}`} student={student} 
-      course = {course} updateCourseOnUi = {updateCourseOnUi} />)}
+      <Body>
+        {_.map(searchStudents, (student, index) => <Card
+          key={`student_${index}`}
+          student={student} 
+          course={course}
+          updateCourseOnUi={updateCourseOnUi}
+        />)}
+      </Body>
+      
     </Container>
   );
 };

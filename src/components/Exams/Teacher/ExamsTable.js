@@ -27,9 +27,9 @@ const ExamCard = ({ dispatch, exam, setExamToEdit, showCreateEditModal, deleteEx
           <TableRowChild> { exam.department.departmentCode } </TableRowChild>
           <TableRowChild>
             <OperationWrapper>
+              {
               <Button
                 type="primary"
-                disabled={!shouldEnter}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -37,6 +37,7 @@ const ExamCard = ({ dispatch, exam, setExamToEdit, showCreateEditModal, deleteEx
                   // setExamToEdit(_.create('', exam));
                   // showCreateEditModal(true);
                 }}>Enter</Button>
+              }
             </OperationWrapper>
           </TableRowChild>
         </TableRow>
@@ -56,7 +57,7 @@ const ExamTable = ({
   dispatch
 }) => {
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(5);
   const [total, setTotal] = useState(1);
   const paginatedExams = exams.slice((current-1)*pageSize, current*pageSize);
 

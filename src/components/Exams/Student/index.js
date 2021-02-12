@@ -32,12 +32,15 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
         if (isExamsChanged) {
           try {
             setLoading(true);
-            const { payload = [] } = await api.getExams({});
-            console.log(payload);
+            const { payload: mycourses } = await api.getCourses({ enrolledStudents: user._id });
+            let exams = []
+            _.each(mycourses, course => {
+              exams = exams.concat(course.exams)
+            })
             setExamsObj(
-              _.groupBy(payload, exam => getExamStatus(exam).toLowerCase())
+              _.groupBy(exams, exam => getExamStatus(exam).toLowerCase())
             )
-            setExams(payload);
+            setExams(exams);
           } catch (err) {
             console.log(err);
           } finally {
@@ -55,10 +58,10 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
                 <Container>
                   <PageHeader>Exams</PageHeader>
 
-                  <Tabs defaultActiveKey="0" tabPosition="left" style={{ height: 220 }}>
+                  <Tabs defaultActiveKey="1" tabPosition="left" style={{ height: 450 }}>
                     {_.map(['upcoming', 'running', 'ended'], (v, i) => (
                       <TabPane tab={smartLabel(v)} key={i}>
-                        <ExamsTable exams={examsObj[v]} isLoading={isLoading} />
+                        <ExamsTable noEnterButton={v == "upcoming"} exams={examsObj[v]} isLoading={isLoading} />
                       </TabPane>
                     ))}
                   </Tabs>

@@ -45,7 +45,6 @@ const QuestionBody = ({
   question,
   setQuestionValue
 }) => {
-  console.log(question.body);
   return (
     <Container>
       <SunEditor
@@ -68,7 +67,6 @@ const QuestionBody = ({
               ['link', 'math', 'image', 'video', 'fullScreen', 'showBlocks', 'codeView', 'preview', 'print', 'save']
           ],
           callBackSave : function (contents, isChanged) {
-              console.log(contents);
           }
         }}
         onChange={(content) => {
