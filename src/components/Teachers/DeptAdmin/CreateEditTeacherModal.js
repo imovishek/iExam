@@ -193,7 +193,7 @@ const CreateEditTeacherModal = ({
               checkCredentialOnChangeDebounced(e.target.value);
             }}
           />
-          <ErrorWrapper> {errors['email']} </ErrorWrapper>
+          <ErrorWrapper> {errors['shortName']} </ErrorWrapper>
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Email</LabelWrapper>
