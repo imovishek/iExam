@@ -11,7 +11,7 @@ const studentSchema = new Schema({
         type: String,
         required: true
     },
-    phoneNuber: String,
+    phoneNumber: String,
     userType: { type: String, default: 'student' },
     department: {
         type: departmentSchema,
