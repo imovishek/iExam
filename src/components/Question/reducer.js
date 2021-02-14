@@ -1,4 +1,4 @@
-import { ON_UPDATE_QUESTIONS } from './constants';
+import { ON_UPDATE_QUESTIONS } from './constants'
 
 const reducer = (state = { questions: [] }, action) => {
   switch (action.type) {
@@ -6,10 +6,10 @@ const reducer = (state = { questions: [] }, action) => {
       return {
         ...state,
         questions: action.questions
-      };
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default reducer;
+export default reducer

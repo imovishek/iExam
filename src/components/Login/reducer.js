@@ -1,4 +1,4 @@
-import { SET_USER } from './constants';
+import { SET_USER } from './constants'
 
 const reducer = (state = { user: {} }, action) => {
   switch (action.type) {
@@ -6,10 +6,10 @@ const reducer = (state = { user: {} }, action) => {
       return {
         ...state,
         user: action.user
-      };
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default reducer;
+export default reducer

@@ -1,15 +1,15 @@
-import { ON_UPDATE_COURSES } from './constants';
+import { ON_UPDATE_EXAMS } from './constants'
 
-const reducer = (state = { courses: [] }, action) => {
+const reducer = (state = { exams: [] }, action) => {
   switch (action.type) {
-    case ON_UPDATE_COURSES:
+    case ON_UPDATE_EXAMS:
       return {
         ...state,
-        courses: action.courses
-      };
+        exams: action.exams
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default reducer;
+export default reducer

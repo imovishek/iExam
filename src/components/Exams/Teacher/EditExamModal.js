@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import examValidator from '../exam.validation'
 import { Modal, Input, Select, DatePicker, TimePicker } from 'antd'
 import moment from 'moment'
@@ -34,20 +34,16 @@ const ErrorWrapper = styled.p`
   margin-left: 5px;
 `
 
-const CreateExamModal = ({
+const EditExamModal = ({
   selectedExam,
   visible,
   setVisibility,
-  courseId,
-  createExam,
   updateExam
 }) => {
-  const isEditing = !(!selectedExam)
-  const title = isEditing ? 'Edit Exam' : 'Create Exam'
+  const title = 'Edit Exam';
   const defaultExam = {
     title: '',
     examCode: '',
-    course: courseId,
     department: {
       departmentCode: 'CSE',
       departmentName: 'Computer Science and Engineering'
@@ -78,6 +74,14 @@ const CreateExamModal = ({
     setErrors(newErrors)
   }
 
+  useEffect(() => {
+    const newExam = {
+      ...selectedExam,
+      startDate: moment(selectedExam.startDate),
+    };
+    setExam(newExam);
+  }, [selectedExam])
+
   const closeModal = () => {
     setVisibility(false)
     setExam(deepCopy({ ...defaultExam }))
@@ -90,8 +94,7 @@ const CreateExamModal = ({
     if (!_.isEmpty(errors)) {
       return
     }
-    if (isEditing) updateExam(exam)
-    else createExam(exam)
+    updateExam(exam)
     closeModal()
   }
 
@@ -104,7 +107,7 @@ const CreateExamModal = ({
       height={800}
       onOk={() => onSubmit()}
       onCancel={() => closeModal()}
-      okText={!isEditing ? 'Save' : 'Update'}
+      okText="Update"
     >
       <Row columns="1fr 1fr 1fr">
         <ColumnWrapper>
@@ -179,4 +182,4 @@ const CreateExamModal = ({
   )
 }
 
-export default CreateExamModal
+export default EditExamModal

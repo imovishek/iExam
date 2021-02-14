@@ -1,10 +1,10 @@
-import { combineReducers } from "redux";
-import loginReducer from './components/Login/reducer';
-import navBarReducer from './components/NavBar/reducer';
+import { combineReducers } from 'redux'
+import loginReducer from './components/Login/reducer'
+import navBarReducer from './components/NavBar/reducer'
 import coursesReducer from './components/Courses/reducer'
 import teacherReducer from './components/Teachers/reducer'
 import studentReducer from './components/Students/reducer'
-import { connectRouter } from 'connected-react-router';
+import { connectRouter } from 'connected-react-router'
 
 const createReducers = (history) =>
   combineReducers({
@@ -13,6 +13,6 @@ const createReducers = (history) =>
     courseData: coursesReducer,
     teacherData: teacherReducer,
     studentData: studentReducer,
-    router: connectRouter(history),
-  });
-export default createReducers;
+    router: connectRouter(history)
+  })
+export default createReducers

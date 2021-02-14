@@ -1,41 +1,34 @@
 
-import styled from "styled-components";
+import styled from 'styled-components';
 import _ from 'underscore';
-import { Spin, Button, Popconfirm } from "antd";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import Pagination from "../../Common/Pagination";
-import React, { useState, useEffect } from "react";
-import { deleteCourse } from "../../../utitlities/api";
-import { push } from "connected-react-router";
-import { connect } from "react-redux";
-import { smartLabel } from "../../../utitlities/common.functions";
-import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from "../../styles/tableStyles";
+import { Spin } from 'antd';
+import Pagination from '../../Common/Pagination';
+import React, { useState, useEffect } from 'react';
+import { push } from 'connected-react-router';
+import { connect } from 'react-redux';
+import { smartLabel } from '../../../utitlities/common.functions';
+import { TableRow, TableRowChild, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles';
 
 const TableRowStyled = styled(TableRow)`
   cursor: pointer;
   :hover {
     background: #e4e4e4;
   }
-`;
+`
 
-const getName = obj => `${obj.firstName} ${obj.lastName}`;
+const getName = obj => `${obj.firstName} ${obj.lastName}`
 
-const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, deleteCourse }) => {
-    return (
-        <TableRowStyled onClick={() => dispatch(push(`/course/${course._id}`))}>
-            <TableRowChild> { course.title } </TableRowChild>
-            <TableRowChild> { course.courseCode } </TableRowChild>
-            <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
-            <TableRowChild> { course.department.departmentCode } </TableRowChild>
-            <TableRowChild> { smartLabel(course.status) } </TableRowChild>
-        </TableRowStyled>
-    )
-};
+const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, deleteCourse }) => (
+  <TableRowStyled onClick={() => dispatch(push(`/course/${course._id}`))}>
+    <TableRowChild> { course.title } </TableRowChild>
+    <TableRowChild> { course.courseCode } </TableRowChild>
+    <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
+    <TableRowChild> { course.department.departmentCode } </TableRowChild>
+    <TableRowChild> { smartLabel(course.status) } </TableRowChild>
+  </TableRowStyled>
+)
 
-const NoData = () => {
-  return <CenterNoData>No Data</CenterNoData>
-};
+const NoData = () => <CenterNoData>No Data</CenterNoData>
 
 const CourseTable = ({
   courses = [],
@@ -45,16 +38,16 @@ const CourseTable = ({
   deleteCourse,
   dispatch
 }) => {
-  const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
-  const [total, setTotal] = useState(1);
-  const paginatedCourses = courses.slice((current-1)*pageSize, current*pageSize);
+  const [current, setCurrent] = useState(1)
+  const [pageSize, setPageSize] = useState(5)
+  const [total, setTotal] = useState(1)
+  const paginatedCourses = courses.slice((current - 1) * pageSize, current * pageSize)
 
   useEffect(() => {
-    setTotal(courses.length);
-    if (!paginatedCourses.length) setCurrent(1);
-  }, [courses, paginatedCourses.length]);
-  const isNoData = courses.length === 0;
+    setTotal(courses.length)
+    if (!paginatedCourses.length) setCurrent(1)
+  }, [courses, paginatedCourses.length])
+  const isNoData = courses.length === 0
   return (
     <div>
       <TableHeader>
@@ -66,14 +59,14 @@ const CourseTable = ({
       </TableHeader>
       {(isNoData && !isLoading) && <NoData />}
       { !isLoading && _.map(paginatedCourses, (course, index) => (
-          <CourseCard
-            key={`courses_${index}`}
-            course={course}
-            setCourseToEdit={setCourseToEdit}
-            showCreateEditModal={showCreateEditModal}
-            deleteCourse={deleteCourse}
-            dispatch={dispatch}
-          />
+        <CourseCard
+          key={`courses_${index}`}
+          course={course}
+          setCourseToEdit={setCourseToEdit}
+          showCreateEditModal={showCreateEditModal}
+          deleteCourse={deleteCourse}
+          dispatch={dispatch}
+        />
       ))}
       { (!isLoading && !isNoData) &&
         <Pagination
@@ -81,8 +74,8 @@ const CourseTable = ({
           pageSize={pageSize}
           total={total}
           onChange={(page, pageSize) => {
-            setCurrent(page);
-            setPageSize(pageSize);
+            setCurrent(page)
+            setPageSize(pageSize)
           }}
         />
       }
@@ -91,13 +84,12 @@ const CourseTable = ({
           <Spin size="large" />
         </SpinWrapper>
       }
-    </div> 
-  );
-};
+    </div>
+  )
+}
 
 const mapDispatchToProps = dispatch => ({
   dispatch
-});
+})
 
-
-export default connect(null, mapDispatchToProps)(CourseTable);
+export default connect(null, mapDispatchToProps)(CourseTable)

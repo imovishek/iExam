@@ -1,30 +1,24 @@
-import Search from "antd/lib/input/Search";
-import styled from "styled-components";
-import _ from 'underscore';
-import { Button, Popconfirm } from "antd";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import api from "../../../../utitlities/api";
-import { useEffect, useState } from "react";
-import { push } from "connected-react-router";
-import { connect } from "react-redux";
-import { students } from "../../../../utitlities/dummy";
-import { useParams } from "react-router";
-
+import Search from 'antd/lib/input/Search'
+import styled from 'styled-components'
+import _ from 'underscore'
+import api from '../../../../utitlities/api'
+import { useEffect, useState } from 'react'
+import { push } from 'connected-react-router'
+import { connect } from 'react-redux'
+import { useParams } from 'react-router'
 
 const SearchStyled = styled(Search)`
   width: 100%;
   margin-bottom: 10px;
-`;
+`
 
 const Container = styled.div`
-  overflow: auto;
-  height: 100%;
-  position: relative;
-`;
+
+`
 
 const HeaderLabel = styled.div`
   color: grey;
-`;
+`
 
 const Wrapper = styled.div`
   display: flex;
@@ -34,18 +28,14 @@ const Wrapper = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-const ButtonStyled = styled(Button)`
-  padding: 1px 1px;
-  height: 25px;
-`;
+`
 const Row = styled.div`
   display: grid;
   grid-gap: 10px;
   padding: 3px;
   border-radius: 5px;
   grid-template-columns: ${props => props.columns || 'auto'};
-`;
+`
 
 const BodyRow = styled.div`
   padding: 3px;
@@ -59,42 +49,40 @@ const BodyRow = styled.div`
   :hover {
     background: ${props => props.isSelected ? '#a3b1bd' : '#e4e4e4'};
   }
-`;
+`
 
 const Body = styled.div`
   overflow: auto;
-  position: absolute;
-  height: calc(100% - 140px);
+  height: calc(100% - 74px);
   ::-webkit-scrollbar {
     width: 0px;
-    background: transparent;
   }
-`;
+`
 
 const TextCenter = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-`;
+`
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ dispatch, student, totalMarks, exam, updateExamParticipantOnUI, isBanNotShowing = false }) => {
-  const { examID, studentID } = useParams();
+  const { studentID } = useParams()
   const banStudentButtonHandler = async (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+    e.stopPropagation()
+    e.preventDefault()
     const update = {
       $push: {
         bannedParticipants: student._id
       }
-    };
-    if (_.any(exam.bannedParticipants, enst => enst._id === student._id)) delete update.$push;
+    }
+    if (_.any(exam.bannedParticipants, enst => enst._id === student._id)) delete update.$push
     await api.updateExam(exam, {
       ...update,
       $pull: {
         participants: student._id
       }
-    });
-    await updateExamParticipantOnUI();
+    })
+    await updateExamParticipantOnUI()
   }
 
   return (
@@ -103,46 +91,46 @@ const Card = ({ dispatch, student, totalMarks, exam, updateExamParticipantOnUI, 
       <Wrapper>{getName(student)}</Wrapper>
       <Wrapper> <TextCenter>{totalMarks || 0} </TextCenter> </Wrapper>
     </BodyRow>
-  );
-};
+  )
+}
 
 const Participants = ({
   students, exam, updateExamParticipantOnUI, dispatch, paper
 }) => {
-  const [ searchStudents, setSearchStudents ] = useState(students);
+  const [searchStudents, setSearchStudents] = useState(students)
   useEffect(() => {
-    setSearchStudents(students);
-  }, [students]);
+    setSearchStudents(students)
+  }, [students])
   const handleSearch = (value) => {
     const pattern = value
       .trim()
-      .replace(/ +/g, "")
-      .toLowerCase();
+      .replace(/ +/g, '')
+      .toLowerCase()
 
     const afterSearchStudents = _.filter(students, student =>
       `${student.firstName}${student.lastName}${student.registrationNo}`
         .trim()
-        .replace(/ +/g, "")
+        .replace(/ +/g, '')
         .toLowerCase()
         .includes(pattern)
-    );
-    setSearchStudents(afterSearchStudents);
+    )
+    setSearchStudents(afterSearchStudents)
   }
-  const [marksObj, setMarksObj] = useState({});
+  const [marksObj, setMarksObj] = useState({})
 
   useEffect(() => {
-    const newMarksObj = {};
+    const newMarksObj = {}
     _.each(exam.papers, paper => {
-      newMarksObj[paper.student] = paper.totalMarks;
-    });
-    setMarksObj(newMarksObj);
+      newMarksObj[paper.student] = paper.totalMarks
+    })
+    setMarksObj(newMarksObj)
   }, [exam.papers])
   return (
     <Container>
       <SearchStyled
-       allowClear
-       placeholder="Search"
-       onChange={(e) => handleSearch(e.target.value)}
+        allowClear
+        placeholder="Search"
+        onChange={(e) => handleSearch(e.target.value)}
       />
       <Row columns="repeat(2, 1fr) 80px">
         <HeaderLabel>Regi No.</HeaderLabel>
@@ -153,8 +141,8 @@ const Participants = ({
         {_.map(searchStudents, (student, index) => <Card dispatch={dispatch} totalMarks={marksObj[student._id]} key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
       </Body>
     </Container>
-  );
-};
+  )
+}
 
-const mapDispatchToProps = dispatch => ({ dispatch });
-export default connect(null, mapDispatchToProps)(Participants);
+const mapDispatchToProps = dispatch => ({ dispatch })
+export default connect(null, mapDispatchToProps)(Participants)
