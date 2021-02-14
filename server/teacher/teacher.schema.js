@@ -9,7 +9,9 @@ const { Schema } = mongoose;
 const teacherSchema =new Schema({
     firstName: String,
     lastName: String,
+    designation: String,
     shortName: String,
+    phoneNumber: String,
     userType: { type: String, default: 'teacher' },
     department: {
         type: departmentSchema,
