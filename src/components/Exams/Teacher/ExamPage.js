@@ -5,12 +5,11 @@ import { BodyWrapper, Container, Col, ButtonStyled } from '../../../utitlities/s
 import React, { useEffect, useState } from 'react'
 import api from '../../../utitlities/api'
 import styled from 'styled-components'
-import { message, Menu, Dropdown, Button } from 'antd'
+import { message, Menu, Dropdown, Button, Select } from 'antd'
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import Questions from './components/Questions'
-import Participants from './components/Participants'
-import BannedParticipants from './components/BannedParticipants'
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from '../../styles/pageStyles'
+import Students from './components/Students'
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, LabelWrapper, BodyRow } from '../../styles/pageStyles'
 import { useParams } from 'react-router'
 import { goBack, push } from 'connected-react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -19,6 +18,7 @@ import { getObjectByAddingID } from '../../../utitlities/common.functions'
 import Loading from '../../Common/Loading'
 import EditExamModal from './EditExamModal'
 
+const { Option } = Select;
 
 const StyledDropdown = styled(Dropdown)`
   width: 130px;
@@ -36,6 +36,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [exam, setExam] = useState({})
   const [teachersObj, setTeachersObj] = useState({})
   const [showEditExam, setShowEditExam] = useState(false);
+  const [showingStudentType, setShowingStudentType] = useState("participants")
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     try {
@@ -82,7 +83,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
 
   const StyledBodyRow = (props) => (
     <BodyRow>
-      <Col rows="32px minmax(300px, calc(100vh - 380px))">
+      <Col rows="32px minmax(300px, calc(100vh - 320px))">
         {props.children}
       </Col>
     </BodyRow>
@@ -145,13 +146,13 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
             </RightButtonWrapper>
           </TileHeaderWrapper>
           <Row columns="1fr">
-            <StyledDropdown overlay={gotoMenu}>
+            <StyledDropdown overlay={gotoMenu} trigger={['click']}>
               <Button>
               Goto <DownOutlined />
               </Button>
             </StyledDropdown>
           </Row>
-          <Row columns="1.2fr .7fr .7fr">
+          <Row columns="3fr 2fr">
             <StyledBodyRow>
               <TileHeaderWrapper columns="1fr 1fr">
                 <LabelWrapper>Questions</LabelWrapper>
@@ -173,13 +174,26 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
 
             </StyledBodyRow>
             <StyledBodyRow>
-              <TileHeaderWrapper><LabelWrapper>Participants</LabelWrapper></TileHeaderWrapper>
-              <Participants students={exam.participants} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>
+              <Select
+                style={{ width: '200px' }}
+                value={showingStudentType}
+                onChange={v => setShowingStudentType(v)}
+              >
+                <Option key="participants" value="participants">Participants</Option>
+                <Option key="banned" value="banned">Banned Students</Option>
+              </Select>
+              <Students
+                showingStudentType={showingStudentType}
+                participants={exam.participants}
+                bannedParticipants={exam.bannedParticipants}
+                exam={exam}
+                updateExamOnUI={updateExamParticipantOnUI}
+              />
             </StyledBodyRow>
-            <StyledBodyRow>
+            {/* <StyledBodyRow>
               <TileHeaderWrapper><LabelWrapper>Banned Participants</LabelWrapper></TileHeaderWrapper>
               <BannedParticipants students={exam.bannedParticipants} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>
-            </StyledBodyRow>
+            </StyledBodyRow> */}
           </Row>
         </Container>
       </BodyWrapper>

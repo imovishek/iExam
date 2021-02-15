@@ -3,7 +3,6 @@ import _ from 'underscore';
 import { stFormatDate, splitStartTime, splitDuration, smartLabel, getExamStatus } from '../../../../utitlities/common.functions';
 
 const Container = styled.div`
-  overflow: auto;
 `
 
 const HeaderLabel = styled.div`
@@ -27,6 +26,15 @@ const Row = styled.div`
   user-select: none;
 `;
 
+const Body = styled.div`
+  overflow: auto;
+  height: calc(100% - 32px);
+  min-height: 210px;
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+`
+
 const Card = ({ exam }) => (
   <Row columns="repeat(5, 1fr)">
     <Wrapper>{exam.title}</Wrapper>
@@ -48,7 +56,9 @@ const Exams = ({
       <HeaderLabel>Duration</HeaderLabel>
       <HeaderLabel>Status</HeaderLabel>
     </Row>
-    {_.map(exams, (exam, index) => <Card key={`exam_${index}`} exam={exam} />)}
+    <Body>
+      {_.map(exams, (exam, index) => <Card key={`exam_${index}`} exam={exam} />)}
+    </Body>
   </Container>
 )
 

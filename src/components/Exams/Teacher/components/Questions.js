@@ -46,7 +46,7 @@ const Body = styled.div`
 `
 
 const Card = ({ onUpdateExamUI, teachersObj = {}, question, dispatch, exam }) => (
-  <Row columns="repeat(5, 1fr)" onClick={() => dispatch(push(`/exam/${exam._id}/question/${question._id}`))}>
+  <Row columns="repeat(4, 1fr) 30px" onClick={() => dispatch(push(`/exam/${exam._id}/question/${question._id}`))}>
     <Wrapper>{question.title}</Wrapper>
     <Wrapper>{getName(teachersObj[question.authorID])}</Wrapper>
     <Wrapper>{smartLabel(question.type)}</Wrapper>
@@ -87,7 +87,7 @@ const Questions = ({
   onUpdateExamUI
 }) => (
   <Container>
-    <Row header columns="repeat(5, 1fr)">
+    <Row header columns="repeat(4, 1fr) 30px">
       <HeaderLabel>Title</HeaderLabel>
       <HeaderLabel>Author</HeaderLabel>
       <HeaderLabel>Type</HeaderLabel>

@@ -6,17 +6,15 @@ import { BodyWrapper, Container, Col, ButtonStyled } from '../../../utitlities/s
 import React, { useEffect, useState } from 'react';
 import api from '../../../utitlities/api';
 import styled from 'styled-components';
-import moment from 'moment';
-import { Button, Input, Select, DatePicker } from 'antd';
+import { Select, } from 'antd';
 import Students from './components/Students';
 import Exams from './components/Exams';
-import EnrollmentRequest from './components/EnrollmentRequest';
 import { useParams } from 'react-router';
 import Loading from '../../Common/Loading';
 import { goBack } from 'connected-react-router';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from '../../styles/pageStyles';
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, LabelWrapper, BodyRow } from '../../styles/pageStyles';
 import ImportStudentsModal from './ImportStudentsModal';
 import CreateExamModal from './CreateExamModal';
 const { Option } = Select
@@ -79,7 +77,6 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
         {props.children}
       </Col>
     </BodyRow>
-    
   );
 
   return (

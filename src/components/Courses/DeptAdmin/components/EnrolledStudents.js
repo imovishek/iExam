@@ -13,7 +13,6 @@ const SearchStyled = styled(Search)`
 `
 
 const Container = styled.div`
-  overflow: auto;
 `
 
 const HeaderLabel = styled.div`
@@ -34,6 +33,14 @@ const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   cursor: pointer;
   margin: auto;
   margin-left: 5px;
+`
+const Body = styled.div`
+  overflow: auto;
+  height: calc(100% - 74px);
+  min-height: 210px;
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
 `
 
 const Row = styled.div`
@@ -106,9 +113,17 @@ const EnrolledStudents = ({
         <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel></HeaderLabel>
       </Row>
-      {_.map(searchStudents, (student, index) => <Card
-        key={`student_${index}`} student={student}
-        course = {course} updateCourseOnUi = {updateCourseOnUi} />)}
+      <Body>
+        {_.map(searchStudents, (student, index) => (
+          <Card
+            key={`student_${index}`}
+            student={student}
+            course = {course}
+            updateCourseOnUi = {updateCourseOnUi}
+          />
+        ))}
+      </Body>
+      
     </Container>
   )
 }

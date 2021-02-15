@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PageHeader, TileHeaderWrapper, RightButtonWrapper } from '../../styles/pageStyles'
 import QuestionPaper from './components/QuestionPaper'
 import Loading from '../../Common/Loading'
-import Participants from './components/Participants'
+import Students from './components/Students'
 
 const ButtonStyled = styled(Button)`
   height: 30px;
@@ -32,7 +32,7 @@ const FontAwesomeIconWrapper = styled.div`
 const TileBodyWrapper = styled.div`
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 300px 1fr;
   height: calc(100vh - 120px);
   background: #f9f9f9;
 `
@@ -90,11 +90,11 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
   return (
     <div>
       <CheckAuthentication />
+      { isLoading && <Loading isLoading={isLoading} /> }
       <BodyWrapper>
         <NavBar />
-        <Container>
-          { isLoading && <Loading isLoading={isLoading} /> }
-          <TileHeaderWrapper>
+        <Container rows="55px 1fr">
+          <TileHeaderWrapper columns="1fr 1fr">
             <div>
               {hasBack &&
                 <FontAwesomeIconWrapper
@@ -116,7 +116,12 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
             </RightButtonWrapper>
           </TileHeaderWrapper>
           <TileBodyWrapper>
-            <Participants students={exam.participants} exam={exam} isBanNotShowing/>
+            <Students
+              participants={exam.participants}
+              exam={exam}
+              showingStudentType="participants"
+              updateExamOnUI={updateExamOnUI}
+            />
             <QuestionPaper
               isLoading={isLoading}
               setPaper={setPaper}

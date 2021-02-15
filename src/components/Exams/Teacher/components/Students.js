@@ -6,6 +6,9 @@ import { useEffect, useState } from 'react'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
 import { useParams } from 'react-router'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
+import { Dropdown, Menu } from 'antd'
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -13,7 +16,8 @@ const SearchStyled = styled(Search)`
 `
 
 const Container = styled.div`
-
+  display: grid;
+  grid-template-rows: ${props => props.rows || 'auto'};
 `
 
 const HeaderLabel = styled.div`
@@ -53,7 +57,10 @@ const BodyRow = styled.div`
 
 const Body = styled.div`
   overflow: auto;
-  height: calc(100% - 74px);
+  display: flex;
+  height: 100%;
+  max-height: calc(100vh - 200px);
+  flex-direction: column;
   ::-webkit-scrollbar {
     width: 0px;
   }
@@ -65,11 +72,16 @@ const TextCenter = styled.div`
   width: 100%;
 `
 const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ dispatch, student, totalMarks, exam, updateExamParticipantOnUI, isBanNotShowing = false }) => {
+const Card = ({
+  dispatch,
+  student,
+  totalMarks,
+  exam,
+  updateExamOnUI,
+  showingStudentType
+}) => {
   const { studentID } = useParams()
   const banStudentButtonHandler = async (e) => {
-    e.stopPropagation()
-    e.preventDefault()
     const update = {
       $push: {
         bannedParticipants: student._id
@@ -82,25 +94,87 @@ const Card = ({ dispatch, student, totalMarks, exam, updateExamParticipantOnUI, 
         participants: student._id
       }
     })
-    await updateExamParticipantOnUI()
+    await updateExamOnUI()
   }
 
+  const unbanStudentButtonHandler = async (e) => {
+    const update = {
+      $push: {
+        participants: student._id
+      }
+    }
+    if (_.any(exam.participants, enst => enst._id === student._id)) delete update.$push
+    await api.updateExam(exam, {
+      ...update,
+      $pull: {
+        bannedParticipants: student._id
+      }
+    })
+    await updateExamOnUI()
+  }
+
+  const handleMenuClick = (e) => {
+    e.domEvent.stopPropagation();
+    e.domEvent.preventDefault();
+    switch(e.key) {
+      case 'ban':
+        banStudentButtonHandler();
+        break;
+      case 'unban':
+        unbanStudentButtonHandler();
+        break;
+      default:
+        break;
+    }
+  }
+
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      {showingStudentType === "participants" && <Menu.Item key="ban">
+        Ban
+      </Menu.Item>}
+      {showingStudentType === "banned" && <Menu.Item key="unban">
+        Unban
+      </Menu.Item>}
+    </Menu>
+  )
+
   return (
-    <BodyRow isSelected={studentID === student._id} onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 80px">
+    <BodyRow isSelected={studentID === student._id} onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 80px 20px">
       <Wrapper>{student.registrationNo}</Wrapper>
       <Wrapper>{getName(student)}</Wrapper>
       <Wrapper> <TextCenter>{totalMarks || 0} </TextCenter> </Wrapper>
+      <Wrapper>
+        <Dropdown overlay={menu} trigger={['click']}>
+          <FontAwesomeIcon
+            style={{ height: '20px' }}
+            onClick={(e) => e.stopPropagation()}
+            icon={faEllipsisH}
+            size="md"
+          />
+        </Dropdown>
+      </Wrapper>
     </BodyRow>
   )
 }
 
-const Participants = ({
-  students, exam, updateExamParticipantOnUI, dispatch, paper
+const Students = ({
+  participants,
+  bannedParticipants,
+  exam,
+  updateExamOnUI,
+  dispatch,
+  showingStudentType
 }) => {
-  const [searchStudents, setSearchStudents] = useState(students)
+  const [students, setStudents] = useState([]);
+  const [searchStudents, setSearchStudents] = useState([])
   useEffect(() => {
-    setSearchStudents(students)
-  }, [students])
+    const newStudents = showingStudentType === 'participants' ?
+      participants :
+      bannedParticipants;
+    setStudents(newStudents);
+    setSearchStudents(newStudents);
+  }, [showingStudentType, participants, bannedParticipants])
   const handleSearch = (value) => {
     const pattern = value
       .trim()
@@ -126,23 +200,34 @@ const Participants = ({
     setMarksObj(newMarksObj)
   }, [exam.papers])
   return (
-    <Container>
+    <Container rows="32px 32px 1fr">
       <SearchStyled
         allowClear
         placeholder="Search"
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Row columns="repeat(2, 1fr) 80px">
+      <Row columns="repeat(2, 1fr) 80px 20px">
         <HeaderLabel>Regi No.</HeaderLabel>
         <HeaderLabel>Name</HeaderLabel>
         <HeaderLabel><TextCenter> Total Marks </TextCenter></HeaderLabel>
+        <div> </div>
       </Row>
       <Body>
-        {_.map(searchStudents, (student, index) => <Card dispatch={dispatch} totalMarks={marksObj[student._id]} key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
+        {_.map(searchStudents, (student, index) => (
+          <Card
+            dispatch={dispatch}
+            totalMarks={marksObj[student._id]}
+            key={`student_${index}`}
+            student={student}
+            exam={exam}
+            updateExamOnUI={updateExamOnUI}
+            showingStudentType={showingStudentType}
+          />
+        ))}
       </Body>
     </Container>
   )
 }
 
 const mapDispatchToProps = dispatch => ({ dispatch })
-export default connect(null, mapDispatchToProps)(Participants)
+export default connect(null, mapDispatchToProps)(Students)
