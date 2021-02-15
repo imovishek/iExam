@@ -1,23 +1,16 @@
-import Search from "antd/lib/input/Search";
-import styled from "styled-components";
-import _ from 'underscore';
-import { stFormatDate, getDuration } from "../../../../utitlities/common.functions";
-import { Button } from "antd";
-import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { LabelWrapper } from "../../../styles/pageStyles";
-
-const SearchStyled = styled(Search)`
-  width: 100%;
-`;
+import styled from 'styled-components'
+import { Button } from 'antd'
+import React, { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { LabelWrapper } from '../../../styles/pageStyles'
 
 const Container = styled.div`
   border-radius: 8px;
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   height: calc(100vh - 150px);
-`;
+`
 
 const Body = styled.div`
   overflow: auto;
@@ -25,23 +18,7 @@ const Body = styled.div`
   ::-webkit-scrollbar {
     width: 0px;
   }
-`;
-
-const HeaderLabel = styled.div`
-  color: grey;
-  padding: 10px;
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  height: 40px;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  padding: 10px;
-  text-overflow: ellipsis;
-`;
+`
 
 const Row = styled.div`
   display: grid;
@@ -53,51 +30,40 @@ const Row = styled.div`
   color: white;
   margin-top: 10px;
   user-select: none;
-`;
+`
 
-const HeaderRow = styled.div`
-  background: #d8d8d8;
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: ${props => props.columns || 'auto'};
-  border-radius: 8px;
-`;
-
-const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ announcement }) => {
-  return (
-    <Row columns="repeat(1, 1fr)">
-      {announcement}
-    </Row>
-  );
-};
+const Card = ({ announcement }) => (
+  <Row columns="repeat(1, 1fr)">
+    {announcement}
+  </Row>
+)
 
 const Announcements = ({
   announcements
 }) => {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0)
   return (
     <Container>
       <LabelWrapper>Announcements</LabelWrapper>
       <FontAwesomeIcon
         icon={faArrowLeft}
-        style={{marginRight: '10px', cursor: 'pointer'}}
-        onClick={() => setIndex(Math.max(0, index-1))}
+        style={{ marginRight: '10px', cursor: 'pointer' }}
+        onClick={() => setIndex(Math.max(0, index - 1))}
       >
         Prev
       </FontAwesomeIcon>
 
       <FontAwesomeIcon
         icon={faArrowRight}
-        style={{marginRight: '10px', cursor: 'pointer'}}
-        onClick={() => setIndex(Math.min(announcements.length-1, index+1))}
+        style={{ marginRight: '10px', cursor: 'pointer' }}
+        onClick={() => setIndex(Math.min(announcements.length - 1, index + 1))}
       >
         Next
       </FontAwesomeIcon>
 
       <Button
         onClick={() => setIndex(0)}
-        style={{float: 'right'}}
+        style={{ float: 'right' }}
       >
         Latest
       </Button>
@@ -106,7 +72,7 @@ const Announcements = ({
         <Card announcement={announcements[index]} />
       </Body>
     </Container>
-  );
-};
+  )
+}
 
-export default Announcements;
+export default Announcements

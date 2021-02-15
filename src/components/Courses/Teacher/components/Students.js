@@ -2,7 +2,7 @@ import Search from 'antd/lib/input/Search'
 import styled from 'styled-components'
 import _ from 'underscore'
 import { Popconfirm } from 'antd'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import api from '../../../../utitlities/api'
 import { useEffect, useState } from 'react'
@@ -15,6 +15,14 @@ const SearchStyled = styled(Search)`
 const Container = styled.div`
 `
 
+const Body = styled.div`
+  overflow: auto;
+  height: calc(100% - 85px);
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+`
+
 const HeaderLabel = styled.div`
   color: grey;
 `
@@ -22,7 +30,7 @@ const HeaderLabel = styled.div`
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 30px;
+  height: 20px;
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
@@ -34,30 +42,41 @@ const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   margin: auto;
   margin-left: 5px;
 `
-const Body = styled.div`
-  overflow: auto;
-  height: calc(100% - 74px);
-  min-height: 210px;
-  ::-webkit-scrollbar {
-    width: 0px;
-  }
-`
 
 const Row = styled.div`
+  padding: 10px;
+  border-radius: 5px;
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
 `
 const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ student, course, updateCourseOnUi }) => {
+const Card = ({ student, course, updateCourseOnUi, showingStudentType }) => {
   const deleteFromEnrolledStudentHandler = async (e) => {
     await api.updateCourse(course, {
       $pull: {
         enrolledStudents: student._id
       }
     })
-    await updateCourseOnUi()
+    await updateCourseOnUi();
   }
+
+  const approveEnrollRequestHandler = async (e) => {
+    const update = {
+      $push: {
+        enrolledStudents: student._id
+      }
+    }
+    if (_.any(course.enrolledStudents, enst => enst._id === student._id)) delete update.$push
+    await api.updateCourse(course, {
+      ...update,
+      $pull: {
+        pendingEnrollStudents: student._id
+      }
+    })
+    await updateCourseOnUi();
+  }
+  const isEnrolled = showingStudentType === "enrolled";
   return (
     <Row columns="repeat(2, 1fr) 20px">
       <Wrapper>{student.registrationNo}</Wrapper>
@@ -67,11 +86,15 @@ const Card = ({ student, course, updateCourseOnUi }) => {
           title="Are you sure？"
           okText="Yes"
           cancelText="No"
-          onConfirm={deleteFromEnrolledStudentHandler}
+          onConfirm={
+            isEnrolled ?
+              deleteFromEnrolledStudentHandler :
+              approveEnrollRequestHandler
+          }
         >
           <FontAwesomeIconWrapper
-            icon={faTrash}
-            color="#a02f2f"
+            icon={isEnrolled ? faTrash : faCheckCircle}
+            color={isEnrolled ? "#a02f2f" : "green"}
           />
         </Popconfirm>
       </Wrapper>
@@ -79,13 +102,28 @@ const Card = ({ student, course, updateCourseOnUi }) => {
   )
 }
 
-const EnrolledStudents = ({
-  students, course, updateCourseOnUi
+const Students = ({
+  enrolledStudents,
+  pendingEnrollStudents,
+  updateCourseOnUi,
+  showingStudentType,
+  course,
 }) => {
+  const [students, setStudents] = useState(
+    showingStudentType === "enrolled" ?
+      enrolledStudents :
+      pendingEnrollStudents
+  );
+
   const [searchStudents, setSearchStudents] = useState(students)
   useEffect(() => {
-    setSearchStudents(students)
-  }, [students])
+    const newStudents =
+      showingStudentType === "enrolled" ?
+        enrolledStudents :
+        pendingEnrollStudents;
+    setStudents(newStudents);
+    setSearchStudents(newStudents);
+  }, [showingStudentType])
   const handleSearch = (value) => {
     const pattern = value
       .trim()
@@ -114,18 +152,17 @@ const EnrolledStudents = ({
         <HeaderLabel></HeaderLabel>
       </Row>
       <Body>
-        {_.map(searchStudents, (student, index) => (
-          <Card
-            key={`student_${index}`}
-            student={student}
-            course = {course}
-            updateCourseOnUi = {updateCourseOnUi}
-          />
-        ))}
+        {_.map(searchStudents, (student, index) => <Card
+          key={`student_${index}`}
+          student={student}
+          course={course}
+          updateCourseOnUi={updateCourseOnUi}
+          showingStudentType={showingStudentType}
+        />)}
       </Body>
-      
+
     </Container>
   )
 }
 
-export default EnrolledStudents
+export default Students

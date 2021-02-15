@@ -1,88 +1,83 @@
-import Search from "antd/lib/input/Search";
-import styled from "styled-components";
-import _ from 'underscore';
-import { stFormatDate, getDuration, smartLabel, getName } from "../../../../utitlities/common.functions";
-import { connect } from "react-redux";
-import { push } from "connected-react-router";
-import { Button, Popconfirm } from "antd";
-import api from "../../../../utitlities/api";
-
-const SearchStyled = styled(Search)`
-  width: 100%;
-`;
+import styled from 'styled-components'
+import _ from 'underscore'
+import { smartLabel, getName } from '../../../../utitlities/common.functions'
+import { AwesomeIcon } from '../../../../utitlities/styles'
+import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
+import { Popconfirm } from 'antd'
+import api from '../../../../utitlities/api'
 
 const Container = styled.div`
   
-`;
+`
 
 const HeaderLabel = styled.div`
   color: grey;
-`;
+`
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 30px;
+  height: 20px;
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-
-const Body = styled.div`
-  overflow: auto;
-  height: calc(100vh - 440px);
-  ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
-  }
 `
 
 const Row = styled.div`
+  padding: 10px;
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
-`;
-
-const BodyRow = styled.div`
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: ${props => props.columns || 'auto'};
+  user-select: none;
+  border-radius: 5px;
   cursor: pointer;
   :hover {
-    background: #e4e4e4;
+    background: ${p => p.header ? 'none' : '#e4e4e4'};
   }
-`;
+`
+const Body = styled.div`
+  overflow: auto;
+  height: calc(100% - 42px);
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+`
 
-const Card = ({ onUpdateExamUI, teachersObj = {}, question, dispatch, exam }) => {
-  return (
-    <BodyRow columns="repeat(5, 1fr)" onClick={() => dispatch(push(`/exam/${exam._id}/question/${question._id}`))}>
-      <Wrapper>{question.title}</Wrapper>
-      <Wrapper>{getName(teachersObj[question.authorID])}</Wrapper>
-      <Wrapper>{smartLabel(question.type)}</Wrapper>
-      <Wrapper>{question.marks}</Wrapper>
-      <Wrapper>
-        <Popconfirm
-          title="Are you sure？"
-          okText="Yes"
-          cancelText="No"
+const Card = ({ onUpdateExamUI, teachersObj = {}, question, dispatch, exam }) => (
+  <Row columns="repeat(4, 1fr) 30px" onClick={() => dispatch(push(`/exam/${exam._id}/question/${question._id}`))}>
+    <Wrapper>{question.title}</Wrapper>
+    <Wrapper>{getName(teachersObj[question.authorID])}</Wrapper>
+    <Wrapper>{smartLabel(question.type)}</Wrapper>
+    <Wrapper>{question.marks}</Wrapper>
+    <Wrapper>
+      <Popconfirm
+        title="Are you sure？"
+        okText="Yes"
+        cancelText="No"
+        onCancel={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+        }}
+        onConfirm={async (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          await api.updateExam(exam, { $pull: { questions: question._id } })
+          await onUpdateExamUI()
+        }}
+      >
+        <AwesomeIcon
           onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
+            e.preventDefault()
+            e.stopPropagation()
           }}
-          onConfirm={async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            await api.updateExam(exam, { $pull: { questions: question._id } });
-            await onUpdateExamUI();
-          }}
-        >
-          <Button danger style={{padding: '3px', height: '25px'}}>Remove</Button>
-        </Popconfirm>
-      </Wrapper>
-    </BodyRow>
-  );
-};
+          type="delete"
+        />
+      </Popconfirm>
+    </Wrapper>
+  </Row>
+)
 
 const Questions = ({
   questions,
@@ -90,21 +85,19 @@ const Questions = ({
   dispatch,
   teachersObj,
   onUpdateExamUI
-}) => {
-  return (
-    <Container>
-      <Row columns="repeat(5, 1fr)">
-        <HeaderLabel>Title</HeaderLabel>
-        <HeaderLabel>Author</HeaderLabel>
-        <HeaderLabel>Type</HeaderLabel>
-        <HeaderLabel>Marks</HeaderLabel>
-      </Row>
-      <Body>
-        {_.map(questions, (question, index) => <Card teachersObj={teachersObj} exam={exam} dispatch={dispatch} key={`question_${index}`} question={question} onUpdateExamUI={onUpdateExamUI}/>)}
-      </Body>
-    </Container>
-  );
-};
+}) => (
+  <Container>
+    <Row header columns="repeat(4, 1fr) 30px">
+      <HeaderLabel>Title</HeaderLabel>
+      <HeaderLabel>Author</HeaderLabel>
+      <HeaderLabel>Type</HeaderLabel>
+      <HeaderLabel>Marks</HeaderLabel>
+    </Row>
+    <Body>
+      {_.map(questions, (question, index) => <Card teachersObj={teachersObj} exam={exam} dispatch={dispatch} key={`question_${index}`} question={question} onUpdateExamUI={onUpdateExamUI}/>)}
+    </Body>
+  </Container>
+)
 
-const mapDispatchToProps = dispatch => ({ dispatch });
-export default connect(null, mapDispatchToProps)(Questions);
+const mapDispatchToProps = dispatch => ({ dispatch })
+export default connect(null, mapDispatchToProps)(Questions)

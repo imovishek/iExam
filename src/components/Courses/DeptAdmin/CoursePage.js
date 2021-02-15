@@ -1,80 +1,78 @@
-import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
-import NavBar from "../../NavBar/NavBar";
-import { connect } from "react-redux";
-import _ from 'underscore';
-import { BodyWrapper, Container } from "../../../utitlities/styles";
-import React, { useEffect, useState } from "react";
-import api from '../../../utitlities/api';
-import styled from "styled-components";
-import moment from 'moment';
-import { Button, Input, Select, DatePicker } from "antd";
-import EnrolledStudents from "./components/EnrolledStudents";
-import Exams from "./components/Exams";
-import EnrollmentRequest from "./components/EnrollmentRequest";
-import { getDuration, getObjectByAddingID } from "../../../utitlities/common.functions";
-import { useParams } from "react-router";
-import Loading from '../../Common/Loading';
-import { goBack } from "connected-react-router";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../../styles/pageStyles";
-import ImportStudentsModal from "./ImportStudentsModal";
-const { Option } = Select;
+import CheckAuthentication from '../../CheckAuthentication/CheckAuthentication'
+import NavBar from '../../NavBar/NavBar'
+import { connect } from 'react-redux'
+import _ from 'underscore'
+import { BodyWrapper, Container, Col } from '../../../utitlities/styles'
+import React, { useEffect, useState } from 'react'
+import api from '../../../utitlities/api'
+import styled from 'styled-components'
+import moment from 'moment'
+import { Button, Input, Select, DatePicker } from 'antd'
+import EnrolledStudents from './components/EnrolledStudents'
+import Exams from './components/Exams'
+import EnrollmentRequest from './components/EnrollmentRequest'
+import { getObjectByAddingID } from '../../../utitlities/common.functions'
+import { useParams } from 'react-router'
+import Loading from '../../Common/Loading'
+import { goBack } from 'connected-react-router'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from '../../styles/pageStyles'
+import ImportStudentsModal from './ImportStudentsModal'
+const { Option } = Select
 
 const InputWrapper = styled(Input)`
   && {
     width: 100%;
   }
-`;
+`
 
 const ButtonStyled = styled(Button)`
   height: 30px;
-`;
+`
 
 const FontAwesomeIconWrapper = styled.div`
   width: 30px;
   display: inline-block;
   cursor: pointer;
-`;
+`
 
 const SelectStyled = styled(Select)`
   width: 100%;
-`;
+`
 
-const getNameWithShort = obj => `${obj.firstName} ${obj.lastName} (${obj.shortName || ''})`;
+const getNameWithShort = obj => `${obj.firstName} ${obj.lastName} (${obj.shortName || ''})`
 
 const CoursePage = ({ dispatch, user, hasBack = true }) => {
-  const { id } = useParams();
-  if (!id) dispatch(goBack());
-  const [isLoading, setLoading] = useState(false);
-  const [course, setCourse] = useState({});
-  const [teachers, setTeachers] = useState({});
-  const [showImportStudentModal, setShowImportStudentModal] = useState(false);
-  const { departmentName } = user.department || {};
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const { id } = useParams()
+  if (!id) dispatch(goBack())
+  const [isLoading, setLoading] = useState(false)
+  const [course, setCourse] = useState({})
+  const [teachers, setTeachers] = useState({})
+  const [showImportStudentModal, setShowImportStudentModal] = useState(false)
   useEffect(async () => {
     try {
-      setLoading(true);
-      const { payload = {} } = await api.getCourseByID(id);
-      const { payload: fetchedTeachers = [] } = await api.getTeachers({});
-      setCourse(payload);
-      setTeachers(fetchedTeachers);
-    } catch(err) {
-      console.log(err);
+      setLoading(true)
+      const { payload = {} } = await api.getCourseByID(id)
+      const { payload: fetchedTeachers = [] } = await api.getTeachers({})
+      setCourse(payload)
+      setTeachers(fetchedTeachers)
+    } catch (err) {
+      console.log(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [id]);
+  }, [id])
 
-  const updateCourseOnUi = async() => {
+  const updateCourseOnUi = async () => {
     try {
-      setLoading(true);
-      const { payload = {} } = await api.getCourseByID(id);
-      setCourse(payload);
-    } catch(err) {
-      console.log(err);
+      setLoading(true)
+      const { payload = {} } = await api.getCourseByID(id)
+      setCourse(payload)
+    } catch (err) {
+      console.log(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -82,25 +80,34 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
     const newCourse = {
       ...course,
       [key]: value
-    };
-    setCourse(newCourse);
-  };
+    }
+    setCourse(newCourse)
+  }
 
   const handleUpdateCourse = async (course) => {
-    setLoading(true);
-    const newCourse = getObjectByAddingID(course);
-    await api.updateCourse(newCourse);
-    const { payload = {} } = await api.getCourseByID(id);
-    setLoading(false);
-    setCourse(payload);
+    setLoading(true)
+    const newCourse = getObjectByAddingID(course)
+    await api.updateCourse(newCourse)
+    const { payload = {} } = await api.getCourseByID(id)
+    setLoading(false)
+    setCourse(payload)
   }
+
+  const StyledBodyRow = (props) => (
+    <BodyRow>
+      <Col rows="32px minmax(280px, calc(100vh - 380px))">
+        {props.children}
+      </Col>
+    </BodyRow>
+  );
 
   return (
     <div>
       <CheckAuthentication />
+      {isLoading && <Loading isLoading={isLoading}/>}
       <BodyWrapper>
         <NavBar />
-        <Container>
+        <Container rows="55px 90px 90px 1fr">
           <ImportStudentsModal
             visible={showImportStudentModal}
             setVisibility={setShowImportStudentModal}
@@ -108,26 +115,25 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
             updateCourseOnUi={updateCourseOnUi}
             user={user}
           />
-          {isLoading && <Loading isLoading={isLoading}/>}
-          {/* <Header>{departmentName}</Header> */}
           <TileHeaderWrapper>
-            <div>
-              {hasBack &&
-                <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
-                  <FontAwesomeIcon icon={faArrowLeft} size="lg"/>
-                </FontAwesomeIconWrapper>
-              }
-              <PageHeader>Course</PageHeader>
-            </div>
-            
-            <RightButtonWrapper>
-              <ButtonStyled
-                type="primary"
-                onClick={() => handleUpdateCourse(course)}
-              >
-                Update Course
-              </ButtonStyled>
-            </RightButtonWrapper>
+            <Row columns="1fr 1fr">
+              <div>
+                {hasBack &&
+                  <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
+                    <FontAwesomeIcon icon={faArrowLeft} size="lg"/>
+                  </FontAwesomeIconWrapper>
+                }
+                <PageHeader>Course</PageHeader>
+              </div>
+              <RightButtonWrapper>
+                <ButtonStyled
+                  type="primary"
+                  onClick={() => handleUpdateCourse(course)}
+                >
+                  Update Course
+                </ButtonStyled>
+              </RightButtonWrapper>
+            </Row>
           </TileHeaderWrapper>
           <Row columns="1fr 1fr">
             <HeaderRow>
@@ -148,14 +154,14 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
 
           </Row>
           <Row columns="1fr 1fr 1fr 1fr">
-          <HeaderRow>
+            <HeaderRow>
               <LabelWrapper>Course Code</LabelWrapper>
               <InputWrapper
                 value={course.courseCode}
                 onChange={(e) => setValue('courseCode', e.target.value)}
               />
             </HeaderRow>
-            
+
             <HeaderRow>
               <LabelWrapper>Teacher</LabelWrapper>
               <SelectStyled
@@ -193,8 +199,8 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
           </Row>
 
           <Row columns=".7fr .7fr 1.2fr">
-            <BodyRow>
-              <TileHeaderWrapper>
+            <StyledBodyRow>
+              <TileHeaderWrapper columns="1fr 1fr">
                 <LabelWrapper>Enrolled Students</LabelWrapper>
                 <RightButtonWrapper>
                   <ButtonStyled type="primary" onClick={() => setShowImportStudentModal(true)}>
@@ -202,10 +208,12 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
                   </ButtonStyled>
                 </RightButtonWrapper>
               </TileHeaderWrapper>
-              <EnrolledStudents students={course.enrolledStudents} 
-              course = {course} updateCourseOnUi = {updateCourseOnUi}/>
-            </BodyRow>
-            <BodyRow>
+              <EnrolledStudents
+                students={course.enrolledStudents}
+                course = {course} updateCourseOnUi = {updateCourseOnUi}
+              />
+            </StyledBodyRow>
+            <StyledBodyRow>
               <TileHeaderWrapper>
                 <LabelWrapper>Enrollment Request</LabelWrapper>
               </TileHeaderWrapper>
@@ -214,26 +222,25 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
                 course={course}
                 updateCourseOnUi={updateCourseOnUi}
               />
-            </BodyRow>
-            <BodyRow>
+            </StyledBodyRow>
+            <StyledBodyRow>
               <TileHeaderWrapper>
                 <LabelWrapper>Exams</LabelWrapper>
               </TileHeaderWrapper>
               <Exams exams={course.exams} />
-            </BodyRow>
+            </StyledBodyRow>
           </Row>
         </Container>
       </BodyWrapper>
     </div>
-  );
-};
+  )
+}
 const mapStateToProps = state => ({
   user: state.login.user
-});
+})
 
 const mapDispatchToProps = dispatch => ({
-    dispatch
-});
+  dispatch
+})
 
-  
-export default connect(mapStateToProps, mapDispatchToProps)(CoursePage);
+export default connect(mapStateToProps, mapDispatchToProps)(CoursePage)

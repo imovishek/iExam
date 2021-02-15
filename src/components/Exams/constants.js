@@ -1,1 +1,1 @@
-export const ON_UPDATE_COURSES = 'ON_UPDATE_COURSES';
+export const ON_UPDATE_EXAMS = 'ON_UPDATE_EXAMS'

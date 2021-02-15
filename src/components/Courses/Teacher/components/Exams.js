@@ -1,31 +1,25 @@
-import Search from "antd/lib/input/Search";
-import styled from "styled-components";
-import _ from 'underscore';
-import { stFormatDate, getDuration, splitDuration, splitStartTime, getExamStatus, smartLabel } from "../../../../utitlities/common.functions";
-import { push } from "connected-react-router";
-import { connect } from "react-redux";
-
-const SearchStyled = styled(Search)`
-  width: 100%;
-`;
+import styled from 'styled-components'
+import _ from 'underscore'
+import { stFormatDate, splitDuration, splitStartTime, getExamStatus, smartLabel } from '../../../../utitlities/common.functions'
+import { push } from 'connected-react-router'
+import { connect } from 'react-redux'
 
 const Container = styled.div`
-  overflow: auto;
-`;
+`
 
 const HeaderLabel = styled.div`
   color: grey;
-`;
+`
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 30px;
+  height: 20px;
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
 
 const Row = styled.div`
   padding: 10px;
@@ -39,35 +33,42 @@ const Row = styled.div`
     background: ${p => p.header ? 'none' : '#e4e4e4'};
   }
 `;
-const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ exam, dispatch }) => {
-  return (
-    <Row columns="repeat(5, 1fr)" onClick={() => dispatch(push(`/exam/${exam._id}`))}>
-      <Wrapper>{exam.title}</Wrapper>
-      <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
-      <Wrapper>{splitStartTime(exam.startTime)}</Wrapper>
-      <Wrapper>{splitDuration(exam.duration)}</Wrapper>
-      <Wrapper>{smartLabel(getExamStatus(exam))}</Wrapper>
-    </Row>
-  );
-};
+
+const Body = styled.div`
+  overflow: auto;
+  height: calc(100% - 42px);
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+`
+
+const Card = ({ exam, dispatch }) => (
+  <Row columns="repeat(5, 1fr)" onClick={() => dispatch(push(`/exam/${exam._id}`))}>
+    <Wrapper>{exam.title}</Wrapper>
+    <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
+    <Wrapper>{splitStartTime(exam.startTime)}</Wrapper>
+    <Wrapper>{splitDuration(exam.duration)}</Wrapper>
+    <Wrapper>{smartLabel(getExamStatus(exam))}</Wrapper>
+  </Row>
+)
 
 const Exams = ({
   exams, dispatch
-}) => {
-  return (
-    <Container>
-      <Row header columns="repeat(5, 1fr)">
-        <HeaderLabel>Title</HeaderLabel>
-        <HeaderLabel>Date</HeaderLabel>
-        <HeaderLabel>Start Time</HeaderLabel>
-        <HeaderLabel>Duration</HeaderLabel>
-        <HeaderLabel>Status</HeaderLabel>
-      </Row>
+}) => (
+  <Container>
+    <Row header columns="repeat(5, 1fr)">
+      <HeaderLabel>Title</HeaderLabel>
+      <HeaderLabel>Date</HeaderLabel>
+      <HeaderLabel>Start Time</HeaderLabel>
+      <HeaderLabel>Duration</HeaderLabel>
+      <HeaderLabel>Status</HeaderLabel>
+    </Row>
+    <Body>
       {_.map(exams, (exam, index) => <Card dispatch={dispatch} key={`exam_${index}`} exam={exam} />)}
-    </Container>
-  );
-};
+    </Body>
+    
+  </Container>
+)
 
-const mapDispatchToProps = (dispatch) => ({ dispatch });
-export default connect(null, mapDispatchToProps)(Exams);
+const mapDispatchToProps = (dispatch) => ({ dispatch })
+export default connect(null, mapDispatchToProps)(Exams)

@@ -1,23 +1,21 @@
-import Search from "antd/lib/input/Search";
-import styled from "styled-components";
-import _ from 'underscore';
-import { Popconfirm, Button } from "antd";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import api from "../../../../utitlities/api";
+import Search from 'antd/lib/input/Search'
+import styled from 'styled-components'
+import _ from 'underscore'
+import { Button } from 'antd'
+import api from '../../../../utitlities/api'
 
 const SearchStyled = styled(Search)`
   width: 100%;
   margin-bottom: 10px;
-`;
+`
 
 const Container = styled.div`
   overflow: auto;
-`;
+`
 
 const HeaderLabel = styled.div`
   color: grey;
-`;
+`
 
 const Wrapper = styled.div`
   display: flex;
@@ -27,44 +25,36 @@ const Wrapper = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
 
 const Row = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
-`;
+`
 
-const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
-  cursor: pointer;
-  margin: auto;
-  margin-left: 5px;
-  width: 15px;
-  height: 15px;
-`;
 const ButtonStyled = styled(Button)`
   padding: 1px 1px;
   height: 25px;
   background: green;
-`;
+`
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const Card = ({ student, exam, updateExamParticipantOnUI }) => {
-
   const unbanStudentButtonHandler = async (e) => {
     const update = {
       $push: {
         participants: student._id
       }
-    };
-    if (_.any(exam.participants, enst => enst._id === student._id)) delete update.$push;
+    }
+    if (_.any(exam.participants, enst => enst._id === student._id)) delete update.$push
     await api.updateExam(exam, {
       ...update,
       $pull: {
         bannedParticipants: student._id
       }
-    });
-    await updateExamParticipantOnUI();
+    })
+    await updateExamParticipantOnUI()
   }
   return (
     <Row columns="repeat(2, 1fr) 70px">
@@ -74,23 +64,21 @@ const Card = ({ student, exam, updateExamParticipantOnUI }) => {
         <ButtonStyled onClick = {unbanStudentButtonHandler} type="primary"> Unban </ButtonStyled>
       </Wrapper>
     </Row>
-  );
-};
+  )
+}
 
 const BannedParticipants = ({
   students, exam, updateExamParticipantOnUI
-}) => {
-  return (
-    <Container>
-      <SearchStyled placeholder="Search" />
-      <Row columns="repeat(2, 1fr) 70px">
-        <HeaderLabel>Regi No.</HeaderLabel>
-        <HeaderLabel>Name</HeaderLabel>
-        <HeaderLabel></HeaderLabel>
-      </Row>
-      {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
-    </Container>
-  );
-};
+}) => (
+  <Container>
+    <SearchStyled placeholder="Search" />
+    <Row columns="repeat(2, 1fr) 70px">
+      <HeaderLabel>Regi No.</HeaderLabel>
+      <HeaderLabel>Name</HeaderLabel>
+      <HeaderLabel></HeaderLabel>
+    </Row>
+    {_.map(students, (student, index) => <Card key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
+  </Container>
+)
 
-export default BannedParticipants;
+export default BannedParticipants

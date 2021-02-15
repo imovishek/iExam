@@ -1,81 +1,80 @@
-import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
-import NavBar from "../../NavBar/NavBar";
-import { connect } from "react-redux";
-import { BodyWrapper, Container } from "../../../utitlities/styles";
-import React, { useEffect, useState } from "react";
-import api from '../../../utitlities/api';
-import styled from "styled-components";
-import { Button, DatePicker, Input, Select } from "antd";
-import { students, questions, exams, courses } from "../../../utitlities/dummy";
-import { stFormatDate, getDuration, getExamStatus } from "../../../utitlities/common.functions";
-import Questions from "./components/Questions";
-import Participants from "./components/Participants";
-import BannedParticipants from "./components/BannedParticipants";
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from "../../styles/pageStyles";
-import { useParams } from "react-router";
-import { goBack } from "connected-react-router";
-import moment from 'moment';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import CheckAuthentication from '../../CheckAuthentication/CheckAuthentication'
+import NavBar from '../../NavBar/NavBar'
+import { connect } from 'react-redux'
+import { BodyWrapper, Container } from '../../../utitlities/styles'
+import React, { useEffect, useState } from 'react'
+import api from '../../../utitlities/api'
+import styled from 'styled-components'
+import { Button, DatePicker, Input, Select } from 'antd'
+import { getDuration, getExamStatus } from '../../../utitlities/common.functions'
+import Questions from './components/Questions'
+import Participants from './components/Participants'
+import BannedParticipants from './components/BannedParticipants'
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from '../../styles/pageStyles'
+import { useParams } from 'react-router'
+import { goBack } from 'connected-react-router'
+import moment from 'moment'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
-const { Option } = Select;
+const { Option } = Select
 
 const InputWrapper = styled(Input)`
   && {
     width: 100%;
   }
-`;
+`
 
 const ButtonStyled = styled(Button)`
   height: 30px;
   margin-right: 10px;
-`;
+`
 const SelectStyled = styled(Select)`
   width: 100%;
-`;
+`
 
 const FontAwesomeIconWrapper = styled.div`
   width: 30px;
   display: inline-block;
   cursor: pointer;
-`;
+`
 const ExamPage = ({ dispatch, user, hasBack = true }) => {
-  const { id } = useParams();
-  if (!id) dispatch(goBack());
-  const [isLoading, setIsLoading] = useState(true);
-  const [exam, setExam] = useState({});
+  const { id } = useParams()
+  if (!id) dispatch(goBack())
+  const [isLoading, setIsLoading] = useState(true)
+  const [exam, setExam] = useState({})
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     try {
-      let { payload = {} } = await api.getExamByID(id);
-      if(!payload) payload = {};
-      setExam(payload);
-    } catch(err) {
-      console.log(err);
+      let { payload = {} } = await api.getExamByID(id)
+      if (!payload) payload = {}
+      setExam(payload)
+    } catch (err) {
+      console.log(err)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [id]);
+  }, [id])
 
-  const updateExamParticipantOnUI = async() => {
+  const updateExamParticipantOnUI = async () => {
     try {
-      setIsLoading(true);
-      const { payload = {} } = await api.getExamByID(id);
-      setExam(payload);
-    } catch(err) {
-      console.log(err);
+      setIsLoading(true)
+      const { payload = {} } = await api.getExamByID(id)
+      setExam(payload)
+    } catch (err) {
+      console.log(err)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
   const setValue = (key, value) => {
     const newExam = {
       ...exam,
       [key]: value
-    };
-    setExam(newExam);
-  };
+    }
+    setExam(newExam)
+  }
   return (
     <div>
       <CheckAuthentication />
@@ -157,15 +156,15 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
             <BodyRow>
               <TileHeaderWrapper>
                 <LabelWrapper>Questions</LabelWrapper>
-                  <RightButtonWrapper>
-                    <ButtonStyled type="primary">
+                <RightButtonWrapper>
+                  <ButtonStyled type="primary">
                       Import
-                    </ButtonStyled>
-                    <ButtonStyled type="primary">
+                  </ButtonStyled>
+                  <ButtonStyled type="primary">
                       Create Question
-                    </ButtonStyled>
-                  </RightButtonWrapper>
-                </TileHeaderWrapper>
+                  </ButtonStyled>
+                </RightButtonWrapper>
+              </TileHeaderWrapper>
               <Questions questions={exam.questions} />
             </BodyRow>
             <BodyRow>
@@ -180,13 +179,12 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
         </Container>
       </BodyWrapper>
     </div>
-  );
-};
-const mapStateToProps = state => ({});
+  )
+}
+const mapStateToProps = state => ({})
 
 const mapDispatchToProps = dispatch => ({
-    dispatch
-});
+  dispatch
+})
 
-  
-export default connect(mapStateToProps, mapDispatchToProps)(ExamPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ExamPage)

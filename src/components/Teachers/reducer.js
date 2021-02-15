@@ -1,4 +1,4 @@
-import { ON_UPDATE_TEACHERS } from './constants';
+import { ON_UPDATE_TEACHERS } from './constants'
 
 const reducer = (state = { teachers: [] }, action) => {
   switch (action.type) {
@@ -6,10 +6,10 @@ const reducer = (state = { teachers: [] }, action) => {
       return {
         ...state,
         teachers: action.teachers
-      };
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default reducer;
+export default reducer
