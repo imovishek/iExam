@@ -183,16 +183,13 @@ const CreateEditTeacherModal = ({
       </Row>
       <Row columns="1fr 1fr">
         <ColumnWrapper>
-          <LabelWrapper>Short Name</LabelWrapper>
-          <InputWrapper
-            placeholder="Short Name"
-            value={teacher.shortName}
+          <LabelWrapper>Department</LabelWrapper>
+          <Select
+            defaultValue="CSE" 
             style={{ width: 270 }}
-            onChange={(e) => {
-              setValue('shortName', e.target.value);
-            }}
-          />
-          <ErrorWrapper> {errors['shortName']} </ErrorWrapper>
+          >
+            <Option value="CSE">Computer Science And Engineering</Option>
+          </Select>
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Email</LabelWrapper>
@@ -206,17 +203,6 @@ const CreateEditTeacherModal = ({
             }}
           />
           <ErrorWrapper> {errors['email']} </ErrorWrapper>
-        </ColumnWrapper>
-      </Row>
-      <Row columns="1fr">
-        <ColumnWrapper>
-          <LabelWrapper>Department</LabelWrapper>
-          <Select
-            defaultValue="CSE" 
-            style={{ width: 270 }}
-          >
-            <Option value="CSE">Computer Science And Engineering</Option>
-          </Select>
         </ColumnWrapper>
       </Row>
       </Modal>
