@@ -49,6 +49,7 @@ const CreateEditStudentModal = ({
     firstName: '',
     lastName: '',
     registrationNo: '',
+    phoneNumber: '',
     department: {
       departmentCode: 'CSE',
       departmentName: 'Computer Science and Engineering'
@@ -204,7 +205,17 @@ const CreateEditStudentModal = ({
           <ErrorWrapper> {errors.email} </ErrorWrapper>
         </ColumnWrapper>
       </Row>
-      <Row columns="1fr">
+      <Row columns="1fr 1fr">
+        <ColumnWrapper>
+          <LabelWrapper>Phone Number</LabelWrapper>
+          <InputWrapper
+            placeholder="Phone Number"
+            value={student.phoneNumber}
+            style={{ width: 270 }}
+            onChange={(e) => setValue('phoneNumber', e.target.value)}
+          />
+          <ErrorWrapper> {errors.phoneNumber} </ErrorWrapper>
+        </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Department</LabelWrapper>
           <Select

@@ -16,20 +16,28 @@ const ButtonSyled = styled(Button)`
   margin-left: 10px;
 `
 
-const CourseCard = ({ user, dispatch, course, updateCoursesOnUI }) => {
-  const [enrollText, setEnrollText] = useState('Enroll')
+const CourseCard = ({
+  user,
+  dispatch,
+  course,
+  updateCoursesOnUI,
+  setIsLoading
+}) => {
+  const [buttonText, setButtonText] = useState('Enroll')
+  const [buttonStyle, setButtonStyle] = useState({ width: '84px', color: 'white' })
+
   useEffect(() => {
     const enrolledIDs = _.map(course.enrolledStudents, enst => enst._id)
     const pendingEnrolledIDs = _.map(course.pendingEnrollStudents, enst => enst._id)
     let btnText = 'Enroll'
-    if (_.contains(enrolledIDs, user._id)) btnText = 'Enrolled'
+    if (_.contains(enrolledIDs, user._id)) btnText = 'Enter'
     else if (_.contains(pendingEnrolledIDs, user._id)) btnText = 'Pending'
     const newStyle = { ...buttonStyle }
     switch (btnText) {
       case 'Enroll':
         newStyle.background = '#1e8efb'
         break
-      case 'Enrolled':
+      case 'Enter':
         newStyle.background = 'rgb(71, 119, 71)'
         break
       case 'Pending':
@@ -38,16 +46,13 @@ const CourseCard = ({ user, dispatch, course, updateCoursesOnUI }) => {
       default:
         break
     }
-    setEnrollText(btnText)
+    setButtonText(btnText)
     setButtonStyle(newStyle)
   }, [course])
 
-  const isEnrollDisabled = enrollText !== 'Enroll'
-  const isEnterDisabled = enrollText !== 'Enrolled'
-  const [buttonStyle, setButtonStyle] = useState({ width: '84px', color: 'white' })
-
   const enrollRequestHandler = async (e) => {
     try {
+      setIsLoading(true);
       await api.updateCourse(course, {
         $push: {
           pendingEnrollStudents: user._id
@@ -70,26 +75,14 @@ const CourseCard = ({ user, dispatch, course, updateCoursesOnUI }) => {
         <OperationWrapper>
           <ButtonSyled
             type="primary"
-            disabled={isEnrollDisabled}
+            disabled={buttonText === 'Pending'}
             style={buttonStyle}
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
-              enrollRequestHandler()
-              // setCourseToEdit(_.create('', course));
-              // showCreateEditModal(true);
-            }}>{enrollText}</ButtonSyled>
-
-          <ButtonSyled
-            type="primary"
-            disabled={isEnterDisabled}
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              dispatch(push(`/course/${course._id}`))
-              // setCourseToEdit(_.create('', course));
-              // showCreateEditModal(true);
-            }}>Enter</ButtonSyled>
+              buttonText === "Enter" ? dispatch(push(`/course/${course._id}`)) : enrollRequestHandler()
+            }}>{buttonText}
+          </ButtonSyled>
         </OperationWrapper>
       </TableRowChild>
     </Row>
@@ -102,6 +95,7 @@ const CourseTable = ({
   user,
   courses = [],
   isLoading,
+  setIsLoading,
   updateCoursesOnUI,
   dispatch
 }) => {
@@ -134,6 +128,7 @@ const CourseTable = ({
           deleteCourse={deleteCourse}
           dispatch={dispatch}
           updateCoursesOnUI={updateCoursesOnUI}
+          setIsLoading={setIsLoading}
         />
       ))}
       { (!isLoading && !isNoData) &&

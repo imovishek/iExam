@@ -3,6 +3,7 @@ import _ from 'underscore'
 import { getExamStatus, getTimeDifferenceExam } from '../../../../utitlities/common.functions'
 import { RightButtonWrapper, TileHeaderWrapper } from '../../../styles/pageStyles'
 import { Button } from 'antd'
+import { ButtonStyled } from '../../../../utitlities/styles'
 
 const Container = styled.div`
   border-radius: 8px;
@@ -65,17 +66,19 @@ const Questions = ({
   questions = [],
   onShowingPaper
 }) => (
-  <Container>
-    <Wrapper>
-      <TileHeaderWrapper>
-          Total {questions.length} questions
-        <div>{getExamStatus(exam) === 'ended' ? `Ended ${getTimeDifferenceExam(exam, -1)} ago` : ''}</div>
-        <RightButtonWrapper>
-          <Button disabled={questions.length === 0} onClick={() => onShowingPaper()} type="primary">{getExamStatus(exam) === 'ended' ? 'View Questions' : 'Answer Questions'}</Button>
-        </RightButtonWrapper>
-      </TileHeaderWrapper>
-
-    </Wrapper>
+  <Container rows="70px 70px 1fr">
+    <TileHeaderWrapper columns="1fr 1fr 1fr" gridGap="20px">
+      <div>
+        Total {questions.length} questions
+      </div>
+      <div>
+        {getExamStatus(exam) === 'ended' ? `Ended ${getTimeDifferenceExam(exam, -1)} ago` : ''}
+      </div>
+      
+      <RightButtonWrapper>
+        <ButtonStyled disabled={questions.length === 0} onClick={() => onShowingPaper()} type="primary">{getExamStatus(exam) === 'ended' ? 'View Questions' : 'Answer Questions'}</ButtonStyled>
+      </RightButtonWrapper>
+    </TileHeaderWrapper>
     <HeaderRow columns="repeat(2, 1fr) 100px">
       <HeaderLabel>Title</HeaderLabel>
       <HeaderLabel>Type</HeaderLabel>

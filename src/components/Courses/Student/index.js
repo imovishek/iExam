@@ -51,6 +51,7 @@ const Courses = ({ user, dispatch }) => {
             courses={courses}
             isLoading={isLoading}
             updateCoursesOnUI={updateCoursesOnUI}
+            setIsLoading={setLoading}
           />
         </Container>
       </BodyWrapper>
