@@ -24,3 +24,11 @@ export const ignoreKeys = {
 }
 export const timeFormat = 'hh:mm A'
 export const durationFormat = 'HH:mm'
+
+export const mapDesignations = {
+  "guest-lecturer": 'Guest Lecturer',
+  "lecturer": 'Lecturer',
+  "assistant-professor": 'Assistant Professor',
+  "associate-professor": 'Associate Professor',
+  "professor": 'Professor',
+}

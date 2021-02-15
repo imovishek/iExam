@@ -196,10 +196,17 @@ const CreateEditTeacherModal = ({
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Designation</LabelWrapper>
-          <Select placeholder="Choose Designation" style={{ width: 270 }}>
-            <Option value="professor">Professor</Option>
+          <Select
+            placeholder="Choose Designation"
+            style={{ width: 270 }}
+            value={teacher.designation}
+            onChange={(v) => setValue('designation', v)}
+          >
+            <Option value="guest-lecturer">Guest Lecturer</Option>
             <Option value="lecturer">Lecturer</Option>
-            <Option value="assistant">Assistant Teacher</Option>
+            <Option value="assistant-professor">Assistant Professor</Option>
+            <Option value="associate-professor">Associate Professor</Option>
+            <Option value="professor">Professor</Option>
           </Select>
           <ErrorWrapper> {errors.designation} </ErrorWrapper>
         </ColumnWrapper>
