@@ -2,6 +2,8 @@ import styled from 'styled-components'
 import _ from 'underscore'
 import { stFormatDate, getTimeDifferenceExam, splitDuration, getExamStatus, smartLabel } from '../../../../utitlities/common.functions'
 import { useState, useEffect } from 'react'
+import { push } from 'connected-react-router'
+import { connect } from 'react-redux'
 
 
 const Container = styled.div`
@@ -12,7 +14,7 @@ const Container = styled.div`
 
 const Body = styled.div`
   overflow: auto;
-  max-height: 120px;
+  max-height: 450px;
   ::-webkit-scrollbar {
     width: 0px;
   }
@@ -39,17 +41,20 @@ const Row = styled.div`
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
   user-select: none;
+  :hover {
+    background: #d2e3e8;
+  }
+  cursor: pointer;
 `
 
 const HeaderRow = styled.div`
-  background: #d8d8d8;
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
   border-radius: 8px;
   user-select: none;
 `
-const Card = ({ exam }) => {
+const Card = ({ exam, onClick }) => {
   const [detailDuration, setDetailDuration] = useState(getTimeDifferenceExam(exam))
   useEffect(() => {
     setInterval(() => {
@@ -58,7 +63,7 @@ const Card = ({ exam }) => {
   }, [])
 
   return (
-    <Row columns="repeat(4, 1fr) 200px">
+    <Row columns="repeat(4, 1fr) 200px" onClick={onClick}>
       <Wrapper>{exam.title}</Wrapper>
       <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
       <Wrapper>{splitDuration(exam.duration)}</Wrapper>
@@ -69,9 +74,9 @@ const Card = ({ exam }) => {
 }
 
 const Exams = ({
-  exams
+  exams, dispatch
 }) => (
-  <Container>
+  <Container rows="55px 1fr">
     <HeaderRow columns="repeat(4, 1fr) 200px">
       <HeaderLabel>Title</HeaderLabel>
       <HeaderLabel>Start Date</HeaderLabel>
@@ -80,9 +85,17 @@ const Exams = ({
       <HeaderLabel>Start In</HeaderLabel>
     </HeaderRow>
     <Body>
-      {_.map(exams, (exam, index) => <Card key={`exam_${index}`} exam={exam} />)}
+      {_.map(exams, (exam, index) => <Card key={`exam_${index}`} exam={exam} onClick={() => dispatch(push(`/exam/${exam._id}`))}/>)}
     </Body>
   </Container>
 )
 
-export default Exams
+const mapStateToProps = state => ({
+  user: state.login.user
+})
+
+const mapDispatchToProps = dispatch => ({
+  dispatch
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Exams)

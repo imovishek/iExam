@@ -40,9 +40,9 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
-        <Container>
+        <Container rows="55px 1fr" gridGap="20px">
           {/* <Header>{departmentName}</Header> */}
-          <TileHeaderWrapper>
+          <TileHeaderWrapper columns="1fr">
             <div>
               {hasBack &&
                 <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
@@ -52,14 +52,10 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
               <PageHeader>Course</PageHeader>
             </div>
           </TileHeaderWrapper>
-          <Row columns=".7fr .3fr">
+          <Row columns="1fr">
             <div>
               <LabelWrapper>Exams</LabelWrapper>
               <Exams exams={course.exams}/>
-            </div>
-            <div>
-              <LabelWrapper>Announcements</LabelWrapper>
-              <Announcements announcements={announcements}/>
             </div>
           </Row>
 
