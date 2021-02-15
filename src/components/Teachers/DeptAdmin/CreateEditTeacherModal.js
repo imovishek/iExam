@@ -48,6 +48,9 @@ const CreateEditTeacherModal = ({
   const defaultTeacher = {
     firstName: '',
     lastName: '',
+    shortName: '',
+    designation: '',
+    phoneNumber: '',
     department: {
       departmentCode: 'CSE',
       departmentName: 'Computer Science and Engineering'
@@ -182,13 +185,35 @@ const CreateEditTeacherModal = ({
       </Row>
       <Row columns="1fr 1fr">
         <ColumnWrapper>
-          <LabelWrapper>Department</LabelWrapper>
-          <Select
-            defaultValue="CSE"
+          <LabelWrapper>Short Name</LabelWrapper>
+          <InputWrapper
+            placeholder="Short Name"
+            value={teacher.shortName}
             style={{ width: 270 }}
-          >
-            <Option value="CSE">Computer Science And Engineering</Option>
+            onChange={(e) => setValue('shortName', e.target.value)}
+          />
+          <ErrorWrapper> {errors.shortName} </ErrorWrapper>
+        </ColumnWrapper>
+        <ColumnWrapper>
+          <LabelWrapper>Designation</LabelWrapper>
+          <Select placeholder="Choose Designation" style={{ width: 270 }}>
+            <Option value="professor">Professor</Option>
+            <Option value="lecturer">Lecturer</Option>
+            <Option value="assistant">Assistant Teacher</Option>
           </Select>
+          <ErrorWrapper> {errors.designation} </ErrorWrapper>
+        </ColumnWrapper>
+      </Row>
+      <Row columns="1fr 1fr">
+        <ColumnWrapper>
+          <LabelWrapper>Phone Number</LabelWrapper>
+          <InputWrapper
+            placeholder="Phone Number"
+            value={teacher.phoneNumber}
+            style={{ width: 270 }}
+            onChange={(e) => setValue('phoneNumber', e.target.value)}
+          />
+          <ErrorWrapper> {errors.phoneNumber} </ErrorWrapper>
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Email</LabelWrapper>
@@ -202,6 +227,17 @@ const CreateEditTeacherModal = ({
             }}
           />
           <ErrorWrapper> {errors.email} </ErrorWrapper>
+        </ColumnWrapper>
+      </Row>
+      <Row columns="1fr">
+        <ColumnWrapper>
+          <LabelWrapper>Department</LabelWrapper>
+          <Select
+            defaultValue="CSE"
+            style={{ width: 270 }}
+          >
+            <Option value="CSE">Computer Science And Engineering</Option>
+          </Select>
         </ColumnWrapper>
       </Row>
     </Modal>

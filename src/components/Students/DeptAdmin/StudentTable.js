@@ -9,9 +9,9 @@ import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, Tabl
 
 const StudentCard = ({ dispatch, student, setStudentToEdit, showCreateEditModal, deleteStudent }) => (
   <TableRow>
-    <TableRowChild> { student.firstName } </TableRowChild>
-    <TableRowChild> { student.lastName } </TableRowChild>
+    <TableRowChild> { `${student.firstName} ${student.lastName}` } </TableRowChild>
     <TableRowChild> { student.registrationNo } </TableRowChild>
+    <TableRowChild> { student.phoneNumber } </TableRowChild>
     <TableRowChild> { student.credential.email } </TableRowChild>
     <TableRowChild> { student.department.departmentCode } </TableRowChild>
     <TableRowChild>
@@ -56,9 +56,9 @@ const StudentTable = ({
   return (
     <div>
       <TableHeader>
-        <TableHeaderChild> First Name </TableHeaderChild>
-        <TableHeaderChild> Last Name </TableHeaderChild>
+        <TableHeaderChild> Name </TableHeaderChild>
         <TableHeaderChild> Registration No </TableHeaderChild>
+        <TableHeaderChild> Phone No </TableHeaderChild>
         <TableHeaderChild> Email ID </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
