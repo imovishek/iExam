@@ -35,8 +35,7 @@ const QuestionBody = ({
       }}
       onChange={(content) => {
         setQuestionValue('body', content)
-      }
-      }
+      }}
     />
   </Container>
 )

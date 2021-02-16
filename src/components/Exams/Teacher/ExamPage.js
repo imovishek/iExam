@@ -1,15 +1,29 @@
 import CheckAuthentication from '../../CheckAuthentication/CheckAuthentication'
 import NavBar from '../../NavBar/NavBar'
 import { connect } from 'react-redux'
-import { BodyWrapper, Container, Col, ButtonStyled } from '../../../utitlities/styles'
+import { BodyWrapper, Container, Col, ButtonStyled, CenterText } from '../../../utitlities/styles'
 import React, { useEffect, useState } from 'react'
 import api from '../../../utitlities/api'
 import styled from 'styled-components'
 import { message, Menu, Dropdown, Button, Select } from 'antd'
-import { DownOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  DownOutlined,
+  UserOutlined,
+  ImportOutlined,
+  FileOutlined,
+  EyeOutlined,
+  ProfileOutlined
+} from '@ant-design/icons';
 import Questions from './components/Questions'
 import Students from './components/Students'
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, LabelWrapper, BodyRow } from '../../styles/pageStyles'
+import {
+  Row,
+  PageHeader,
+  TileHeaderWrapper,
+  RightButtonWrapper,
+  LabelWrapper,
+  BodyRow
+} from '../../styles/pageStyles'
 import { useParams } from 'react-router'
 import { goBack, push } from 'connected-react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -88,7 +102,8 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       </Col>
     </BodyRow>
   );
-  function handleMenuClick(e) {
+
+  const handleMenuClick = (e) => {
     switch(e.key) {
       case 'result':
         dispatch(push(`/exam/${id}/result`));
@@ -103,16 +118,51 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
         break;
     }
   }
+
+  const NEW_QUESTION = 'new-question';
+  const IMPORT_QUESTIONS = 'import-questions';
+  const VIEW_QUESTIONS = 'view-questions';
+
+  const handleQuestionActionClick = (e) => {
+    switch(e.key) {
+      case NEW_QUESTION:
+        dispatch(push(`/exam/${id}/question/new`));
+        break;
+      case IMPORT_QUESTIONS:
+        
+        break;
+      case VIEW_QUESTIONS:
+        dispatch(push(`/exam/${id}/question/view/all`));
+        break;
+      default:
+        break;
+    }
+  }
+
   const gotoMenu = (
     <Menu onClick={handleMenuClick}>
-      <Menu.Item key="result" icon={<UserOutlined />}>
+      <Menu.Item key="result" icon={<ProfileOutlined />}>
         Results
       </Menu.Item>
       <Menu.Item key="arena" icon={<UserOutlined />}>
         Exam Arena
       </Menu.Item>
-      <Menu.Item key="course" icon={<UserOutlined />}>
+      <Menu.Item key="course" icon={<ProfileOutlined />}>
         Course
+      </Menu.Item>
+    </Menu>
+  );
+
+  const questionActionMenu = (
+    <Menu onClick={handleQuestionActionClick}>
+      <Menu.Item key={NEW_QUESTION} icon={<FileOutlined />}>
+        New Question
+      </Menu.Item>
+      <Menu.Item key={IMPORT_QUESTIONS} icon={<ImportOutlined />}>
+        Import Questions
+      </Menu.Item>
+      <Menu.Item key={VIEW_QUESTIONS} icon={<EyeOutlined />}>
+        View Questions
       </Menu.Item>
     </Menu>
   )
@@ -155,14 +205,14 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
           <Row columns="3fr 2fr">
             <StyledBodyRow>
               <TileHeaderWrapper columns="1fr 1fr">
-                <LabelWrapper>Questions</LabelWrapper>
+                <LabelWrapper>Questions ({(exam.questions || []).length})</LabelWrapper>
                 <RightButtonWrapper>
-                  <ButtonStyled type="primary">
-                      Import
-                  </ButtonStyled>
-                  <ButtonStyled type="primary" onClick={() => dispatch(push(`/exam/${id}/question/new`))}>
-                      Create Question
-                  </ButtonStyled>
+                  <CenterText style={{marginRight: '10px'}}>Total Marks: {exam.totalMarks} </CenterText>
+                  <StyledDropdown overlay={questionActionMenu} trigger={['click']}>
+                    <Button>
+                      Select Action <DownOutlined />
+                    </Button>
+                  </StyledDropdown>
                 </RightButtonWrapper>
               </TileHeaderWrapper>              
               <Questions
@@ -171,7 +221,6 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                 exam={exam}
                 questions={exam.questions}
               />
-
             </StyledBodyRow>
             <StyledBodyRow>
               <Select
@@ -179,8 +228,8 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                 value={showingStudentType}
                 onChange={v => setShowingStudentType(v)}
               >
-                <Option key="participants" value="participants">Participants</Option>
-                <Option key="banned" value="banned">Banned Students</Option>
+                <Option key="participants" value="participants">Participants ({(exam.participants || []).length})</Option>
+                <Option key="banned" value="banned">Banned Students ({(exam.bannedParticipants || []).length})</Option>
               </Select>
               <Students
                 showingStudentType={showingStudentType}

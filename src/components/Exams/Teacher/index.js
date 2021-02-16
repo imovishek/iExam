@@ -49,7 +49,7 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
-        <Container>
+        <Container rows="55px 1fr">
           <PageHeader>Exams</PageHeader>
 
           <Tabs defaultActiveKey="1" tabPosition="left" style={{ height: 500 }}>

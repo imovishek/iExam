@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import _ from 'underscore'
-import { stFormatDate, getTimeDifferenceExam, splitDuration, getExamStatus, smartLabel } from '../../../../utitlities/common.functions'
+import { stFormatDate, splitDuration, getExamStatus, smartLabel, getExamTimeStatus } from '../../../../utitlities/common.functions'
 import { useState, useEffect } from 'react'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
@@ -55,15 +55,22 @@ const HeaderRow = styled.div`
   user-select: none;
 `
 const Card = ({ exam, onClick }) => {
-  const [detailDuration, setDetailDuration] = useState(getTimeDifferenceExam(exam))
+  const [detailDuration, setDetailDuration] = useState('')
   useEffect(() => {
-    setInterval(() => {
-      setDetailDuration(getTimeDifferenceExam(exam))
-    }, 1000)
-  }, [])
+    if (exam && exam._id) {
+      const interval = setInterval(() => {
+        const examTimeStatus = getExamTimeStatus(exam);
+        if (examTimeStatus)
+          setDetailDuration(examTimeStatus);
+      }, 1000);
+      return () => {
+        clearInterval(interval);
+      }
+    }
+  }, [exam])
 
   return (
-    <Row columns="repeat(4, 1fr) 200px" onClick={onClick}>
+    <Row columns="repeat(5, 1fr)" onClick={onClick}>
       <Wrapper>{exam.title}</Wrapper>
       <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
       <Wrapper>{splitDuration(exam.duration)}</Wrapper>
@@ -77,12 +84,12 @@ const Exams = ({
   exams, dispatch
 }) => (
   <Container rows="55px 1fr">
-    <HeaderRow columns="repeat(4, 1fr) 200px">
+    <HeaderRow columns="repeat(5, 1fr)">
       <HeaderLabel>Title</HeaderLabel>
       <HeaderLabel>Start Date</HeaderLabel>
       <HeaderLabel>Duration</HeaderLabel>
       <HeaderLabel>Status</HeaderLabel>
-      <HeaderLabel>Start In</HeaderLabel>
+      <HeaderLabel></HeaderLabel>
     </HeaderRow>
     <Body>
       {_.map(exams, (exam, index) => <Card key={`exam_${index}`} exam={exam} onClick={() => dispatch(push(`/exam/${exam._id}`))}/>)}

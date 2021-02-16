@@ -55,7 +55,7 @@ const CreateExamModal = ({
     startDate: null,
     startTime: '10:00 AM',
     duration: '00:30',
-    totalMarks: 100,
+    totalMarks: 0,
     status: null
   }
 

@@ -5,11 +5,12 @@ import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { mapDesignations } from '../../../utitlities/constants'
 
 const TeacherCard = ({ dispatch, teacher, setTeacherToEdit, showCreateEditModal, deleteTeacher }) => (
   <TableRow>
     <TableRowChild> { `${teacher.firstName} ${teacher.lastName}` } </TableRowChild>
-    <TableRowChild> { teacher.designation } </TableRowChild>
+    <TableRowChild> { mapDesignations[teacher.designation] } </TableRowChild>
     <TableRowChild> { teacher.department.departmentCode } </TableRowChild>
     <TableRowChild> { teacher.phoneNumber } </TableRowChild>
     <TableRowChild> { teacher.credential.email } </TableRowChild>

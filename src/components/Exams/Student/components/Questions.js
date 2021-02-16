@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 import _ from 'underscore'
-import { getExamStatus, getTimeDifferenceExam } from '../../../../utitlities/common.functions'
+import { getExamTimeStatus, getExamStatus } from '../../../../utitlities/common.functions'
 import { RightButtonWrapper, TileHeaderWrapper } from '../../../styles/pageStyles'
-import { Button } from 'antd'
 import { ButtonStyled } from '../../../../utitlities/styles'
+import { useEffect, useState } from 'react'
 
 const Container = styled.div`
   border-radius: 8px;
@@ -65,29 +65,61 @@ const Questions = ({
   exam,
   questions = [],
   onShowingPaper
-}) => (
-  <Container rows="70px 70px 1fr">
-    <TileHeaderWrapper columns="1fr 1fr 1fr" gridGap="20px">
-      <div>
-        Total {questions.length} questions
-      </div>
-      <div>
-        {getExamStatus(exam) === 'ended' ? `Ended ${getTimeDifferenceExam(exam, -1)} ago` : ''}
-      </div>
-      
-      <RightButtonWrapper>
-        <ButtonStyled disabled={questions.length === 0} onClick={() => onShowingPaper()} type="primary">{getExamStatus(exam) === 'ended' ? 'View Questions' : 'Answer Questions'}</ButtonStyled>
-      </RightButtonWrapper>
-    </TileHeaderWrapper>
-    <HeaderRow columns="repeat(2, 1fr) 100px">
-      <HeaderLabel>Title</HeaderLabel>
-      <HeaderLabel>Type</HeaderLabel>
-      <HeaderLabel>Marks</HeaderLabel>
-    </HeaderRow>
-    <Body>
-      {_.map(questions, (question, index) => <Card key={`question_${index}`} question={question} onShowingPaper={onShowingPaper}/>)}
-    </Body>
-  </Container>
-)
+}) => {
+  const [timeString, setTimeString] = useState('');
+  useEffect(() => {
+    if (exam && exam._id) {
+      const interval = setInterval(() => {
+        const examTimeStatus = getExamTimeStatus(exam);
+        if (examTimeStatus)
+          setTimeString(examTimeStatus);
+      }, 1000);
+      return () => {
+        clearInterval(interval);
+      }
+    }
+  }, [exam]);
+
+  return (
+    <Container rows="70px 70px 1fr">
+      <TileHeaderWrapper columns="auto auto auto" gridGap="20px">
+        <div>
+          Total {questions.length} questions
+        </div>
+        <div>
+          {timeString}
+        </div>
+        
+        <RightButtonWrapper>
+          {getExamStatus(exam) !== 'upcoming' &&
+            <ButtonStyled
+              disabled={questions.length === 0}
+              onClick={() => onShowingPaper()} 
+              type="primary"
+            >
+              {
+                getExamStatus(exam) === 'ended' ?
+                  'View Questions' :
+                  'Answer Questions'
+              }
+            </ButtonStyled>
+          }
+        </RightButtonWrapper>
+      </TileHeaderWrapper>
+      {getExamStatus(exam) !== 'upcoming' &&
+        <>
+          <HeaderRow columns="repeat(2, 1fr) 100px">
+            <HeaderLabel>Title</HeaderLabel>
+            <HeaderLabel>Type</HeaderLabel>
+            <HeaderLabel>Marks</HeaderLabel>
+          </HeaderRow>
+          <Body>
+            {_.map(questions, (question, index) => <Card key={`question_${index}`} question={question} onShowingPaper={onShowingPaper}/>)}
+          </Body>
+        </>
+      }
+    </Container>
+  );
+}
 
 export default Questions

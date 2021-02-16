@@ -37,14 +37,15 @@ const MCQ = ({
   const setOptionValue = (index, key, value) => {
     const newOptions = [...options]
     newOptions[index][key] = value
-    setOptions(newOptions)
     setQuestionValue('options', newOptions)
   }
 
   useEffect(() => {
     const newOptions = (question.options && question.options.length)
       ? question.options
-      : defaultOptions
+      : (
+        question.options || defaultOption
+      );
     setOptions(newOptions)
   }, [question.options])
 
@@ -64,7 +65,6 @@ const MCQ = ({
               type="primary"
               onClick={() => {
                 const newOptions = [...options, deepCopy(defaultOption)]
-                setOptions(newOptions)
                 setQuestionValue('options', newOptions)
               }}
             >
@@ -85,7 +85,6 @@ const MCQ = ({
                     ...option,
                     isAnswer: optIndex === index
                   }))
-                  setOptions(newOptions)
                   setQuestionValue('options', newOptions)
                 }}
                 style={{ width: '500px' }}
@@ -97,8 +96,7 @@ const MCQ = ({
                 danger
                 onClick={() => {
                   const newOptions = _.filter(options, (option, opIndex) => opIndex !== index)
-                  setOptions(newOptions)
-                  setQuestionValue('options', options)
+                  setQuestionValue('options', newOptions)
                 }}
               > Remove </Button>
             </div>
