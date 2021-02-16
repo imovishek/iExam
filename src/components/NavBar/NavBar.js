@@ -4,7 +4,7 @@ import { faCoffee, faBox, faAnchor, faSignOutAlt, faCog, faUser, faUsers, faChal
 import { connect } from 'react-redux'
 import { setNavigaitonTabAction } from './actions'
 import { push } from 'connected-react-router'
-import { hasPageAccess } from '../../utitlities/constants'
+import { hasPageAccess, mapDesignations } from '../../utitlities/constants'
 import { faMendeley } from '@fortawesome/free-brands-svg-icons'
 import React, { useState } from 'react'
 import UserInfoModal from '../UserSettings/User/UserInfoModal'
@@ -66,6 +66,16 @@ const FooterIconWraper = styled.div`
   justify-content: center;
 `
 
+const DesignationWraper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  color: #ced4d4;
+  font-size: 11px;
+  font-style: italic;
+  margin-bottom: 10px;
+`
+
 const FooterWraper = styled.div`
   display: flex;
   flex-direction: column;
@@ -77,7 +87,6 @@ const FooterWraper = styled.div`
 
 const LabelHeader = styled.label`
   color: white;
-  margin-bottom: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -136,6 +145,9 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
           <FooterIconWraper>
             <LabelHeader >{user.firstName} {user.lastName}</LabelHeader>
           </FooterIconWraper>
+          <DesignationWraper>
+            {user.userType === 'teacher' && mapDesignations[user.designation]}
+          </DesignationWraper>
           <FooterIconWraper>
             <div>
               <Tooltip title = "Profile">
