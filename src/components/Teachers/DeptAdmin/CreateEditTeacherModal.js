@@ -5,6 +5,7 @@ import { Modal, Input, Select } from 'antd'
 import _ from 'underscore'
 import { joiObjectParser, isValidEmail } from '../../../utitlities/common.functions'
 import api from '../../../utitlities/api'
+import { mapDesignations } from '../../../utitlities/constants'
 
 const { Option } = Select
 
@@ -202,11 +203,7 @@ const CreateEditTeacherModal = ({
             value={teacher.designation}
             onChange={(v) => setValue('designation', v)}
           >
-            <Option value="guest-lecturer">Guest Lecturer</Option>
-            <Option value="lecturer">Lecturer</Option>
-            <Option value="assistant-professor">Assistant Professor</Option>
-            <Option value="associate-professor">Associate Professor</Option>
-            <Option value="professor">Professor</Option>
+            {_.map(mapDesignations, (value, key) => <Option value={key}>{value}</Option>)}
           </Select>
           <ErrorWrapper> {errors.designation} </ErrorWrapper>
         </ColumnWrapper>
