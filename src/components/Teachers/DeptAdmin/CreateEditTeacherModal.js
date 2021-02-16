@@ -49,7 +49,7 @@ const CreateEditTeacherModal = ({
     firstName: '',
     lastName: '',
     shortName: '',
-    designation: '',
+    designation: null,
     phoneNumber: '',
     department: {
       departmentCode: 'CSE',
