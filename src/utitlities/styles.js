@@ -55,6 +55,13 @@ export const ButtonStyled = styled(Button)`
   background: #7b91ad;
   transition-duration: 500ms;
 `
+
+export const CenterText = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 const iconMapper = {
   delete: faTrash,
   accept: faCheckCircle,

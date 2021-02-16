@@ -19,6 +19,7 @@ import api from './utitlities/api'
 import Loading from './components/Common/Loading'
 import ExamsForStudent from './components/Exams/Student/index'
 import ExamsForTeacher from './components/Exams/Teacher/index'
+import QuestionViewPageForTeacher from './components/Exams/Teacher/QuestionView'
 import CoursesForStudent from './components/Courses/Student'
 import CoursePageForStudents from './components/Courses/Student/CoursePage'
 import ExamPageForTeacher from './components/Exams/Teacher/ExamPage'
@@ -26,6 +27,7 @@ import ExamPageForStudents from './components/Exams/Student/ExamPage'
 import { push } from 'connected-react-router'
 import EvaluatePaper from './components/Exams/Teacher/EvaluatePaper'
 import ExamResult from './components/Exams/Teacher/ExamResult'
+import NotFound from './components/Common/404'
 
 require('dotenv').config()
 const loadUser = async (dispatch) => {
@@ -58,6 +60,7 @@ const App = ({ user, dispatch }) => {
       <Route path="/login" component={Login} />
       <Route path="/logout" component={Logout} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/404" component={NotFound} />
       { userType === 'student' && <Route path="/exams" component={ExamsForStudent} /> }
       { userType === 'student' && <Route path="/courses" component={CoursesForStudent} /> }
       { userType === 'student' && <Route path="/course/:id" component={CoursePageForStudents} /> }
@@ -68,6 +71,7 @@ const App = ({ user, dispatch }) => {
       { userType === 'deptAdmin' && <Route path="/students" component={StudentsForAdmin} /> }
       { userType === 'deptAdmin' && <Route path="/exam/:id" component={ExamPageForAdmin} /> }
       { userType === 'teacher' && <Route path="/question/:questionID" component={QuestionPageForTeacher} /> }
+      { userType === 'teacher' && <Route path="/exam/:examID/question/view/:questionID" component={QuestionViewPageForTeacher} /> }
       { userType === 'teacher' && <Route path="/exam/:examID/question/:questionID" component={QuestionPageForTeacher} /> }
       { userType === 'teacher' && <Route path="/courses" component={CoursesForTeacher} /> }
       { userType === 'teacher' && <Route path="/exam/:examID/paper/:studentID" component={EvaluatePaper} /> }

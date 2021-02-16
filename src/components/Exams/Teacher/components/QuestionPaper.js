@@ -1,12 +1,16 @@
 import styled from 'styled-components'
 import _ from 'underscore'
 import { getExamStatus } from '../../../../utitlities/common.functions'
-import { Input, Tooltip } from 'antd'
+import { Input, Tooltip, Button } from 'antd'
 import { useState, useEffect } from 'react'
 import MCQBody from './MCQBody'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import Loading from '../../../Common/Loading'
+import { RightButtonWrapper } from '../../../styles/pageStyles'
+import { push } from 'connected-react-router'
+import { Row } from '../../../../utitlities/styles'
+import { connect } from 'react-redux'
 
 
 const Container = styled.div`
@@ -75,7 +79,10 @@ const SingleQuestion = ({
   answer,
   exam,
   setAnswerValue,
-  marks
+  marks,
+  noMarks = false,
+  isShowingEditButton,
+  dispatch
 }) => {
   const status = getExamStatus(exam)
   const isEditing = status === 'running'
@@ -84,7 +91,22 @@ const SingleQuestion = ({
   return (
     <QuestionWrapper>
       <HeaderWrapper>
-        <TitleWrapper> {question.title} </TitleWrapper>
+        <Row columns="1fr 1fr">
+          <TitleWrapper> {question.title} </TitleWrapper>
+          {isShowingEditButton &&
+            <RightButtonWrapper>
+              <Button
+                onClick={() =>
+                  dispatch(push(`/exam/${exam._id}/question/${question._id}`))
+                }
+                style={{ marginRight: '10px' }}
+              >
+                Edit
+              </Button>
+            </RightButtonWrapper>
+          }
+        </Row>
+        
         <MarksWraper>
           Marks: {question.marks}
         </MarksWraper>
@@ -110,36 +132,34 @@ const SingleQuestion = ({
       {isBroad && (
         <BodyWrapper>
           <AddPadding>
-            { isEditing &&
-              <Input.TextArea disabled={disabled} style={{ width: '500px' }} value={answer} onChange={(e) => {}} rows={4} />
-            }
-            { !isEditing &&
-              <div dangerouslySetInnerHTML={{ __html: answer }} />
-            }
+            <Input.TextArea disabled={!isEditing || disabled} style={{ width: '500px' }} value={answer} onChange={(e) => {}} rows={4} />
           </AddPadding>
         </BodyWrapper>
       )}
-      <InlineBlock>
-        <Input
-          style={{ width: 100 }}
-          value={marks}
-          onChange={(e) => setAnswerValue(index, 'marks', e.target.value)}
-          placeholder="Set Marks"
-        /> {
-          isMCQ && <Tooltip title="Evaluate">
-            <FontAwesomeIcon
-              style={{ display: 'inline', cursor: 'pointer', marginLeft: '10px' }} icon={faSyncAlt} size="lg" color="green"
-              onClick={() => {
-                if (question.options[Number(answer)].isAnswer) {
-                  setAnswerValue(index, 'marks', question.marks)
-                } else {
-                  setAnswerValue(index, 'marks', 0)
-                }
-              }}
-            />
-          </Tooltip>
-        }
-      </InlineBlock>
+
+      {!noMarks &&
+        <InlineBlock>
+          <Input
+            style={{ width: 100 }}
+            value={marks}
+            onChange={(e) => setAnswerValue(index, 'marks', e.target.value)}
+            placeholder="Set Marks"
+          /> {
+            isMCQ && <Tooltip title="Evaluate">
+              <FontAwesomeIcon
+                style={{ display: 'inline', cursor: 'pointer', marginLeft: '10px' }} icon={faSyncAlt} size="lg" color="green"
+                onClick={() => {
+                  if (question.options[Number(answer)].isAnswer) {
+                    setAnswerValue(index, 'marks', question.marks)
+                  } else {
+                    setAnswerValue(index, 'marks', 0)
+                  }
+                }}
+              />
+            </Tooltip>
+          }
+        </InlineBlock>
+      }
     </QuestionWrapper>
   )
 }
@@ -156,7 +176,9 @@ const QuestionPaper = ({
   paper,
   setPaper,
   isLoading,
-  questions
+  questions,
+  viewQuestions = false,
+  dispatch
 }) => {
   const [answers, setAnswers] = useState(paper.answers)
   const [questionsObj, setQuestionsObj] = useState({})
@@ -181,16 +203,50 @@ const QuestionPaper = ({
     }
     setAnswers(newAnswers)
   }
-
+  const didNotAnswer = 'Did not answer any questions :(';
+  const noQuestions = 'No questions set';
   if (!isLoading && paper && paper.answers && paper.answers.length === 0) {
-    return <NoData>Did not answer any questions :( </NoData>
+    return <NoData>{ viewQuestions ? noQuestions : didNotAnswer }</NoData>
   }
+  if (viewQuestions)
+    return (
+      <Container>
+        {isLoading && <Loading isLoading={isLoading}/>}
+        {_.map(questions, (question, index) => (
+          <SingleQuestion
+            disabled={disabled}
+            index={index}
+            setAnswerValue={() => {}}
+            exam={exam}
+            question={question}
+            answer=''
+            marks=''
+            noMarks={true}
+            isShowingEditButton={viewQuestions}
+            dispatch={dispatch}
+          />
+        ))}
+      </Container>
+    );
+  
   return (
     <Container>
       {isLoading && <Loading isLoading={isLoading}/>}
-      {_.map(answers, (answer, index) => <SingleQuestion disabled={disabled} index={index} setAnswerValue={setAnswerValue} exam={exam} question={questionsObj[answer.questionID]} answer={answer.answer} marks={answer.marks} />)}
+      {_.map(answers, (answer, index) => (
+        <SingleQuestion
+          disabled={disabled}
+          index={index}
+          setAnswerValue={setAnswerValue}
+          exam={exam}
+          question={questionsObj[answer.questionID]}
+          answer={answer.answer}
+          marks={answer.marks}
+          dispatch={dispatch}
+        />
+      ))}
     </Container>
   )
 }
 
-export default QuestionPaper
+const mapDispatchToProps = dispatch => ({ dispatch });
+export default connect(null, mapDispatchToProps)(QuestionPaper);

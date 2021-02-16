@@ -10,7 +10,7 @@ import QuestionBody from './components/QuestionBody'
 import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper } from '../../styles/pageStyles'
 import { push, goBack } from 'connected-react-router'
 import { deepCopy } from '../../../utitlities/common.functions'
-import api from '../../../utitlities/api'
+import api, { getExamByID } from '../../../utitlities/api'
 import { useParams } from 'react-router'
 import MCQ from './components/MCQ'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -117,16 +117,25 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
     const isCreate = questionID === 'new'
     try {
       if (questionID === 'new') {
-        const { payload: newQuestion } = await api.createQuestion(question)
+        const { payload: newQuestion } = await api.createQuestion(question);
         setQuestion(newQuestion)
         if (examID) {
           await api.updateExam({ _id: examID }, { $push: { questions: newQuestion._id } })
+          const { payload: exam } = await api.getExamByID(examID);
+          const totalMarks = _.reduce(exam.questions, (sum, q) => (sum + q.marks), 0);
+          await api.updateExam({ _id: examID }, { totalMarks });
         }
         await api.updateUserByID(user._id, { $push: { questionIDs: newQuestion._id } })
         message.success('Question Creation Successful!')
         dispatch(push(`${examID ? `/exam/${examID}` : ''}/question/${newQuestion._id}`))
       } else {
-        await api.updateQuestion(question, question)
+        await api.updateQuestion(question, question);
+        if (examID) {
+          const { payload: exam } = await api.getExamByID(examID);
+          const totalMarks = _.reduce(exam.questions, (sum, q) => (sum + q.marks), 0);
+          console.log(totalMarks, exam);
+          await api.updateExam({ _id: examID }, { totalMarks });
+        }
         message.success('Question Updated!')
       }
     } catch (err) {
