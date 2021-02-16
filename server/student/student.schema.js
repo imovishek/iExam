@@ -18,6 +18,7 @@ const studentSchema = new Schema({
         required: true
     },
     credential: { type: credentialSchema, required: true },
+    autoSubmitPaper: { type: Boolean, default: true },
     ipAddress: String,
     macAddress: String
 },
