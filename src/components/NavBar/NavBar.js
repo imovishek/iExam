@@ -7,7 +7,7 @@ import { push } from 'connected-react-router'
 import { hasPageAccess, mapDesignations } from '../../utitlities/constants'
 import { faMendeley } from '@fortawesome/free-brands-svg-icons'
 import React, { useState } from 'react'
-import UserInfoModal from '../UserSettings/User/UserInfoModal'
+import UserInfo from '../UserSettings/User/UserInfo'
 import { Tooltip } from 'antd'
 
 const BodyWrapper = styled.div`
@@ -98,7 +98,7 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
     dispatch(push(`/${path}`))
   }
   const { userType } = user
-  const [showUserInfoModal, setShowUserInfoModal] = useState(false)
+  const [showUserInfoModal, setShowUserInfoModal] = useState(false);
   return (
     <BodyWrapper>
       <SubWrapper>
@@ -165,12 +165,10 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
           </FooterIconWraper>
         </FooterWraper>
 
-        <UserInfoModal
-          visible={showUserInfoModal}
+        <UserInfo
           selectedUser={user}
+          visible={showUserInfoModal}
           setVisibility={setShowUserInfoModal}
-          createUser={() => {}}
-          updateUser={() => {}}
         />
       </SubWrapper>
     </BodyWrapper>

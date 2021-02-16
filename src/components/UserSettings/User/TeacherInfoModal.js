@@ -1,11 +1,14 @@
 import styled from 'styled-components'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import userValidator from '../user.validation'
 import { Modal, Input, Select } from 'antd'
 import _ from 'underscore'
 import { joiObjectParser } from '../../../utitlities/common.functions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons'
+import { Link } from 'react-router-dom'
+import { mapDesignations } from '../../../utitlities/constants'
+import UpdatePassword from './UpdatePassword'
 
 const { Option } = Select
 
@@ -45,36 +48,15 @@ const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   }
   float: right;
 `
-const UserInfoModal = ({
+const TeacherInfoModal = ({
   selectedUser,
   visible,
   setVisibility,
-  createUser,
   updateUser
 }) => {
-  const isEditing = !(!selectedUser)
-  const title = isEditing ? 'Edit User' : 'Create User'
-  const defaultUser = {
-    firstName: '',
-    lastName: '',
-    department: {
-      departmentCode: 'CSE',
-      departmentName: 'Computer Science and Engineering'
-    },
-    credential: {
-      email: '',
-      password: 'superuser',
-      userType: 'teacher'
-    },
-    userType: 'teacher'
-  }
-  const [user, setUser] = useState(isEditing ? selectedUser : defaultUser)
+  const title = 'My Info'
+  const [user, setUser] = useState(selectedUser)
   const [errors, setErrors] = useState({})
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(async () => {
-    setUser(selectedUser || defaultUser);
-  }, [isEditing, selectedUser])
 
   const setValue = (key, value) => {
     const newUser = {
@@ -89,25 +71,14 @@ const UserInfoModal = ({
     setErrors(newErrors)
   }
 
+  const checkCredentialOnChange = async (email) => {
+
+  }
   const closeModal = () => {
     setVisibility(false)
-    setUser(defaultUser)
     setErrors({})
     setUserEditing(false)
-  }
-  const checkCredentialOnChange = async (email) => {
-    // if (!email) return;
-    // if (previousEmail === email) return;
-    // if (!isValidEmail(email)) {
-    //   const newErrors = { ...errors, email: emailInvalidLabel};
-    //   setErrors(newErrors);
-    //   return;
-    // }
-    // const { payload } = await api.getCredentials({ email });
-    // if (payload.length) {
-    //   const newErrors = { ...errors, email: emailAlreadyExistLabel};
-    //   setErrors(newErrors);
-    // }
+    setIsChangePassword(false)
   }
 
   const checkCredentialOnChangeDebounced = _.debounce(checkCredentialOnChange, 300)
@@ -117,11 +88,11 @@ const UserInfoModal = ({
     if (!_.isEmpty(errors)) {
       return
     }
-    if (isEditing) updateUser(user)
-    else createUser(user)
+    updateUser(user)
     closeModal()
   }
   const [isUserEditing, setUserEditing] = useState(false)
+  const [isChangePassword, setIsChangePassword] = useState(false)
   return (
     <Modal
       title={title}
@@ -131,7 +102,7 @@ const UserInfoModal = ({
       height={800}
       onOk={() => onSubmit()}
       onCancel={() => closeModal()}
-      okText={!isEditing ? 'Save' : 'Update'}
+      okText="Update"
     >
       <Row columns="1fr">
         <FontAwesomeIconWrapper
@@ -141,8 +112,6 @@ const UserInfoModal = ({
           icon={faUserEdit}
         />
       </Row>
-
-      <Row columns="1fr 1fr"></Row>
       <Row columns="1fr 1fr">
         <ColumnWrapper>
           <LabelWrapper>First Name</LabelWrapper>
@@ -169,14 +138,45 @@ const UserInfoModal = ({
       </Row>
       <Row columns="1fr 1fr">
         <ColumnWrapper>
-          <LabelWrapper>Department</LabelWrapper>
-          <Select
-            defaultValue="CSE"
+          <LabelWrapper>Short Name</LabelWrapper>
+          <InputWrapper
+            placeholder="Short Name"
+            value={selectedUser.shortName}
             style={{ width: 270 }}
+            onChange={(e) => {
+              setValue('shortName', e.target.value)
+            }}
+            disabled = {!isUserEditing}
+          />
+          <ErrorWrapper> {errors.shortName} </ErrorWrapper>
+        </ColumnWrapper>
+        <ColumnWrapper>
+          <LabelWrapper>Designation</LabelWrapper>
+          <Select
+            placeholder="Choose Designation"
+            style={{ width: 270 }}
+            value={selectedUser.designation}
+            onChange={(v) => setValue('designation', v)}
             disabled = {!isUserEditing}
           >
-            <Option value="CSE">Computer Science And Engineering</Option>
+            {_.map(mapDesignations, (value, key) => <Option value={key}>{value}</Option>)}
           </Select>
+          <ErrorWrapper> {errors.designation} </ErrorWrapper>
+        </ColumnWrapper>
+      </Row>
+      <Row columns="1fr 1fr">
+        <ColumnWrapper>
+          <LabelWrapper>Phone Number</LabelWrapper>
+          <InputWrapper
+            placeholder="Phone Number"
+            value={selectedUser.phoneNumber}
+            style={{ width: 270 }}
+            onChange={(e) => {
+              setValue('phoneNumber', e.target.value)
+            }}
+            disabled = {!isUserEditing}
+          />
+          <ErrorWrapper> {errors.phoneNumber} </ErrorWrapper>
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Email</LabelWrapper>
@@ -193,25 +193,21 @@ const UserInfoModal = ({
           <ErrorWrapper> {errors.email} </ErrorWrapper>
         </ColumnWrapper>
       </Row>
-      { selectedUser.userType === 'student' &&
-        <Row columns="1fr">
-          <ColumnWrapper>
-            <LabelWrapper>Registration No</LabelWrapper>
-            <InputWrapper
-              placeholder="Registration No"
-              value={selectedUser.registrationNo}
-              style={{ width: 270 }}
-              onChange={(e) => {
-                setValue('registrationNo', e.target.value)
-              }}
-              disabled = {!isUserEditing}
-            />
-            <ErrorWrapper> {errors.registrationNo} </ErrorWrapper>
-          </ColumnWrapper>
-        </Row>
-      }
+      <Row columns="1fr">
+        <ColumnWrapper>
+          <LabelWrapper>Department</LabelWrapper>
+          <Select
+            defaultValue="CSE"
+            style={{ width: 270 }}
+            disabled = {!isUserEditing}
+          >
+            <Option value="CSE">Computer Science And Engineering</Option>
+          </Select>
+        </ColumnWrapper>
+      </Row>
+      {isUserEditing && <UpdatePassword user={user} setValue={setValue} errors={errors}/>}
     </Modal>
   )
 }
 
-export default UserInfoModal
+export default TeacherInfoModal
