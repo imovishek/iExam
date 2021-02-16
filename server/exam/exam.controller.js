@@ -23,7 +23,8 @@ exports.getExams = async (req, res) => {
 const getExamByIDWithParticipants = async (id) => {
   const result = await examHelper.getExamByID(id).lean();
   const course = await courseHelper.getCourseByID(result.course._id);
-  const participants = _.filter(course.enrolledStudents, st => !_.any(result.bannedParticipants, pt => String(pt._id) === String(st._id)));
+  let participants = _.filter(course.enrolledStudents, st => !_.any(result.bannedParticipants, pt => String(pt._id) === String(st._id)));
+  participants = _.filter(participants, pt => _.any(result.papers, paper => String(pt._id) === String(paper.student)));
   result.participants = participants;
   return result;
 }
