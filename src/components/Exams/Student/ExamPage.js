@@ -2,11 +2,11 @@ import CheckAuthentication from '../../CheckAuthentication/CheckAuthentication'
 import NavBar from '../../NavBar/NavBar'
 import { connect } from 'react-redux'
 import _ from 'underscore'
-import { BodyWrapper, Container } from '../../../utitlities/styles'
-import React, { useEffect, useState } from 'react'
+import { BodyWrapper, Container, Col } from '../../../utitlities/styles'
+import React, { useEffect, useState, useCallback } from 'react'
 import api from '../../../utitlities/api'
 import styled from 'styled-components'
-import { Button, message } from 'antd'
+import { Button, message, Switch } from 'antd'
 import { getExamStatus } from '../../../utitlities/common.functions'
 import { useParams } from 'react-router'
 import { goBack } from 'connected-react-router'
@@ -18,6 +18,7 @@ import QuestionPaper from './components/QuestionPaper'
 import Questions from './components/Questions'
 import Announcements from './components/Announcements'
 import Loading from '../../Common/Loading'
+import { setUserAction } from '../../Login/actions'
 
 
 const ButtonStyled = styled(Button)`
@@ -41,9 +42,10 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   if (!id) dispatch(goBack())
   const [isLoading, setIsLoading] = useState(true)
   const [exam, setExam] = useState({})
-  const [ setTeachers] = useState({})
   const [showingPaper, setShowingPaper] = useState(false)
   const [paper, setPaper] = useState({})
+  const [switchLoading, setSwitchLoading] = useState(false);
+  const [savedText, setSavedText] = useState("");
 
   const createPaperForMe = (exam, newPaper) => {
     const answerObj = {}
@@ -63,11 +65,9 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   }
   const updateExamOnUI = async () => {
     const { payload = {} } = await api.getExamByIDWithPaper(id)
-    const { exam: updatedExam, paper: updatedPaper } = payload
-    const { payload: fetchedTeachers = [] } = await api.getTeachers({})
+    const { exam: updatedExam, paper: updatedPaper } = payload;
     setExam(updatedExam)
     setPaper(createPaperForMe(updatedExam, updatedPaper))
-    setTeachers(fetchedTeachers)
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -101,13 +101,61 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     }
   }
 
+  const submitSilentPaperHandler = async () => {
+    const cleanPaper = {
+      ...paper
+    }
+    try {
+      const { payload: nowExam } = await api.getExamByID(id)
+      if (getExamStatus(nowExam) === 'ended') {
+        return;
+      }
+      await api.updateExamPaperForStudent(id, cleanPaper)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const autoSubmitUpdateHandler = async (checked) => {
+    setSwitchLoading(true);
+    const { payload: newUser } = await api.updateUserByID(user._id, { autoSubmitPaper: checked });
+    dispatch(setUserAction(newUser));
+    setSwitchLoading(false);
+  }
+
+  // useEffect(() => {
+  //   if (user.autoSubmitPaper) {
+  //     console.log('Starting new one...........');
+  //     const interval = setInterval(async () => {
+  //       setSavedText('Saving...', paper);
+  //       await submitSilentPaperHandler();
+  //       setSavedText('Saved a few seconds ago');
+  //     }, 5000);
+  //     return () => {
+  //       console.log('Killing prev one........');
+  //       clearInterval(interval);
+  //     }
+  //   }
+  // }, [user.autoSubmitPaper])
+
+  useCallback(() => {
+    setInterval(async () => {
+      console.log(paper);
+      // if (user.autoSubmitPaper) {
+      //   setSavedText('Saving...', paper);
+      //   await submitSilentPaperHandler();
+      //   setSavedText('Saved a few seconds ago');
+      // }
+    }, 1000);
+  })
+
   return (
     <div>
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
         <Container rows="55px 1fr" gridGap="20px">
-          <TileHeaderWrapper columns="1fr">
+          <TileHeaderWrapper columns="1fr 1fr">
             <div>
               {hasBack &&
                 <FontAwesomeIconWrapper
@@ -121,11 +169,19 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               <PageHeader>Exam</PageHeader>
             </div>
             {showingPaper &&
-                <RightButtonWrapper>
-                  <ButtonStyled disabled={getExamStatus(exam) === 'ended' || isLoading} type="primary" onClick={() => submitPaperHandler()}>
-                    Submit
-                  </ButtonStyled>
-                </RightButtonWrapper>
+              <RightButtonWrapper>
+                <Col rows="1fr 1fr" style={{width: "170px"}}>
+                  <div>
+                    <span style={{marginRight: '10px'}}>Auto submit: </span>
+                    <Switch loading={switchLoading} checked={user.autoSubmitPaper} onChange={autoSubmitUpdateHandler} style={{ marginRight: '10px' }}/>
+                  </div>
+                  {user.autoSubmitPaper && <div>{savedText}</div>}
+                </Col>
+                
+                <ButtonStyled disabled={getExamStatus(exam) === 'ended' || isLoading} type="primary" onClick={() => submitPaperHandler()}>
+                  Submit
+                </ButtonStyled>
+              </RightButtonWrapper>
             }
           </TileHeaderWrapper>
           <TileBodyWrapper>
