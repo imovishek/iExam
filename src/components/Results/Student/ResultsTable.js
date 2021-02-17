@@ -33,7 +33,7 @@ const ResultCard = ({ exam, user, dispatch }) => {
     <TableRow onClick={() => dispatch(push(`/exam/${exam._id}`))}>
       <TableRowChild> { exam.title } </TableRowChild>
       <TableRowChild> { exam.course.title } </TableRowChild>
-      <TableRowChild> { exam.assignedTeacher ? getName(exam.assignedTeacher) : 'Unassigned'} </TableRowChild>
+      <TableRowChild> { exam.course.assignedTeacher ? getName(exam.course.assignedTeacher) : 'Unassigned'} </TableRowChild>
       <TableRowChild> { exam.department.departmentCode } </TableRowChild>
       <TableRowChild> { paper.answers.length } </TableRowChild>
       <TableRowChild>

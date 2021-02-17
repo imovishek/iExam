@@ -15,7 +15,7 @@ const TableBodyWrapper = styled.div`
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
-const ExamCard = ({ dispatch, exam, setExamToEdit, showCreateEditModal, deleteExam }) => {
+const ExamCard = ({ dispatch, exam }) => {
   const status = getExamStatus(exam)
   const shouldEnter = (status || '').toLowerCase() === 'ended' || (status || '').toLowerCase() === 'running'
   return (
@@ -23,7 +23,7 @@ const ExamCard = ({ dispatch, exam, setExamToEdit, showCreateEditModal, deleteEx
       <TableRowChild> { exam.title } </TableRowChild>
       <TableRowChild> { exam.course.title } </TableRowChild>
       <TableRowChild> { exam.course.courseCode } </TableRowChild>
-      <TableRowChild> { exam.assignedTeacher ? getName(exam.assignedTeacher) : 'Unassigned'} </TableRowChild>
+      <TableRowChild> { exam.course.assignedTeacher ? getName(exam.course.assignedTeacher) : 'Unassigned'} </TableRowChild>
       <TableRowChild> { exam.department.departmentCode } </TableRowChild>
       <TableRowChild>
         <OperationWrapper>
