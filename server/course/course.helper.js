@@ -6,25 +6,28 @@ exports.createCourse = (course) =>
   Course.create(course);
 
 // GET
-exports.getCourseByID = (_id) =>
+exports.getCourseByID = (_id, sort = { createdAt: -1 }) =>
   Course.findOne({ _id })
     .populate("enrolledStudents")
     .populate("pendingEnrollStudents")
     .populate({
       path: 'exams',
-      populate: { path: 'course', model: 'Course' }
+      populate: { path: 'course', model: 'Course' },
+      options: { sort }
     })
     .populate("assignedTeacher");
 
-exports.getCourses = (query) =>
+exports.getCourses = (query, sort = { createdAt: -1 }) =>
   Course.find(query)
     .populate("enrolledStudents")
     .populate("pendingEnrollStudents")
     .populate({
       path: 'exams',
-      populate: { path: 'course', model: 'Course' }
+      populate: { path: 'course', model: 'Course' },
+      options: { sort }
     })
-    .populate("assignedTeacher");
+    .populate("assignedTeacher")
+    .sort(sort);
 
 
 // UPDATE

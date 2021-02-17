@@ -8,20 +8,33 @@ exports.createExam = (exam) =>
 // GET
 exports.getExamByID = (_id) =>
   Exam.findOne({ _id })
-    .populate("course")
+    .populate({
+      path: "course",
+      populate: {
+        path: "assignedTeacher",
+        model: "Teacher"
+      }
+    })
     .populate("questions")
     .populate("participants")
     .populate("bannedParticipants")
     .populate("papers");
 
 
-exports.getExams = (query) =>
+exports.getExams = (query, sort = { createdAt: -1 }) =>
   Exam.find(query)
-    .populate("course")
+    .populate({
+      path: "course",
+      populate: {
+        path: "assignedTeacher",
+        model: "Teacher"
+      }
+    })
     .populate("questions")
     .populate("participants")
     .populate("bannedParticipants")
-    .populate("papers");
+    .populate("papers")
+    .sort(sort);
 
 
 // UPDATE
