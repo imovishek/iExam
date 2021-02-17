@@ -44,7 +44,7 @@ const MCQ = ({
     const newOptions = (question.options && question.options.length)
       ? question.options
       : (
-        question.options || defaultOption
+        question.options || defaultOptions
       );
     setOptions(newOptions)
   }, [question.options])

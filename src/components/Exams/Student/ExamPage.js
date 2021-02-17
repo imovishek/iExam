@@ -46,6 +46,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [paper, setPaper] = useState({})
   const [switchLoading, setSwitchLoading] = useState(false);
   const [savedText, setSavedText] = useState("");
+  const virtualState = {};
 
   const createPaperForMe = (exam, newPaper) => {
     const answerObj = {}
@@ -67,7 +68,10 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     const { payload = {} } = await api.getExamByIDWithPaper(id)
     const { exam: updatedExam, paper: updatedPaper } = payload;
     setExam(updatedExam)
-    setPaper(createPaperForMe(updatedExam, updatedPaper))
+    const newPaper = createPaperForMe(updatedExam, updatedPaper);
+    setPaper(newPaper);
+    virtualState.paper = newPaper;
+    virtualState.exam = updatedExam;
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -103,16 +107,21 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
 
   const submitSilentPaperHandler = async () => {
     const cleanPaper = {
-      ...paper
+      ...virtualState.paper
     }
     try {
       const { payload: nowExam } = await api.getExamByID(id)
       if (getExamStatus(nowExam) === 'ended') {
+        message.info("Exam ended");
+        setSavedText("");
+        await updateExamOnUI();
         return;
       }
       await api.updateExamPaperForStudent(id, cleanPaper)
+      setSavedText('Saved a few seconds ago');
     } catch (err) {
       console.log(err)
+      setSavedText('Error saving');
     }
   }
 
@@ -123,31 +132,24 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     setSwitchLoading(false);
   }
 
-  // useEffect(() => {
-  //   if (user.autoSubmitPaper) {
-  //     console.log('Starting new one...........');
-  //     const interval = setInterval(async () => {
-  //       setSavedText('Saving...', paper);
-  //       await submitSilentPaperHandler();
-  //       setSavedText('Saved a few seconds ago');
-  //     }, 5000);
-  //     return () => {
-  //       console.log('Killing prev one........');
-  //       clearInterval(interval);
-  //     }
-  //   }
-  // }, [user.autoSubmitPaper])
-
-  useCallback(() => {
-    setInterval(async () => {
-      console.log(paper);
-      // if (user.autoSubmitPaper) {
-      //   setSavedText('Saving...', paper);
-      //   await submitSilentPaperHandler();
-      //   setSavedText('Saved a few seconds ago');
-      // }
-    }, 1000);
-  })
+  useEffect(() => {
+    if (user.autoSubmitPaper) {
+      // console.log('Starting new one...........');
+      updateExamOnUI();
+      const interval = setInterval(async () => {
+        if (virtualState.exam && getExamStatus(virtualState.exam) === 'ended') {
+          setSavedText('');
+          return clearInterval(interval);
+        }
+        setSavedText('Saving...');
+        await submitSilentPaperHandler();
+      }, 5000);
+      return () => {
+        // console.log('Killing prev one........');
+        clearInterval(interval);
+      }
+    }
+  }, [user.autoSubmitPaper])
 
   return (
     <div>
@@ -170,15 +172,15 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
             </div>
             {showingPaper &&
               <RightButtonWrapper>
-                <Col rows="1fr 1fr" style={{width: "170px"}}>
+                <Col rows="1fr 1fr" gridGap="3px" style={{width: "170px"}}>
                   <div>
                     <span style={{marginRight: '10px'}}>Auto submit: </span>
-                    <Switch loading={switchLoading} checked={user.autoSubmitPaper} onChange={autoSubmitUpdateHandler} style={{ marginRight: '10px' }}/>
+                    <Switch loading={switchLoading} disabled={getExamStatus(exam) !== 'running' || isLoading} checked={user.autoSubmitPaper} onChange={autoSubmitUpdateHandler} style={{ marginRight: '10px' }}/>
                   </div>
                   {user.autoSubmitPaper && <div>{savedText}</div>}
                 </Col>
                 
-                <ButtonStyled disabled={getExamStatus(exam) === 'ended' || isLoading} type="primary" onClick={() => submitPaperHandler()}>
+                <ButtonStyled disabled={getExamStatus(exam) !== 'running' || isLoading} type="primary" onClick={() => submitPaperHandler()}>
                   Submit
                 </ButtonStyled>
               </RightButtonWrapper>
@@ -187,7 +189,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
           <TileBodyWrapper>
             {showingPaper && (
               <div>
-                <QuestionPaper disabled={getExamStatus(exam) === 'ended'} exam={exam} paper={paper} questions={exam.questions}/>
+                <QuestionPaper disabled={getExamStatus(exam) !== 'running'} exam={exam} paper={paper} questions={exam.questions}/>
               </div>
             )}
             {!showingPaper && (
