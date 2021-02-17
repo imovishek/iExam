@@ -1,15 +1,13 @@
 import CheckAuthentication from '../../CheckAuthentication/CheckAuthentication'
 import NavBar from '../../NavBar/NavBar'
 import _ from 'underscore'
+import moment from 'moment';
 import { connect } from 'react-redux'
 import { BodyWrapper, Container } from '../../../utitlities/styles'
 import React, { useEffect, useState } from 'react'
 import api from '../../../utitlities/api'
 import styled from 'styled-components'
-import { Tabs } from 'antd'
-import ExamsTable from './ExamsTable'
-import { smartLabel, getExamStatus } from '../../../utitlities/common.functions'
-const { TabPane } = Tabs
+import ResultsTable from './ResultsTable'
 const PageHeader = styled.div`
   font-weight: 600;
   font-size: 20px;
@@ -18,10 +16,10 @@ const PageHeader = styled.div`
   margin-bottom: 20px;
 `
 
-const ExamsForStudent = ({ courses = [], user, dispatch }) => {
+const Results = ({ courses = [], user, dispatch }) => {
   const [isLoading, setLoading] = useState(false)
   const [isExamsChanged, setExamsChanged] = useState(true)
-  const [examsObj, setExamsObj] = useState({})
+  const [exams, setExams] = useState([])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     if (isExamsChanged) {
@@ -33,11 +31,14 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
           exams = exams.concat(course.exams)
         })
         const examIDs = _.map(exams, exam => exam._id);
-        const { payload: loadExams } = await api.getExams({ _id: { $in: examIDs } });
-
-        setExamsObj(
-          _.groupBy(loadExams, exam => getExamStatus(exam).toLowerCase())
-        )
+        const { payload: loadExams } = await api.getExams({ _id: { $in: examIDs }})
+        exams = _.filter(loadExams, exam => exam.resultPublished);
+        exams.sort((a, b) => {
+          if (moment(a).isAfter(b)) return -1;
+          if (moment(b).isAfter(a)) return 1;
+          return 0;
+        })
+        setExams(exams);
       } catch (err) {
         console.log(err)
       } finally {
@@ -52,19 +53,11 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
-        <Container>
-          <PageHeader>Exams</PageHeader>
-
-          <Tabs defaultActiveKey="1" tabPosition="left" style={{ height: 450 }}>
-            {_.map(['upcoming', 'running', 'ended'], (v, i) => (
-              <TabPane tab={smartLabel(v)} key={i}>
-                <ExamsTable noEnterButton={v === 'upcoming'} exams={examsObj[v]} isLoading={isLoading} />
-              </TabPane>
-            ))}
-          </Tabs>
+        <Container rows="55px 1fr">
+          <PageHeader>Results</PageHeader>
+          <ResultsTable exams={exams} isLoading={isLoading} />
         </Container>
       </BodyWrapper>
-
     </div>
   )
 }
@@ -77,4 +70,4 @@ const mapDispatchToProps = dispatch => ({
   dispatch
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExamsForStudent)
+export default connect(mapStateToProps, mapDispatchToProps)(Results)

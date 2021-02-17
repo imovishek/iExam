@@ -1,44 +1,43 @@
 
 import styled from 'styled-components'
 import _ from 'underscore'
-import { Spin, Button } from 'antd'
+import { Spin } from 'antd'
 import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
-import { getExamStatus } from '../../../utitlities/common.functions'
-import { TableRow, TableRowChild, OperationWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import {TableRowChild, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
 
 const TableBodyWrapper = styled.div`
   overflow: auto;
 `
+export const TableRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-radius: 8px;
+  background: #f3f3f3;
+  margin-top: 5px;
+  cursor: pointer;
+  :hover {
+    background: #dedede;
+  }
+`
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
-const ExamCard = ({ dispatch, exam }) => {
-  const status = getExamStatus(exam)
-  const shouldEnter = (status || '').toLowerCase() === 'ended' || (status || '').toLowerCase() === 'running'
+const ResultCard = ({ exam, user, dispatch }) => {
+  const papers = _.filter(exam.papers, paper => paper.student === user._id);
+  const paper = papers[0] || { answers: [] };
   return (
-    <TableRow>
+    <TableRow onClick={() => dispatch(push(`/exam/${exam._id}`))}>
       <TableRowChild> { exam.title } </TableRowChild>
       <TableRowChild> { exam.course.title } </TableRowChild>
-      <TableRowChild> { exam.course.courseCode } </TableRowChild>
       <TableRowChild> { exam.course.assignedTeacher ? getName(exam.course.assignedTeacher) : 'Unassigned'} </TableRowChild>
       <TableRowChild> { exam.department.departmentCode } </TableRowChild>
+      <TableRowChild> { paper.answers.length } </TableRowChild>
       <TableRowChild>
-        <OperationWrapper>
-          { shouldEnter &&
-              <Button
-                type="primary"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  dispatch(push(`/exam/${exam._id}`))
-                  // setExamToEdit(_.create('', exam));
-                  // showCreateEditModal(true);
-                }}>Enter</Button>
-          }
-        </OperationWrapper>
+        {`${paper.totalMarks || 'N/A'} / ${exam.totalMarks}`}
       </TableRowChild>
     </TableRow>
   )
@@ -46,13 +45,11 @@ const ExamCard = ({ dispatch, exam }) => {
 
 const NoData = () => <CenterNoData>No Exams :)</CenterNoData>
 
-const ExamTable = ({
+const ResultsTable = ({
   exams = [],
   isLoading,
-  setExamToEdit,
-  showCreateEditModal,
-  deleteExam,
-  dispatch
+  dispatch,
+  user
 }) => {
   const [current, setCurrent] = useState(1)
   const [pageSize, setPageSize] = useState(5)
@@ -67,22 +64,20 @@ const ExamTable = ({
   return (
     <div>
       <TableHeader>
-        <TableHeaderChild> </TableHeaderChild>
+        <TableHeaderChild> Exam Title </TableHeaderChild>
         <TableHeaderChild> Course </TableHeaderChild>
-        <TableHeaderChild> Course Code </TableHeaderChild>
         <TableHeaderChild> Course Teacher </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
-        <TableHeaderChild></TableHeaderChild>
+        <TableHeaderChild> Answered Questions </TableHeaderChild>
+        <TableHeaderChild> Result </TableHeaderChild>
       </TableHeader>
       {(isNoData && !isLoading) && <NoData />}
       <TableBodyWrapper>
         { !isLoading && _.map(paginatedExams, (exam, index) => (
-          <ExamCard
+          <ResultCard
             key={`exams_${index}`}
             exam={exam}
-            setExamToEdit={setExamToEdit}
-            showCreateEditModal={showCreateEditModal}
-            deleteExam={deleteExam}
+            user={user}
             dispatch={dispatch}
           />
         ))}
@@ -107,9 +102,12 @@ const ExamTable = ({
     </div>
   )
 }
+const mapStateToProps = state => ({
+  user: state.login.user
+})
 
 const mapDispatchToProps = dispatch => ({
   dispatch
 })
 
-export default connect(null, mapDispatchToProps)(ExamTable)
+export default connect(mapStateToProps, mapDispatchToProps)(ResultsTable)
