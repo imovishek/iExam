@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import React, { useState } from 'react'
 import userValidator from '../user.validation'
-import { Modal, Input, Select } from 'antd'
+import { Modal, Input, Select, Switch } from 'antd'
 import _ from 'underscore'
 import { joiObjectParser } from '../../../utitlities/common.functions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -114,7 +114,7 @@ const StudentInfoModal = ({
           <LabelWrapper>First Name</LabelWrapper>
           <InputWrapper
             placeholder="First Name"
-            value={selectedUser.firstName}
+            value={user.firstName}
             style={{ width: 270 }}
             onChange={(e) => setValue('firstName', e.target.value)}
             disabled = {!isUserEditing}
@@ -125,7 +125,7 @@ const StudentInfoModal = ({
           <LabelWrapper>Last Name</LabelWrapper>
           <InputWrapper
             placeholder="Last Name"
-            value={selectedUser.lastName}
+            value={user.lastName}
             style={{ width: 270 }}
             onChange={(e) => setValue('lastName', e.target.value)}
             disabled = {!isUserEditing}
@@ -138,7 +138,7 @@ const StudentInfoModal = ({
           <LabelWrapper>Phone Number</LabelWrapper>
           <InputWrapper
             placeholder="Phone Number"
-            value={selectedUser.phoneNumber}
+            value={user.phoneNumber}
             style={{ width: 270 }}
             onChange={(e) => {
               setValue('phoneNumber', e.target.value)
@@ -151,7 +151,7 @@ const StudentInfoModal = ({
           <LabelWrapper>Email</LabelWrapper>
           <InputWrapper
             placeholder="Email"
-            value={selectedUser.credential.email}
+            value={user.credential.email}
             style={{ width: 270 }}
             onChange={(e) => {
               setValue('email', e.target.value)
@@ -167,7 +167,7 @@ const StudentInfoModal = ({
           <LabelWrapper>Registration No</LabelWrapper>
           <InputWrapper
             placeholder="Registration No"
-            value={selectedUser.registrationNo}
+            value={user.registrationNo}
             style={{ width: 270 }}
             onChange={(e) => {
               setValue('registrationNo', e.target.value)
@@ -178,11 +178,11 @@ const StudentInfoModal = ({
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Auto save</LabelWrapper>
-          <InputWrapper
-            style={{ width: 270 }}
-            disabled = {!isUserEditing}
-          />
-          <ErrorWrapper> {errors.registrationNo} </ErrorWrapper>
+          <Switch
+            checked={user.autoSubmitPaper} 
+            onChange={(e) => setValue('autoSubmitPaper', e)}
+            disabled = {!isUserEditing}/>
+          <ErrorWrapper> {errors.autoSubmitPaper} </ErrorWrapper>
         </ColumnWrapper>
       </Row>
       <Row columns="1fr">

@@ -6,7 +6,6 @@ import _ from 'underscore'
 import { joiObjectParser } from '../../../utitlities/common.functions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
 import { mapDesignations } from '../../../utitlities/constants'
 import UpdatePassword from './UpdatePassword'
 
@@ -78,7 +77,6 @@ const TeacherInfoModal = ({
     setVisibility(false)
     setErrors({})
     setUserEditing(false)
-    setIsChangePassword(false)
   }
 
   const checkCredentialOnChangeDebounced = _.debounce(checkCredentialOnChange, 300)
@@ -92,7 +90,6 @@ const TeacherInfoModal = ({
     closeModal()
   }
   const [isUserEditing, setUserEditing] = useState(false)
-  const [isChangePassword, setIsChangePassword] = useState(false)
   return (
     <Modal
       title={title}
@@ -117,7 +114,7 @@ const TeacherInfoModal = ({
           <LabelWrapper>First Name</LabelWrapper>
           <InputWrapper
             placeholder="First Name"
-            value={selectedUser.firstName}
+            value={user.firstName}
             style={{ width: 270 }}
             onChange={(e) => setValue('firstName', e.target.value)}
             disabled = {!isUserEditing}
@@ -128,7 +125,7 @@ const TeacherInfoModal = ({
           <LabelWrapper>Last Name</LabelWrapper>
           <InputWrapper
             placeholder="Last Name"
-            value={selectedUser.lastName}
+            value={user.lastName}
             style={{ width: 270 }}
             onChange={(e) => setValue('lastName', e.target.value)}
             disabled = {!isUserEditing}
@@ -141,7 +138,7 @@ const TeacherInfoModal = ({
           <LabelWrapper>Short Name</LabelWrapper>
           <InputWrapper
             placeholder="Short Name"
-            value={selectedUser.shortName}
+            value={user.shortName}
             style={{ width: 270 }}
             onChange={(e) => {
               setValue('shortName', e.target.value)
@@ -155,7 +152,7 @@ const TeacherInfoModal = ({
           <Select
             placeholder="Choose Designation"
             style={{ width: 270 }}
-            value={selectedUser.designation}
+            value={user.designation}
             onChange={(v) => setValue('designation', v)}
             disabled = {!isUserEditing}
           >
@@ -169,7 +166,7 @@ const TeacherInfoModal = ({
           <LabelWrapper>Phone Number</LabelWrapper>
           <InputWrapper
             placeholder="Phone Number"
-            value={selectedUser.phoneNumber}
+            value={user.phoneNumber}
             style={{ width: 270 }}
             onChange={(e) => {
               setValue('phoneNumber', e.target.value)
@@ -182,7 +179,7 @@ const TeacherInfoModal = ({
           <LabelWrapper>Email</LabelWrapper>
           <InputWrapper
             placeholder="Email"
-            value={selectedUser.credential.email}
+            value={user.credential.email}
             style={{ width: 270 }}
             onChange={(e) => {
               setValue('email', e.target.value)
