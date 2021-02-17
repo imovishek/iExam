@@ -1,11 +1,10 @@
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCoffee, faBox, faAnchor, faSignOutAlt, faCog, faUser, faUsers, faChalkboardTeacher, faBookOpen, faChartLine, faScroll } from '@fortawesome/free-solid-svg-icons'
+import { faSignOutAlt, faCog, faUsers, faChalkboardTeacher, faBookOpen, faChartLine, faScroll, faPencilRuler } from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux'
 import { setNavigaitonTabAction } from './actions'
 import { push } from 'connected-react-router'
 import { hasPageAccess, mapDesignations } from '../../utitlities/constants'
-import { faMendeley } from '@fortawesome/free-brands-svg-icons'
 import React, { useState } from 'react'
 import UserInfo from '../UserSettings/User/UserInfo'
 import { Tooltip } from 'antd'
@@ -137,6 +136,14 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
             <TextWrapper>
               <FontAwesomeIconWrapper icon={faUsers} />
               Students
+            </TextWrapper>
+          </LinkWrapper>
+        }
+        { hasPageAccess[userType] && hasPageAccess[userType].Results &&
+          <LinkWrapper onClick={() => redirectTo('results')} selected={tabKey === 'results'}>
+            <TextWrapper>
+              <FontAwesomeIconWrapper icon={faPencilRuler} />
+              Results
             </TextWrapper>
           </LinkWrapper>
         }

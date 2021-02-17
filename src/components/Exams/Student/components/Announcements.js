@@ -1,15 +1,15 @@
 import styled from 'styled-components'
-import { Button } from 'antd'
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
-import { LabelWrapper, PageHeader, RightButtonWrapper, TileHeaderWrapper } from '../../../styles/pageStyles'
+import { PageHeader, RightButtonWrapper, TileHeaderWrapper } from '../../../styles/pageStyles'
 import { ButtonStyled } from '../../../../utitlities/styles'
 
 const Container = styled.div`
   border-radius: 8px;
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.3);
+  min-height: 260px;
   height: calc(100vh - 150px);
 `
 

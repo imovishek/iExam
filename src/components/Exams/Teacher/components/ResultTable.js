@@ -1,10 +1,15 @@
 import Search from 'antd/lib/input/Search'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import moment from 'moment';
 import styled from 'styled-components'
 import _ from 'underscore'
 import api from '../../../../utitlities/api'
 import { useEffect, useState } from 'react'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
+import { RightButtonWrapper } from '../../../styles/pageStyles'
+import { Button, message } from 'antd'
+import confirm from 'antd/lib/modal/confirm'
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -58,7 +63,7 @@ const Body = styled.div`
   }
 `
 const getName = obj => `${obj.firstName} ${obj.lastName}`
-const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShowing = false, papers }) => {
+const Card = ({ dispatch, student, exam, updateExamOnUI, isBanNotShowing = false, papers }) => {
   const arr = _.filter(papers, paper => student._id === paper.student)
   const paper = arr[0]
   let count = 0
@@ -78,7 +83,7 @@ const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShow
         participants: student._id
       }
     })
-    await updateExamParticipantOnUI()
+    await updateExamOnUI()
   }
 
   return (
@@ -94,7 +99,7 @@ const Card = ({ dispatch, student, exam, updateExamParticipantOnUI, isBanNotShow
 }
 
 const ResultTable = ({
-  students, exam, updateExamParticipantOnUI, dispatch, papers
+  students, exam, updateExamOnUI, dispatch, papers
 }) => {
   const [searchStudents, setSearchStudents] = useState(students)
   useEffect(() => {
@@ -115,15 +120,38 @@ const ResultTable = ({
     )
     setSearchStudents(afterSearchStudents)
   }
+
+  const handlePublishResults = (e) => {
+    confirm({
+      title: 'Do you want to publish the results?',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      okText: 'Yes',
+      onOk() {
+        return api.updateExam(exam, { resultPublished: true, resultPublishedDate: moment().format() })
+          .then(() => updateExamOnUI())
+          .then(() => message.success("Result successfully published!"))
+          .catch(() => message.error("Oops, error occurred! Try again later"));
+      },
+      onCancel() {},
+    })
+  }
+
   return (
     <Container>
-      <Row columns="270px 100px">
+      <Row columns="270px 1fr">
         <SearchStyled
           allowClear
           placeholder="Search"
           onChange={(e) => handleSearch(e.target.value)}
         />
-
+        <RightButtonWrapper>
+          <Button
+            disabled={exam.resultPublished}
+            type="primary"
+            onClick={handlePublishResults}
+          >{exam.resultPublished ? 'Result Published' : 'Publish Results'}</Button>
+        </RightButtonWrapper>
       </Row>
 
       <Row columns="repeat(2, 1fr) 1fr 1fr">
@@ -133,7 +161,7 @@ const ResultTable = ({
         <HeaderLabel>TotalMarks</HeaderLabel>
       </Row>
       <Body>
-        {_.map(searchStudents, (student, index) => <Card papers={papers} dispatch={dispatch} key={`student_${index}`} student={student} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>)}
+        {_.map(searchStudents, (student, index) => <Card papers={papers} dispatch={dispatch} key={`result_${index}`} student={student} exam = {exam} updateExamOnUI = {updateExamOnUI}/>)}
       </Body>
     </Container>
   )

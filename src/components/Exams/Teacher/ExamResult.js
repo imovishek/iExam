@@ -34,7 +34,7 @@ const ExamResult = ({ dispatch, user, hasBack = true }) => {
 
   const updateExamOnUI = async () => {
     const { payload = {} } = await api.getExamByIDWithPaper(examID, studentID)
-    const { exam } = payload
+    const { exam } = payload;
     setExam(exam)
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,7 +71,12 @@ const ExamResult = ({ dispatch, user, hasBack = true }) => {
 
           </TileHeaderWrapper>
           <TileBodyWrapper>
-            <ResultTable papers={exam.papers} students={exam.participants} exam={exam} isBanNotShowing/>
+            <ResultTable
+              papers={exam.papers}
+              students={exam.participants}
+              exam={exam}
+              updateExamOnUI={updateExamOnUI}
+            />
 
             {/* {!showingPaper && (
               <Row columns=".7fr .3fr">

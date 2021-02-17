@@ -32,8 +32,6 @@ const FontAwesomeIconWrapper = styled.div`
 `
 
 const TileBodyWrapper = styled.div`
-  overflow: auto;
-  height: calc(100vh - 120px);
   background: #f9f9f9;
 `
 const RedText = styled.span`

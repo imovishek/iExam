@@ -24,6 +24,7 @@ import CoursesForStudent from './components/Courses/Student'
 import CoursePageForStudents from './components/Courses/Student/CoursePage'
 import ExamPageForTeacher from './components/Exams/Teacher/ExamPage'
 import ExamPageForStudents from './components/Exams/Student/ExamPage'
+import ResultsForStudent from './components/Results/Student/Results'
 import { push } from 'connected-react-router'
 import EvaluatePaper from './components/Exams/Teacher/EvaluatePaper'
 import ExamResult from './components/Exams/Teacher/ExamResult'
@@ -65,6 +66,7 @@ const App = ({ user, dispatch }) => {
       { userType === 'student' && <Route path="/courses" component={CoursesForStudent} /> }
       { userType === 'student' && <Route path="/course/:id" component={CoursePageForStudents} /> }
       { userType === 'student' && <Route path="/exam/:id" component={ExamPageForStudents} /> }
+      { userType === 'student' && <Route path="/results" component={ResultsForStudent} /> }
       { userType === 'deptAdmin' && <Route path="/courses" component={CoursesForAdmin} /> }
       { userType === 'deptAdmin' && <Route path="/course/:id" component={CoursePageForAdmin} /> }
       { userType === 'deptAdmin' && <Route path="/teachers" component={TeachersForAdmin} /> }
