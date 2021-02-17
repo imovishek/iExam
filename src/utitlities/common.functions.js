@@ -161,6 +161,8 @@ export const getExamTimeStatus = (exam) => {
   return '';
 }
 
+export const meGotBanned = (exam, user) => _.any(exam.bannedParticipants, pt => pt._id === user._id)
+
 export const getName = obj => `${obj.firstName} ${obj.lastName}`
 
 export const allCap = str => (str || '').toUpperCase();

@@ -7,7 +7,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import api from '../../../utitlities/api'
 import styled from 'styled-components'
 import { Button, message, Switch } from 'antd'
-import { getExamStatus } from '../../../utitlities/common.functions'
+import { getExamStatus, meGotBanned } from '../../../utitlities/common.functions'
 import { useParams } from 'react-router'
 import { goBack } from 'connected-react-router'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
@@ -35,6 +35,10 @@ const TileBodyWrapper = styled.div`
   overflow: auto;
   height: calc(100vh - 120px);
   background: #f9f9f9;
+`
+const RedText = styled.span`
+  margin-left: 10px;
+  color: red;
 `
 
 const ExamPage = ({ dispatch, user, hasBack = true }) => {
@@ -92,8 +96,13 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     try {
       const { payload: nowExam } = await api.getExamByID(id)
       if (getExamStatus(nowExam) === 'ended') {
-        await updateExamOnUI()
-        return message.error("Sorry exam ended you can't submit now")
+        message.error("Sorry exam ended you can't submit now")
+        setSavedText("");
+        return await updateExamOnUI();
+      } else if(meGotBanned(nowExam, user)) {
+        message.error("You got banned from this exam");
+        setSavedText("");
+        return await updateExamOnUI();
       }
       await api.updateExamPaperForStudent(id, cleanPaper)
       await updateExamOnUI()
@@ -113,6 +122,11 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       const { payload: nowExam } = await api.getExamByID(id)
       if (getExamStatus(nowExam) === 'ended') {
         message.info("Exam ended");
+        setSavedText("");
+        await updateExamOnUI();
+        return;
+      } else if(meGotBanned(nowExam, user)) {
+        message.error("You got banned from this exam");
         setSavedText("");
         await updateExamOnUI();
         return;
@@ -137,7 +151,13 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       // console.log('Starting new one...........');
       updateExamOnUI();
       const interval = setInterval(async () => {
-        if (virtualState.exam && getExamStatus(virtualState.exam) === 'ended') {
+        if (
+          virtualState.exam &&
+          (
+            getExamStatus(virtualState.exam) === 'ended' ||
+            meGotBanned(virtualState.exam, user)
+          )
+        ) {
           setSavedText('');
           return clearInterval(interval);
         }
@@ -150,7 +170,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       }
     }
   }, [user.autoSubmitPaper])
-
+  const isDisabled = getExamStatus(exam) !== 'running' || meGotBanned(exam, user) || isLoading;
   return (
     <div>
       <CheckAuthentication />
@@ -169,18 +189,19 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                 </FontAwesomeIconWrapper>
               }
               <PageHeader>Exam</PageHeader>
+              {meGotBanned(exam, user) && <RedText>Banned</RedText>}
             </div>
             {showingPaper &&
               <RightButtonWrapper>
                 <Col rows="1fr 1fr" gridGap="3px" style={{width: "170px"}}>
                   <div>
                     <span style={{marginRight: '10px'}}>Auto submit: </span>
-                    <Switch loading={switchLoading} disabled={getExamStatus(exam) !== 'running' || isLoading} checked={user.autoSubmitPaper} onChange={autoSubmitUpdateHandler} style={{ marginRight: '10px' }}/>
+                    <Switch loading={switchLoading} disabled={isDisabled} checked={user.autoSubmitPaper} onChange={autoSubmitUpdateHandler} style={{ marginRight: '10px' }}/>
                   </div>
                   {user.autoSubmitPaper && <div>{savedText}</div>}
                 </Col>
                 
-                <ButtonStyled disabled={getExamStatus(exam) !== 'running' || isLoading} type="primary" onClick={() => submitPaperHandler()}>
+                <ButtonStyled disabled={isDisabled} type="primary" onClick={() => submitPaperHandler()}>
                   Submit
                 </ButtonStyled>
               </RightButtonWrapper>
@@ -189,7 +210,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
           <TileBodyWrapper>
             {showingPaper && (
               <div>
-                <QuestionPaper disabled={getExamStatus(exam) !== 'running'} exam={exam} paper={paper} questions={exam.questions}/>
+                <QuestionPaper disabled={isDisabled} exam={exam} paper={paper} questions={exam.questions}/>
               </div>
             )}
             {!showingPaper && (
