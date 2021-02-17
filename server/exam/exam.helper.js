@@ -15,13 +15,14 @@ exports.getExamByID = (_id) =>
     .populate("papers");
 
 
-exports.getExams = (query) =>
+exports.getExams = (query, sort = { createdAt: -1 }) =>
   Exam.find(query)
     .populate("course")
     .populate("questions")
     .populate("participants")
     .populate("bannedParticipants")
-    .populate("papers");
+    .populate("papers")
+    .sort(sort);
 
 
 // UPDATE

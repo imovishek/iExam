@@ -26,6 +26,9 @@ const getExamByIDWithParticipants = async (id) => {
   let participants = _.filter(course.enrolledStudents, st => !_.any(result.bannedParticipants, pt => String(pt._id) === String(st._id)));
   participants = _.filter(participants, pt => _.any(result.papers, paper => String(pt._id) === String(paper.student)));
   result.participants = participants;
+  result.participants.reverse();
+  result.bannedParticipants.reverse();
+  result.questions.reverse();
   return result;
 }
 exports.getExamByID = async (req, res) => {
@@ -85,7 +88,6 @@ exports.updateExamPaperForStudent = async (req, res) => {
       queObj[String(answer.questionID)] = 1;
     });
     await Promise.all(_.map(paper.answers, async answer => {
-        console.log(answer.questionID);
         if (queObj[answer.questionID]) {
           await paperHelper.updatePapers({
               _id: paper._id,

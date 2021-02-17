@@ -21,7 +21,9 @@ exports.getCourses = async (req, res) => {
 exports.getCourseByID = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await courseHelper.getCourseByID(id);
+    const result = await courseHelper.getCourseByID(id).lean();
+    result.enrolledStudents.reverse();
+    result.pendingEnrollStudents.reverse();
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
