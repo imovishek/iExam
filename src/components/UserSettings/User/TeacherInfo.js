@@ -1,13 +1,12 @@
 import styled from 'styled-components'
-import React, { useState } from 'react'
-import userValidator from '../user.validation'
-import { Modal, Input, Select } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Input, Select } from 'antd'
 import _ from 'underscore'
-import { joiObjectParser } from '../../../utitlities/common.functions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons'
 import { mapDesignations } from '../../../utitlities/constants'
 import UpdatePassword from './UpdatePassword'
+import { ViewInput, ViewSelect } from './styles'
 
 const { Option } = Select
 
@@ -35,6 +34,7 @@ const ErrorWrapper = styled.p`
   font-size: 11px;
   color: #d40909;
   margin-left: 5px;
+  height: 20px;
 `
 const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   margin: auto;
@@ -47,60 +47,22 @@ const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   }
   float: right;
 `
+
+
 const TeacherInfoModal = ({
-  selectedUser,
-  visible,
-  setVisibility,
-  updateUser
+  user,
+  errors,
+  setValue,
 }) => {
-  const title = 'My Info'
-  const [user, setUser] = useState(selectedUser)
-  const [errors, setErrors] = useState({})
+  const [isUserEditing, setUserEditing] = useState(false);
+  useEffect(() => {
+    setUserEditing(false);
+  }, [user.credential]);
+  const WrapperInput = !isUserEditing ? ViewInput : InputWrapper;
+  const WrapperSelect = !isUserEditing ? ViewSelect : Select;
 
-  const setValue = (key, value) => {
-    const newUser = {
-      ...user,
-      [key]: value
-    }
-    const newErrors = {
-      ...errors
-    }
-    delete newErrors[key]
-    setUser(newUser)
-    setErrors(newErrors)
-  }
-
-  const checkCredentialOnChange = async (email) => {
-
-  }
-  const closeModal = () => {
-    setVisibility(false)
-    setErrors({})
-    setUserEditing(false)
-  }
-
-  const checkCredentialOnChangeDebounced = _.debounce(checkCredentialOnChange, 300)
-  const onSubmit = () => {
-    const errors = joiObjectParser(user, userValidator)
-    setErrors(errors)
-    if (!_.isEmpty(errors)) {
-      return
-    }
-    updateUser(user)
-    closeModal()
-  }
-  const [isUserEditing, setUserEditing] = useState(false)
   return (
-    <Modal
-      title={title}
-      style={{ top: 20 }}
-      visible={visible}
-      width={800}
-      height={800}
-      onOk={() => onSubmit()}
-      onCancel={() => closeModal()}
-      okText="Update"
-    >
+    <>
       <Row columns="1fr">
         <FontAwesomeIconWrapper
           onClick={() => {
@@ -112,7 +74,7 @@ const TeacherInfoModal = ({
       <Row columns="1fr 1fr">
         <ColumnWrapper>
           <LabelWrapper>First Name</LabelWrapper>
-          <InputWrapper
+          <WrapperInput
             placeholder="First Name"
             value={user.firstName}
             style={{ width: 270 }}
@@ -123,7 +85,7 @@ const TeacherInfoModal = ({
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Last Name</LabelWrapper>
-          <InputWrapper
+          <WrapperInput
             placeholder="Last Name"
             value={user.lastName}
             style={{ width: 270 }}
@@ -136,7 +98,7 @@ const TeacherInfoModal = ({
       <Row columns="1fr 1fr">
         <ColumnWrapper>
           <LabelWrapper>Short Name</LabelWrapper>
-          <InputWrapper
+          <WrapperInput
             placeholder="Short Name"
             value={user.shortName}
             style={{ width: 270 }}
@@ -149,22 +111,23 @@ const TeacherInfoModal = ({
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Designation</LabelWrapper>
-          <Select
+          <WrapperSelect
             placeholder="Choose Designation"
             style={{ width: 270 }}
             value={user.designation}
             onChange={(v) => setValue('designation', v)}
             disabled = {!isUserEditing}
+            mapper={mapDesignations}
           >
             {_.map(mapDesignations, (value, key) => <Option value={key}>{value}</Option>)}
-          </Select>
+          </WrapperSelect>
           <ErrorWrapper> {errors.designation} </ErrorWrapper>
         </ColumnWrapper>
       </Row>
       <Row columns="1fr 1fr">
         <ColumnWrapper>
           <LabelWrapper>Phone Number</LabelWrapper>
-          <InputWrapper
+          <WrapperInput
             placeholder="Phone Number"
             value={user.phoneNumber}
             style={{ width: 270 }}
@@ -177,13 +140,12 @@ const TeacherInfoModal = ({
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Email</LabelWrapper>
-          <InputWrapper
+          <WrapperInput
             placeholder="Email"
             value={user.credential.email}
             style={{ width: 270 }}
             onChange={(e) => {
               setValue('email', e.target.value)
-              checkCredentialOnChangeDebounced(e.target.value)
             }}
             disabled = {!isUserEditing}
           />
@@ -193,17 +155,18 @@ const TeacherInfoModal = ({
       <Row columns="1fr">
         <ColumnWrapper>
           <LabelWrapper>Department</LabelWrapper>
-          <Select
+          <WrapperSelect
             defaultValue="CSE"
             style={{ width: 270 }}
-            disabled = {!isUserEditing}
+            disabled={!isUserEditing}
+            mapper={{ CSE: "Computer Science And Engineering" }}
           >
             <Option value="CSE">Computer Science And Engineering</Option>
-          </Select>
+          </WrapperSelect>
         </ColumnWrapper>
       </Row>
       {isUserEditing && <UpdatePassword user={user} setValue={setValue} errors={errors}/>}
-    </Modal>
+    </>
   )
 }
 

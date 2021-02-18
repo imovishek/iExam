@@ -133,7 +133,6 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
         if (examID) {
           const { payload: exam } = await api.getExamByID(examID);
           const totalMarks = _.reduce(exam.questions, (sum, q) => (sum + q.marks), 0);
-          console.log(totalMarks, exam);
           await api.updateExam({ _id: examID }, { totalMarks });
         }
         message.success('Question Updated!')
