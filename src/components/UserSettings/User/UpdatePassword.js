@@ -23,6 +23,7 @@ const ErrorWrapper = styled.p`
   font-size: 11px;
   color: #d40909;
   margin-left: 5px;
+  height: 20px;
 `
 
 const UpdatePassword = ({user, setValue, errors}) => {
@@ -32,8 +33,14 @@ const UpdatePassword = ({user, setValue, errors}) => {
     <div>
       {!isChangePassword &&
         <Row>
-          <Link 
-            onClick = {() => {setIsChangePassword(true); setValue('isChangePassword', true)}}>Change Password?</Link>
+          <Link
+            onClick = {() => {
+              setIsChangePassword(true);
+              setValue('wantedToChangePassword', true)
+            }}
+          >
+            Change Password?
+          </Link>
         </Row>
       }
       {isChangePassword &&
@@ -73,12 +80,12 @@ const UpdatePassword = ({user, setValue, errors}) => {
                 type="password"
                 placeholder="Retype New Password"
                 style={{ width: 270 }}
-                value={user.matchPassword}
+                value={user.confirmPassword}
                 onChange={(e) => {
-                  setValue('matchPassword', e.target.value)
+                  setValue('confirmPassword', e.target.value)
                 }}
               />
-              <ErrorWrapper> {errors.matchPassword} </ErrorWrapper>
+              <ErrorWrapper> {errors.confirmPasswordError} </ErrorWrapper>
             </ColumnWrapper>
           </Row>
         </div>

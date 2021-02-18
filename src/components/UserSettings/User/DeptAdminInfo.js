@@ -1,12 +1,10 @@
 import styled from 'styled-components'
-import React, { useState } from 'react'
-import userValidator from '../user.validation'
-import { Modal, Input } from 'antd'
-import _ from 'underscore'
-import { joiObjectParser } from '../../../utitlities/common.functions'
+import React, { useState, useEffect } from 'react'
+import { Input } from 'antd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons'
 import UpdatePassword from './UpdatePassword'
+import { ViewInput } from './styles'
 
 
 const InputWrapper = styled(Input)`
@@ -33,6 +31,7 @@ const ErrorWrapper = styled.p`
   font-size: 11px;
   color: #d40909;
   margin-left: 5px;
+  height: 20px;
 `
 const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   margin: auto;
@@ -46,59 +45,17 @@ const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   float: right;
 `
 const DeptAdminInfoModal = ({
-  selectedUser,
-  visible,
-  setVisibility,
-  updateUser
+  user,
+  errors,
+  setValue
 }) => {
-  const title = 'My Info'
-  const [user, setUser] = useState(selectedUser)
-  const [errors, setErrors] = useState({})
-
-  const setValue = (key, value) => {
-    const newUser = {
-      ...user,
-      [key]: value
-    }
-    const newErrors = {
-      ...errors
-    }
-    delete newErrors[key]
-    setUser(newUser)
-    setErrors(newErrors)
-  }
-
-  const checkCredentialOnChange = async (email) => {
-
-  }
-  const closeModal = () => {
-    setVisibility(false)
-    setErrors({})
-    setUserEditing(false)
-  }
-
-  const checkCredentialOnChangeDebounced = _.debounce(checkCredentialOnChange, 300)
-  const onSubmit = () => {
-    const errors = joiObjectParser(user, userValidator)
-    setErrors(errors)
-    if (!_.isEmpty(errors)) {
-      return
-    }
-    updateUser(user)
-    closeModal()
-  }
-  const [isUserEditing, setUserEditing] = useState(false)
+  const [isUserEditing, setUserEditing] = useState(false);
+  const WrapperInput = !isUserEditing ? ViewInput : InputWrapper;
+  useEffect(() => {
+    setUserEditing(false);
+  }, [user.credential]);
   return (
-    <Modal
-      title={title}
-      style={{ top: 20 }}
-      visible={visible}
-      width={800}
-      height={800}
-      onOk={() => onSubmit()}
-      onCancel={() => closeModal()}
-      okText="Update"
-    >
+    <>
       <Row columns="1fr">
         <FontAwesomeIconWrapper
           onClick={() => {
@@ -110,7 +67,7 @@ const DeptAdminInfoModal = ({
       <Row columns="1fr 1fr">
         <ColumnWrapper>
           <LabelWrapper>First Name</LabelWrapper>
-          <InputWrapper
+          <WrapperInput
             placeholder="First Name"
             value={user.firstName}
             style={{ width: 270 }}
@@ -121,7 +78,7 @@ const DeptAdminInfoModal = ({
         </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Last Name</LabelWrapper>
-          <InputWrapper
+          <WrapperInput
             placeholder="Last Name"
             value={user.lastName}
             style={{ width: 270 }}
@@ -134,13 +91,12 @@ const DeptAdminInfoModal = ({
       <Row columns="1fr">
         <ColumnWrapper>
           <LabelWrapper>Email</LabelWrapper>
-          <InputWrapper
+          <WrapperInput
             placeholder="Email"
             value={user.credential.email}
             style={{ width: 270 }}
             onChange={(e) => {
               setValue('email', e.target.value)
-              checkCredentialOnChangeDebounced(e.target.value)
             }}
             disabled = {!isUserEditing}
           />
@@ -148,8 +104,7 @@ const DeptAdminInfoModal = ({
         </ColumnWrapper>
       </Row>
       {isUserEditing && <UpdatePassword user={user} setValue={setValue} errors={errors}/>}
-      
-    </Modal>
+    </>
   )
 }
 

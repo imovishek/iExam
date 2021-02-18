@@ -14,12 +14,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PageHeader, TileHeaderWrapper, RightButtonWrapper } from '../../styles/pageStyles'
 import QuestionPaper from './components/QuestionPaper'
 import Loading from '../../Common/Loading'
-import Students from './components/Students'
-
-const ButtonStyled = styled(Button)`
-  height: 30px;
-  margin-left: 10px;
-`
 
 const FontAwesomeIconWrapper = styled.div`
   width: 30px;
@@ -28,17 +22,8 @@ const FontAwesomeIconWrapper = styled.div`
 `
 
 
-const TileBodyWrapper = styled.div`
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: 300px 1fr;
-  height: calc(100vh - 120px);
-  background: #f9f9f9;
-`
-
 const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
   const { examID, questionID } = useParams();
-  console.log(examID, questionID);
   if (!questionID || !examID) dispatch(push('/404'));
   const [isLoading, setIsLoading] = useState(true)
   const [exam, setExam] = useState({})
