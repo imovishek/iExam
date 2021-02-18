@@ -23,9 +23,14 @@ exports.getStudents = (query) =>
 
 // UPDATE
 exports.updateStudentByID = async (_id, body) => {
-  if (body.credential && body.credential.email) {
+  if (body.credential) {
     const prevStudent = await Student.findOne({ _id });
-    await Credential.findOneAndUpdate({ email: prevStudent.credential.email }, { email: body.credential.email });
+    const update = {};
+    const { email, password } = body.credential;
+    if (email) update.email = email;
+    if (password) update.password = password;
+
+    await Credential.findOneAndUpdate({ email: prevStudent.credential.email }, update);
   }
   return Student.findOneAndUpdate({ _id }, body, { new: true });
 }
