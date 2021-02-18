@@ -62,14 +62,15 @@ const CreateEditStudentModal = ({
     userType: 'student'
   }
 
-  const [student, setStudent] = useState(isEditing
-    ? { ...selectedStudent, email: selectedStudent.credential.email }
-    : defaultStudent)
+  const [student, setStudent] = useState(defaultStudent)
 
   const [errors, setErrors] = useState({})
 
   useEffect(() => {
-    const editStudent = selectedStudent ? { ...selectedStudent, email: selectedStudent.credential.email } : null
+    const editStudent = selectedStudent ? {
+      ...JSON.parse(JSON.stringify(selectedStudent)),
+      email: selectedStudent.credential.email
+    } : null
     setStudent(editStudent || defaultStudent)
   }, [isEditing, selectedStudent])
 

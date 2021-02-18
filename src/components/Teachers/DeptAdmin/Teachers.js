@@ -63,6 +63,7 @@ const Teachers = ({ teachers, user, dispatch }) => {
 
   const deleteTeacherHandler = async (teacher) => {
     setLoading(true)
+    await api.updateUserByID(user._id, { $pull: { teacherIDs: teacher._id } });
     await api.deleteTeacher(teacher)
     setTeacherChanged(true)
   }
