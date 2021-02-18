@@ -39,8 +39,12 @@ exports.updateStudents = (query, body) =>
   Student.updateMany(query, body, { new: true });
 
 // DELETE
-exports.deleteStudentByID = _id => {
+exports.deleteStudentByID = async _id => {
   if (!_id) return null;
+  const student = await Student.findOne({ _id });
+  if (student && student.credential.email) {
+    await Credential.findOneAndRemove({ email: student.credential.email });
+  }
   return Student.findOneAndRemove({ _id });
 }
 
