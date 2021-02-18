@@ -32,7 +32,8 @@ const UpdatePassword = ({user, setValue, errors}) => {
     <div>
       {!isChangePassword &&
         <Row>
-          <Link onClick = {() => setIsChangePassword(true)}>Change Password?</Link>
+          <Link 
+            onClick = {() => {setIsChangePassword(true); setValue('isChangePassword', true)}}>Change Password?</Link>
         </Row>
       }
       {isChangePassword &&
@@ -41,6 +42,7 @@ const UpdatePassword = ({user, setValue, errors}) => {
             <ColumnWrapper>
               <LabelWrapper>Old Password</LabelWrapper>
               <InputWrapper
+                type="password"
                 placeholder="Old Password"
                 style={{ width: 270 }}
                 value={user.oldPassword}
@@ -55,6 +57,7 @@ const UpdatePassword = ({user, setValue, errors}) => {
             <ColumnWrapper>
               <LabelWrapper>New Password</LabelWrapper>
               <InputWrapper
+                type="password"
                 placeholder="New Password"
                 style={{ width: 270 }}
                 value={user.newPassword}
@@ -67,6 +70,7 @@ const UpdatePassword = ({user, setValue, errors}) => {
             <ColumnWrapper>
               <LabelWrapper>Retype New Password</LabelWrapper>
               <InputWrapper
+                type="password"
                 placeholder="Retype New Password"
                 style={{ width: 270 }}
                 value={user.matchPassword}
