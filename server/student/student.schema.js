@@ -9,7 +9,8 @@ const studentSchema = new Schema({
     lastName: String,
     registrationNo: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
     },
     phoneNumber: String,
     userType: { type: String, default: 'student' },
