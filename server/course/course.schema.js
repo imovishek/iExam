@@ -26,6 +26,7 @@ const courseSchema = new Schema({
   pendingEnrollStudents: [{ type: Schema.Types.ObjectId, ref: 'Student'}],
   assignedTeacher: { type: Schema.Types.ObjectId, ref: 'Teacher'},
   startDate: { type: Date },
+  batchCode: { type: String },
   status: { type: String, required: true },
   announcements: [String],
 },
