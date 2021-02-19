@@ -1,14 +1,16 @@
 import styled from 'styled-components'
 import _ from 'underscore'
 import { getExamStatus } from '../../../../utitlities/common.functions'
-import { Input } from 'antd'
+import { Input, Select, Button } from 'antd'
 import React, { useState, useEffect } from 'react'
 import MCQBody from './MCQBody'
-
+import { sortArrayByMap } from '../../../../utitlities/constants'
+const { Option } = Select;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  overflow: auto;
+  height: calc(100% - 40px);
 `
 
 const BodyWrapper = styled.div`
@@ -59,6 +61,12 @@ export const RadioWrapper = styled.div`
   border: 1px solid #b3b3b3;
 `
 
+const SelectStyled = styled(Select)`
+  margin-bottom: 20px;
+  width: 250px;
+  margin-right: 10px;
+`
+
 const SingleQuestion = ({
   disabled,
   question = {},
@@ -93,7 +101,7 @@ const SingleQuestion = ({
       {isMCQ && (
         <BodyWrapper>
           <AddPadding>
-            <MCQBody disabled={disabled} answer={answer} options={question.options} setAnswerValue={(v) => setAnswerValue(index, 'answer', v)}/>
+            <MCQBody disabled={disabled} answer={answer} options={question.options} setAnswerValue={(v) => setAnswerValue(index, 'answer', `${v}`)}/>
           </AddPadding>
         </BodyWrapper>
       )}
@@ -120,6 +128,8 @@ const QuestionPaper = ({
   questions
 }) => {
   const [answers, setAnswers] = useState(paper.answers)
+  const [sortType, setSortType] = useState(null);
+
   const setAnswerValue = (index, key, value) => {
     const newAnswers = [...answers]
     newAnswers[index][key] = value
@@ -132,17 +142,53 @@ const QuestionPaper = ({
     _.forEach(questions, question => {
       newQuestionsObj[question._id] = question
     })
+    // if (sortType && sortArrayByMap[sortType]) {
+    //   const newAnswers = [...paper.answers];
+    //   const sortedAnswers = sortArrayByMap[sortType](newAnswers, newQuestionsObj);
+    //   setAnswers(sortedAnswers);
+    // }
     setQuestionsObj(newQuestionsObj)
   }, [questions])
-
-  useEffect(() => {
-    setAnswers(paper.answers)
-  }, [paper.answers])
-
+  const sortingTypes = {
+    random: "Shuffle",
+    marksASC: "Marks Ascending",
+    marksDESC: "Marks Descending",
+    mcqFirst: "MCQ First",
+    questionTitle: "Question Title",
+    unAnsweredFirst: "Unanswered First",
+    answeredFirst: "Answered First",
+  };
   return (
-    <Container>
-      {_.map(answers, (answer, index) => <SingleQuestion key={index} disabled={disabled} index={index} setAnswerValue={setAnswerValue} exam={exam} question={questionsObj[answer.questionID]} answer={answer.answer} />)}
-    </Container>
+    <>
+      <SelectStyled
+        placeholder="Sort By"
+        value={sortType}
+        onChange={(v) => {
+          setSortType(v);
+        }}
+      >
+        {
+          _.map(sortingTypes, (v, type) =>
+            <Option key={type} value={type}>{sortingTypes[type]}</Option>
+          )
+        }
+      </SelectStyled>
+      <Button
+        onClick={() => {
+          if (sortArrayByMap[sortType]) {
+            const newAnswers = [...answers];
+            const sortedAnswers = sortArrayByMap[sortType](newAnswers, questionsObj);
+            setAnswers(sortedAnswers);
+          }
+        }}
+      >
+        Sort
+      </Button>
+      <Container>
+        {_.map(answers, (answer, index) => <SingleQuestion key={index} disabled={disabled} index={index} setAnswerValue={setAnswerValue} exam={exam} question={questionsObj[answer.questionID]} answer={answer.answer} />)}
+      </Container>
+    </>
+    
   )
 }
 

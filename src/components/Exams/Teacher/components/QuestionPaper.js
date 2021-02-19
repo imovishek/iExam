@@ -72,6 +72,16 @@ const InlineBlock = styled.div`
   margin-bottom: 30px;
 `;
 
+const FontAwesomeIconStyled = styled(FontAwesomeIcon)`
+  margin-left: 10px;
+  ${props => props.loading ? 'animation: rotate 2s linear infinite;' : ''}
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`
+
 const SingleQuestion = ({
   disabled,
   question = {},
@@ -82,12 +92,14 @@ const SingleQuestion = ({
   marks,
   noMarks = false,
   isShowingEditButton,
-  dispatch
+  dispatch,
+  isLoadingAutoEvaluation = false,
 }) => {
   const status = getExamStatus(exam)
   const isEditing = status === 'running'
   const isBroad = question.type === 'broad'
   const isMCQ = question.type === 'mcq'
+  const [isSingleAutoLoading, setIsSingleAutoLoading] = useState(false);
   return (
     <QuestionWrapper>
       <HeaderWrapper>
@@ -125,7 +137,11 @@ const SingleQuestion = ({
       {isMCQ && (
         <BodyWrapper>
           <AddPadding>
-            <MCQBody disabled={disabled} answer={answer} options={question.options} setAnswerValue={(v) => setAnswerValue(index, 'answer', v)}/>
+            <MCQBody
+              disabled={disabled} answer={answer}
+              options={question.options}
+              setAnswerValue={(v) => setAnswerValue(index, 'answer', v)}
+            />
           </AddPadding>
         </BodyWrapper>
       )}
@@ -146,14 +162,20 @@ const SingleQuestion = ({
             placeholder="Set Marks"
           /> {
             isMCQ && <Tooltip title="Evaluate">
-              <FontAwesomeIcon
+              <FontAwesomeIconStyled
+                loading={isLoadingAutoEvaluation || isSingleAutoLoading}
                 style={{ display: 'inline', cursor: 'pointer', marginLeft: '10px' }} icon={faSyncAlt} size="lg" color="green"
                 onClick={() => {
-                  if (question.options[Number(answer)].isAnswer) {
-                    setAnswerValue(index, 'marks', question.marks)
-                  } else {
-                    setAnswerValue(index, 'marks', 0)
-                  }
+                  setIsSingleAutoLoading(true);
+                  setTimeout(() => {
+                    if (question.options[Number(answer)].isAnswer) {
+                      setAnswerValue(index, 'marks', question.marks)
+                    } else {
+                      setAnswerValue(index, 'marks', 0)
+                    }
+                    setIsSingleAutoLoading(false);
+                  }, 1000)
+                  
                 }}
               />
             </Tooltip>
@@ -178,7 +200,8 @@ const QuestionPaper = ({
   isLoading,
   questions,
   viewQuestions = false,
-  dispatch
+  dispatch,
+  isLoadingAutoEvaluation
 }) => {
   const [answers, setAnswers] = useState(paper.answers)
   const [questionsObj, setQuestionsObj] = useState({})
@@ -242,6 +265,7 @@ const QuestionPaper = ({
           answer={answer.answer}
           marks={answer.marks}
           dispatch={dispatch}
+          isLoadingAutoEvaluation={isLoadingAutoEvaluation}
         />
       ))}
     </Container>

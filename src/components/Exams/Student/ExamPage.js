@@ -3,7 +3,7 @@ import NavBar from '../../NavBar/NavBar'
 import { connect } from 'react-redux'
 import _ from 'underscore'
 import { BodyWrapper, Container, Col } from '../../../utitlities/styles'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import api from '../../../utitlities/api'
 import styled from 'styled-components'
 import { Button, message, Switch } from 'antd'
@@ -207,7 +207,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
           </TileHeaderWrapper>
           <TileBodyWrapper>
             {showingPaper && (
-              <div>
+              <div style={{ height: 'calc(100vh - 120px)' }}>
                 <QuestionPaper disabled={isDisabled} exam={exam} paper={paper} questions={exam.questions}/>
               </div>
             )}

@@ -10,6 +10,7 @@ import CourseTable from './CourseTable'
 import { Button } from 'antd'
 import CreateEditCourseModal from './CreateEditCourseModal'
 import { setUserAction } from '../../Login/actions'
+import _ from 'underscore';
 
 const CourseTableWrapper = styled.div`
 
@@ -51,9 +52,18 @@ const Courses = ({ courses, user, dispatch }) => {
 
   const createCourseHandler = async (course) => {
     setLoading(true)
-    course.assignedTeacher = course.assignedTeacher._id
+    course.assignedTeacher = course.assignedTeacher ? course.assignedTeacher._id : null;
     const { payload: newCourse } = await api.createCourse(course)
     const { payload: newUser } = await api.updateUserByID(user._id, { $push: { courseIDs: newCourse._id } })
+    if (course.batchCode !== "others") {
+      const { payload: students } = await api.getStudentsByBatch({ batch: course.batchCode, departmentCode: user.department.departmentCode })
+      const ids = _.map(students, student => student._id)
+      await api.updateCourse(newCourse, {
+        $push: {
+          enrolledStudents: { $each: ids }
+        }
+      })
+    }
     dispatch(setUserAction(newUser))
     setCourseChanged(true)
   }
