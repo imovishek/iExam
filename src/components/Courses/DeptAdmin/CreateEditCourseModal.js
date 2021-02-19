@@ -121,7 +121,6 @@ const CreateEditCourseModal = ({
           <InputWrapper
             placeholder="Course Title"
             value={course.title}
-            style={{ width: 270 }}
             onChange={(e) => setValue('title', e.target.value)}
           />
           <ErrorWrapper> {errors.title} </ErrorWrapper>
@@ -131,7 +130,7 @@ const CreateEditCourseModal = ({
           <InputWrapper
             placeholder="Course Code"
             value={course.courseCode}
-            style={{ width: 270 }}
+            style={{ width: '100%' }}
             onChange={(e) => setValue('courseCode', e.target.value)}
           />
           <ErrorWrapper> {errors.courseCode} </ErrorWrapper>
@@ -140,27 +139,12 @@ const CreateEditCourseModal = ({
       <Row columns="1fr 1fr">
         <ColumnWrapper>
           <LabelWrapper>Department</LabelWrapper>
-          <Select
+          <SelectStyled
             defaultValue="CSE"
-            style={{ width: 270 }}
           >
             <Option value="CSE">Computer Science And Engineering</Option>
-          </Select>
+          </SelectStyled>
         </ColumnWrapper>
-        <ColumnWrapper>
-          <LabelWrapper>Start Date</LabelWrapper>
-          <DatePicker
-            allowClear
-            placeholder="Start Date"
-            value={!course.startDate ? '' : moment(course.startDate)}
-            style={{ width: 270 }}
-            format="DD/MM/YYYY"
-            onChange={(d) => setValue('startDate', d)}
-          />
-          <ErrorWrapper> {errors.startDate} </ErrorWrapper>
-        </ColumnWrapper>
-      </Row>
-      <Row columns="1fr 1fr">
         <ColumnWrapper>
           <LabelWrapper>Assignee</LabelWrapper>
           <SelectStyled
@@ -171,10 +155,39 @@ const CreateEditCourseModal = ({
             <Option key="unassigned" value={JSON.stringify(null)}> Unassigned </Option>
           </SelectStyled>
         </ColumnWrapper>
+      </Row>
+      <Row columns="1fr 1fr 1fr">
+        <ColumnWrapper>
+          <LabelWrapper>Batch</LabelWrapper>
+          <SelectStyled
+            placeholder="Please select a batch"
+            value={course.batchCode}
+            onChange={(value) => setValue('batchCode', value)}
+          >
+            <Option value="2019">2019 Batch</Option>
+            <Option value="2018">2018 Batch</Option>
+            <Option value="2017">2017 Batch</Option>
+            <Option value="2016">2016 Batch</Option>
+            <Option value="2015">2015 Batch</Option>
+            <Option value="others">Others</Option>
+          </SelectStyled>
+          <ErrorWrapper> {errors.batchCode} </ErrorWrapper>
+        </ColumnWrapper>
+        <ColumnWrapper>
+          <LabelWrapper>Start Date</LabelWrapper>
+          <DatePicker
+            allowClear
+            placeholder="Start Date"
+            style={{ width: '100%' }}
+            value={!course.startDate ? '' : moment(course.startDate)}
+            format="DD/MM/YYYY"
+            onChange={(d) => setValue('startDate', d)}
+          />
+          <ErrorWrapper> {errors.startDate} </ErrorWrapper>
+        </ColumnWrapper>
         <ColumnWrapper>
           <LabelWrapper>Status</LabelWrapper>
-          <Select
-            style={{ width: 270 }}
+          <SelectStyled
             placeholder="Select a status"
             value={course.status}
             onChange={(value) => setValue('status', value)}
@@ -182,7 +195,7 @@ const CreateEditCourseModal = ({
             <Option value="upcoming">Upcoming</Option>
             <Option value="running">Running</Option>
             <Option value="ended">Ended</Option>
-          </Select>
+          </SelectStyled>
           <ErrorWrapper> {errors.status} </ErrorWrapper>
         </ColumnWrapper>
       </Row>

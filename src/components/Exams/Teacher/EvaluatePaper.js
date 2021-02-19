@@ -2,7 +2,7 @@ import CheckAuthentication from '../../CheckAuthentication/CheckAuthentication'
 import NavBar from '../../NavBar/NavBar'
 import { connect } from 'react-redux'
 import _ from 'underscore'
-import { BodyWrapper, Container } from '../../../utitlities/styles'
+import { BodyWrapper, Container, CenterText } from '../../../utitlities/styles'
 import React, { useEffect, useState } from 'react'
 import api from '../../../utitlities/api'
 import styled from 'styled-components'
@@ -10,7 +10,7 @@ import { Button, message } from 'antd'
 import { getExamStatus } from '../../../utitlities/common.functions'
 import { useParams } from 'react-router'
 import { goBack } from 'connected-react-router'
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faSync } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PageHeader, TileHeaderWrapper, RightButtonWrapper } from '../../styles/pageStyles'
 import QuestionPaper from './components/QuestionPaper'
@@ -37,12 +37,23 @@ const TileBodyWrapper = styled.div`
   background: #f9f9f9;
 `
 
+const FontAwesomeIconStyled = styled(FontAwesomeIcon)`
+  margin-left: 10px;
+  ${props => props.loading ? 'animation: rotate 2s linear infinite;' : ''}
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`
+
 const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
   const { examID, studentID } = useParams()
   if (!studentID || !examID) dispatch(goBack())
   const [isLoading, setIsLoading] = useState(true)
   const [exam, setExam] = useState({})
   const [paper, setPaper] = useState({})
+  const [isLoadingAutoEvaluation, setIsLoadingAutoEvaluation] = useState(false);
 
   const updateExamOnUI = async () => {
     if (studentID === 'arena') {
@@ -87,6 +98,38 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
       setIsLoading(false)
     }
   }
+  const autoEvaluationHandler = () => {
+    setIsLoadingAutoEvaluation(true);
+    setTimeout(() => {
+      const newPaper = { ...paper };
+      const questionsObj = {};
+      _.forEach(exam.questions, q => {
+        questionsObj[q._id] = q;
+      });
+      try {
+        let totalMarks = 0;
+        newPaper.answers = _.map(newPaper.answers, (answer) => {
+          const question = questionsObj[answer.questionID];
+          const newAnswer = { ...answer };
+          if (!question) // maybe question deleted by teacher;
+            newAnswer.marks = 0;
+          else if (question.type !== "mcq"); // do nothing
+          else if (answer.answer && question.options[Number(answer.answer)].isAnswer) {
+            newAnswer.marks = question.marks;
+          } else {
+            newAnswer.marks = 0;
+          }
+          totalMarks += newAnswer.marks;
+          return newAnswer;
+        })
+        newPaper.totalMarks = totalMarks;
+        setPaper(newPaper);
+      } catch (err) {
+        console.log(err);
+      }
+      setIsLoadingAutoEvaluation(false);
+    }, 2000);
+  }
   return (
     <div>
       <CheckAuthentication />
@@ -107,7 +150,13 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
               <PageHeader>Exam</PageHeader>
             </div>
             <RightButtonWrapper>
-              {(paper.answers && paper.answers.length !== 0) && <span>Total Marks {paper.totalMarks} </span>}
+              {(paper.answers && paper.answers.length !== 0) && <CenterText style={{ height: "30px" }}>Total Marks: {paper.totalMarks || 0} </CenterText>}
+              <ButtonStyled
+                disabled={isLoadingAutoEvaluation}
+                onClick={autoEvaluationHandler}
+              >
+                Auto Evaluate <FontAwesomeIconStyled loading={isLoadingAutoEvaluation} icon={faSync}></FontAwesomeIconStyled>
+              </ButtonStyled>
               <ButtonStyled
                 disabled={!(paper.answers && paper.answers.length !== 0)}
                 type="primary" onClick={submitPaperEvaluationHandler}>
@@ -124,6 +173,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
             />
             <QuestionPaper
               isLoading={isLoading}
+              isLoadingAutoEvaluation={isLoadingAutoEvaluation}
               setPaper={setPaper}
               disabled={getExamStatus(exam) === 'ended'}
               exam={exam}
