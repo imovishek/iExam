@@ -96,6 +96,13 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
         message.error('Cannot find the question')
         dispatch(push('/'))
       }
+    } else {
+      setQuestion({
+        department: user.department,
+        type: 'mcq',
+        authorID: user._id,
+        marks: 0,
+      })
     }
   }, [questionID])
 
@@ -148,11 +155,11 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
   return (
     <div>
       <CheckAuthentication />
+      {isLoading && <Loading isLoading={isLoading}/>}
       <BodyWrapper>
         <NavBar />
-        <Container>
-          {isLoading && <Loading isLoading={isLoading}/>}
-          <TileHeaderWrapper>
+        <Container rows="55px 70px 1fr">
+          <TileHeaderWrapper columns="1fr 1fr">
             <div>
               {hasBack &&
                 <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
@@ -165,7 +172,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               <ButtonStyled type="primary" onClick={() => saveQuestionHandler()} disabled={isLoading}>
                 Save
               </ButtonStyled>
-              <ButtonStyled type="primary" onClick={() => dispatch(push('/question/new'))}>
+              <ButtonStyled type="primary" onClick={() => dispatch(push(examID ? `/exam/${examID}/question/new` : '/question/new'))}>
                 Create Another
               </ButtonStyled>
             </RightButtonWrapper>

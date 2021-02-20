@@ -31,6 +31,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { getObjectByAddingID } from '../../../utitlities/common.functions'
 import Loading from '../../Common/Loading'
 import EditExamModal from './EditExamModal'
+import ImportQuestionsModal from './ImportQuestionModal'
 
 const { Option } = Select;
 
@@ -50,7 +51,8 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [exam, setExam] = useState({})
   const [teachersObj, setTeachersObj] = useState({})
   const [showEditExam, setShowEditExam] = useState(false);
-  const [showingStudentType, setShowingStudentType] = useState("participants")
+  const [showingStudentType, setShowingStudentType] = useState("participants");
+  const [showImportQuestions, setShowImportQuestions] = useState(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     try {
@@ -129,7 +131,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
         dispatch(push(`/exam/${id}/question/new`));
         break;
       case IMPORT_QUESTIONS:
-        
+        setShowImportQuestions(true);
         break;
       case VIEW_QUESTIONS:
         dispatch(push(`/exam/${id}/question/view/all`));
@@ -176,6 +178,13 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
         setVisibility={setShowEditExam}
         selectedExam={exam}
         updateExam={onExamUpdateHandler}
+      />
+      <ImportQuestionsModal
+        user={user}
+        visible={showImportQuestions}
+        setVisibility={setShowImportQuestions}
+        exam={exam}
+        updateExamOnUI={updateExamParticipantOnUI}
       />
       <BodyWrapper>
         <NavBar />
@@ -249,7 +258,9 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     </div>
   )
 }
-const mapStateToProps = state => ({})
+const mapStateToProps = state => ({
+  user: state.login.user
+})
 
 const mapDispatchToProps = dispatch => ({
   dispatch

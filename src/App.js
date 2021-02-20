@@ -21,6 +21,7 @@ import ExamsForStudent from './components/Exams/Student/index'
 import ExamsForTeacher from './components/Exams/Teacher/index'
 import QuestionViewPageForTeacher from './components/Exams/Teacher/QuestionView'
 import CoursesForStudent from './components/Courses/Student'
+import QuestionsForTeacher from './components/Question/Teacher/Questions'
 import CoursePageForStudents from './components/Courses/Student/CoursePage'
 import ExamPageForTeacher from './components/Exams/Teacher/ExamPage'
 import ExamPageForStudents from './components/Exams/Student/ExamPage'
@@ -73,6 +74,7 @@ const App = ({ user, dispatch }) => {
       { userType === 'deptAdmin' && <Route path="/students" component={StudentsForAdmin} /> }
       { userType === 'deptAdmin' && <Route path="/exam/:id" component={ExamPageForAdmin} /> }
       { userType === 'teacher' && <Route path="/question/:questionID" component={QuestionPageForTeacher} /> }
+      { userType === 'teacher' && <Route path="/questions" component={QuestionsForTeacher} /> }
       { userType === 'teacher' && <Route path="/exam/:examID/question/view/:questionID" component={QuestionViewPageForTeacher} /> }
       { userType === 'teacher' && <Route path="/exam/:examID/question/:questionID" component={QuestionPageForTeacher} /> }
       { userType === 'teacher' && <Route path="/courses" component={CoursesForTeacher} /> }
