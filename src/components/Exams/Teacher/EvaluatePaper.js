@@ -64,8 +64,17 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
       return
     }
     const { payload = {} } = await api.getExamByIDWithPaper(examID, studentID)
-    const { exam, paper } = payload
-    setExam(exam)
+    const { exam, paper } = payload;
+    const questionsObj = {};
+    _.forEach(exam.questions, q => {
+      questionsObj[q._id] = q;
+    });
+    paper.answers = _.filter(paper.answers, answer => questionsObj[answer.questionID]);
+    paper.answers = _.sortBy(
+      paper.answers,
+      ele => questionsObj[ele.questionID].title
+    );
+    setExam(exam);
     setPaper(paper ? { ...paper } : { answers: [] })
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps

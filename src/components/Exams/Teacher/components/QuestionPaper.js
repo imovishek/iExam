@@ -138,7 +138,9 @@ const SingleQuestion = ({
         <BodyWrapper>
           <AddPadding>
             <MCQBody
-              disabled={disabled} answer={answer}
+              showAnswer={true}
+              disabled={disabled}
+              answer={answer}
               options={question.options}
               setAnswerValue={(v) => setAnswerValue(index, 'answer', v)}
             />
