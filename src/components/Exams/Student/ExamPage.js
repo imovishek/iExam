@@ -39,6 +39,7 @@ const RedText = styled.span`
   color: red;
 `
 
+const virtualState = {};
 const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const { id } = useParams()
   if (!id) dispatch(goBack())
@@ -48,7 +49,6 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [paper, setPaper] = useState({})
   const [switchLoading, setSwitchLoading] = useState(false);
   const [savedText, setSavedText] = useState("");
-  const virtualState = {};
 
   const createPaperForMe = (exam, newPaper) => {
     const answerObj = {}
@@ -74,6 +74,11 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     setPaper(newPaper);
     virtualState.paper = newPaper;
     virtualState.exam = updatedExam;
+  }
+
+  const setPaperHandler = (newPaper) => {
+    setPaper(newPaper);
+    virtualState.paper = newPaper;
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -115,7 +120,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const submitSilentPaperHandler = async () => {
     const cleanPaper = {
       ...virtualState.paper
-    }
+    };
     try {
       const { payload: nowExam } = await api.getExamByID(id)
       if (getExamStatus(nowExam) === 'ended') {
@@ -147,7 +152,6 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   useEffect(() => {
     if (user.autoSubmitPaper) {
       // console.log('Starting new one...........');
-      updateExamOnUI();
       const interval = setInterval(async () => {
         if (
           virtualState.exam &&
@@ -208,7 +212,13 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
           <TileBodyWrapper>
             {showingPaper && (
               <div style={{ height: 'calc(100vh - 120px)' }}>
-                <QuestionPaper disabled={isDisabled} exam={exam} paper={paper} questions={exam.questions}/>
+                <QuestionPaper
+                  disabled={isDisabled}
+                  exam={exam}
+                  paper={paper}
+                  setPaper={setPaperHandler}
+                  questions={exam.questions}
+                />
               </div>
             )}
             {!showingPaper && (

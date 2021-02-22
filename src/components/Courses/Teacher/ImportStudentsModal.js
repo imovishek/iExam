@@ -103,13 +103,13 @@ const ImportStudentsModal = ({
     >
       <Row columns="1fr 1fr">
         <ColumnWrapper>
-          <LabelWrapper>Department</LabelWrapper>
+          <LabelWrapper>By</LabelWrapper>
           <Select
             defaultValue={type}
             onChange={(v) => setType(v)}
           >
-            <Option value="batch">By Batch</Option>
-            <Option value="csv">By CSV</Option>
+            <Option value="batch">Batch</Option>
+            <Option value="csv">CSV</Option>
           </Select>
         </ColumnWrapper>
 

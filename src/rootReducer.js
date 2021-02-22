@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import loginReducer from './components/Login/reducer'
 import navBarReducer from './components/NavBar/reducer'
 import coursesReducer from './components/Courses/reducer'
+import questionReducer from './components/Question/reducer'
 import teacherReducer from './components/Teachers/reducer'
 import studentReducer from './components/Students/reducer'
 import { connectRouter } from 'connected-react-router'
@@ -13,6 +14,7 @@ const createReducers = (history) =>
     courseData: coursesReducer,
     teacherData: teacherReducer,
     studentData: studentReducer,
+    questionData: questionReducer,
     router: connectRouter(history)
   })
 export default createReducers

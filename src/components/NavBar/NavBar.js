@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSignOutAlt, faCog, faUsers, faChalkboardTeacher, faBookOpen, faChartLine, faScroll, faPencilRuler } from '@fortawesome/free-solid-svg-icons'
+import { faSignOutAlt, faCog, faUsers, faChalkboardTeacher, faBookOpen, faChartLine, faScroll, faPencilRuler, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux'
 import { setNavigaitonTabAction } from './actions'
 import { push } from 'connected-react-router'
@@ -144,6 +144,15 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
             <TextWrapper>
               <FontAwesomeIconWrapper icon={faPencilRuler} />
               Results
+            </TextWrapper>
+          </LinkWrapper>
+        }
+
+        { hasPageAccess[userType] && hasPageAccess[userType].Questions &&
+          <LinkWrapper onClick={() => redirectTo('questions')} selected={tabKey === 'questions'}>
+            <TextWrapper>
+              <FontAwesomeIconWrapper icon={faQuestion} />
+              Questions
             </TextWrapper>
           </LinkWrapper>
         }

@@ -1,10 +1,11 @@
 import styled from 'styled-components';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Select, Button, Upload } from 'antd';
 import _ from 'underscore';
 import api from '../../../utitlities/api';
 
 import { UploadOutlined } from '@ant-design/icons';
+import { options } from '@hapi/joi';
 
 
 const { Option } = Select
@@ -24,36 +25,44 @@ const LabelWrapper = styled.p`
   color: #608794;
 `
 
-const ImportStudentsModal = ({
+const ImportQuestionsModal = ({
   user,
   visible,
   setVisibility,
-  course,
-  updateCourseOnUi
+  exam,
+  updateExamOnUI
 }) => {
-  const [type, setType] = useState('batch')
-  const [batch, setBatch] = useState('2015')
+  const [type, setType] = useState('fromQuestions')
+  const [questions, setQuestions] = useState([])
+  const [questionID, setQuestionID] = useState(null);
+  useEffect(async () => {
+    try {
+      let { payload = [] } = await api.getQuestions({ authorID: user._id });
+      payload = _.filter(payload, q => !_.any(exam.questions, eque => eque._id === q._id));
+      setQuestions(payload);
+    } catch (err) {
+      console.log(err)
+    }
+  }, [exam.questions])
 
   const closeModal = () => {
     setVisibility(false)
   }
 
   const onSubmit = () => {
-    importStudentsHandler()
+    importQuestionsHandler()
     closeModal()
   }
 
-  const importStudentsHandler = async (e) => {
+  const importQuestionsHandler = async (e) => {
+    if (type !== "fromQuestions") return;
     try {
-      let { payload: students } = await api.getStudentsByBatch({ batch, departmentCode: user.department.departmentCode })
-      students = _.filter(students, student => !_.any(course.enrolledStudents, enst => enst._id === student._id))
-      const ids = _.map(students, student => student._id)
-      await api.updateCourse(course, {
+      await api.updateExam({ _id: exam._id }, {
         $push: {
-          enrolledStudents: { $each: ids }
+          questions: questionID
         }
       })
-      await updateCourseOnUi()
+      await updateExamOnUI()
     } catch (err) {
 
     }
@@ -88,40 +97,52 @@ const ImportStudentsModal = ({
 
   return (
     <Modal
-      title={'Import Students'}
+      title={'Import Questions'}
       visible={visible}
-      width={400}
+      width={520}
       height={500}
       style={{ height: '600px' }}
       onOk={() => onSubmit()}
       onCancel={() => closeModal()}
       okText="Import"
     >
-      <Row columns="1fr 1fr">
+      <Row columns="140px 320px">
         <ColumnWrapper>
-          <LabelWrapper>By</LabelWrapper>
+          <LabelWrapper>From</LabelWrapper>
           <Select
             defaultValue={type}
             onChange={(v) => setType(v)}
           >
-            <Option value="batch">Batch</Option>
+            <Option value="fromQuestions">My Questions</Option>
             <Option value="csv">CSV</Option>
           </Select>
         </ColumnWrapper>
 
-        {type === 'batch' && (
+        {type === 'fromQuestions' && (
           <ColumnWrapper>
-            <LabelWrapper>Batch</LabelWrapper>
+            <LabelWrapper>Search</LabelWrapper>
             <Select
-              defaultValue={batch}
-              onChange={(v) => setBatch(v)}
+              allowClear
+              showSearch
+              placeholder="Search by title"
+              style={{ width: '320px' }}
+              filterOption={(keyword, option) =>
+                option
+                  .data
+                  .trim()
+                  .replace(/ +/g, '')
+                  .toLowerCase()
+                  .includes(keyword.toLowerCase())
+              }
+              onChange={(v) => setQuestionID(v)}
             >
-              <Option value="2019"> 2019 </Option>
+              {_.map(questions, q => <Option value={q._id} data={`${q.title} ${q.type}`}> {`${q.title}`} </Option>)}
+              {/* <Option value="2019"> 2019 </Option>
               <Option value="2018"> 2018 </Option>
               <Option value="2017"> 2017 </Option>
               <Option value="2016"> 2016 </Option>
               <Option value="2015"> 2015 </Option>
-              <Option value="2014"> 2014 </Option>
+              <Option value="2014"> 2014 </Option> */}
             </Select>
           </ColumnWrapper>
         )}
@@ -139,4 +160,4 @@ const ImportStudentsModal = ({
   )
 }
 
-export default ImportStudentsModal
+export default ImportQuestionsModal;

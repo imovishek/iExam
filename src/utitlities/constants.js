@@ -13,7 +13,8 @@ export const hasPageAccess = {
   },
   teacher: {
     Exams: true,
-    Courses: true
+    Courses: true,
+    Questions: true,
   }
 }
 

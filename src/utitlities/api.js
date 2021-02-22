@@ -10,6 +10,10 @@ export const getCourses = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/courses`, 'get', {}, query)
     .then(res => res.data)
 
+export const getQuestions = async (query) =>
+  requestApiAndGetResponse(`${apiUrl}/questions`, 'get', {}, query)
+    .then(res => res.data)
+  
 export const getCredentials = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/credentials`, 'get', {}, query)
     .then(res => res.data)
@@ -177,6 +181,7 @@ export const updateExamPaperForTeacher = (id, paper) =>
 const api = {
   apiLogin,
   getCourses,
+  getQuestions,
   createCourse,
   getCourseByID,
   updateCourse,

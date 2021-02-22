@@ -97,6 +97,7 @@ const Login = ({ setUser, dispatch }) => {
         <InputWrapper
           placeholder="Enter email"
           value={email}
+          onKeyPress={handleKeypress}
           onChange={(e) => setEmail(e.target.value)}
         />
         <p>Password</p>

@@ -5,6 +5,7 @@ import { Input, Select, Button } from 'antd'
 import React, { useState, useEffect } from 'react'
 import MCQBody from './MCQBody'
 import { sortArrayByMap } from '../../../../utitlities/constants'
+import { LabelWrapper } from '../../../styles/pageStyles'
 const { Option } = Select;
 const Container = styled.div`
   display: flex;
@@ -66,6 +67,13 @@ const SelectStyled = styled(Select)`
   width: 250px;
   margin-right: 10px;
 `
+const BroadAnswer = styled.pre`
+  border: 1px solid #888888;
+  box-shadow: 0px 0px 3px 0px;
+  margin: 3px;
+  padding: 10px;
+  font-size: 14px;
+`;
 
 const SingleQuestion = ({
   disabled,
@@ -101,18 +109,19 @@ const SingleQuestion = ({
       {isMCQ && (
         <BodyWrapper>
           <AddPadding>
-            <MCQBody disabled={disabled} answer={answer} options={question.options} setAnswerValue={(v) => setAnswerValue(index, 'answer', `${v}`)}/>
+            <MCQBody isEditing={isEditing} answer={answer} options={question.options} setAnswerValue={(v) => setAnswerValue(index, 'answer', `${v}`)}/>
           </AddPadding>
         </BodyWrapper>
       )}
       {isBroad && (
         <BodyWrapper>
+          <LabelWrapper>Answer:</LabelWrapper>
           <AddPadding>
             { isEditing &&
               <Input.TextArea disabled={disabled} style={{ width: '500px' }} value={answer} onChange={(e) => setAnswerValue(index, 'answer', e.target.value)} rows={4} />
             }
             { !isEditing &&
-              <div dangerouslySetInnerHTML={{ __html: answer }} />
+              <BroadAnswer>{answer}</BroadAnswer>  
             }
           </AddPadding>
         </BodyWrapper>
@@ -125,6 +134,7 @@ const QuestionPaper = ({
   disabled,
   exam,
   paper,
+  setPaper,
   questions
 }) => {
   const [answers, setAnswers] = useState(paper.answers)
@@ -133,6 +143,10 @@ const QuestionPaper = ({
   const setAnswerValue = (index, key, value) => {
     const newAnswers = [...answers]
     newAnswers[index][key] = value
+    setPaper({
+      ...paper,
+      answers: newAnswers,
+    });
     setAnswers(newAnswers)
   }
 
