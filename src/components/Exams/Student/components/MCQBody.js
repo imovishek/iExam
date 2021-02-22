@@ -10,7 +10,7 @@ export const RadioWrapper = styled.div`
 `
 
 const MCQBody = ({
-  disabled,
+  isEditing = false,
   options,
   answer,
   setAnswerValue
@@ -26,11 +26,12 @@ const MCQBody = ({
       {options.map((option, index) => (
         <RadioWrapper key={index} rows="auto auto">
           <Radio
-            disabled={disabled}
             checked={checkObj[index]}
             onClick={() => {
-              setAnswerValue(index)
-              setCheckObj({ [index]: true })
+              if (isEditing) {
+                setAnswerValue(index)
+                setCheckObj({ [index]: true })
+              }
             }}
           >{option.value}</Radio>
         </RadioWrapper>

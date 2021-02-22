@@ -7,7 +7,7 @@ import MCQBody from './MCQBody'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import Loading from '../../../Common/Loading'
-import { RightButtonWrapper } from '../../../styles/pageStyles'
+import { LabelWrapper, RightButtonWrapper } from '../../../styles/pageStyles'
 import { push } from 'connected-react-router'
 import { Row } from '../../../../utitlities/styles'
 import { connect } from 'react-redux'
@@ -81,6 +81,13 @@ const FontAwesomeIconStyled = styled(FontAwesomeIcon)`
     }
   }
 `
+const BroadAnswer = styled.pre`
+  border: 1px solid #888888;
+  box-shadow: 0px 0px 3px 0px;
+  margin: 3px;
+  padding: 10px;
+  font-size: 14px;
+`;
 
 const SingleQuestion = ({
   disabled,
@@ -89,7 +96,7 @@ const SingleQuestion = ({
   answer,
   exam,
   setAnswerValue,
-  marks,
+  givenMarks,
   noMarks = false,
   isShowingEditButton,
   dispatch,
@@ -150,7 +157,8 @@ const SingleQuestion = ({
       {isBroad && (
         <BodyWrapper>
           <AddPadding>
-            <Input.TextArea disabled={!isEditing || disabled} style={{ width: '500px' }} value={answer} onChange={(e) => {}} rows={4} />
+            <LabelWrapper>Answer:</LabelWrapper>
+            <BroadAnswer> {answer} </BroadAnswer>
           </AddPadding>
         </BodyWrapper>
       )}
@@ -159,7 +167,7 @@ const SingleQuestion = ({
         <InlineBlock>
           <Input
             style={{ width: 100 }}
-            value={marks}
+            value={givenMarks}
             onChange={(e) => setAnswerValue(index, 'marks', e.target.value)}
             placeholder="Set Marks"
           /> {
@@ -265,7 +273,7 @@ const QuestionPaper = ({
           exam={exam}
           question={questionsObj[answer.questionID]}
           answer={answer.answer}
-          marks={answer.marks}
+          givenMarks={answer.marks}
           dispatch={dispatch}
           isLoadingAutoEvaluation={isLoadingAutoEvaluation}
         />
