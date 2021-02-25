@@ -10,6 +10,7 @@ const examRouter = require('./exam/exam.route');
 const paperRouter = require('./paper/paper.route');
 const deptAdminRouter = require('./deptAdmin/deptAdmin.route');
 const credentialRouter = require('./credential/credential.route');
+const compilerRouter = require('./compiler/compiler.route');
 const userRouter = require('./user/user.route');
 
 router.use(authRouter);
@@ -21,6 +22,7 @@ router.use(examRouter);
 router.use(paperRouter);
 router.use(deptAdminRouter);
 router.use(credentialRouter);
+router.use(compilerRouter);
 router.use(userRouter);
 
 module.exports = router;
