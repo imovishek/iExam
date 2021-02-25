@@ -9,8 +9,8 @@ exports.createQuestion = (question) =>
 exports.getQuestionByID = (_id) =>
   Question.findOne({ _id });
 
-exports.getQuestions = (query) =>
-  Question.find(query);
+exports.getQuestions = (query, sort = { createdAt: -1 }) =>
+  Question.find(query).sort(sort);
 
 
 // UPDATE

@@ -17,6 +17,7 @@ const questionSchema = new Schema({
     }],
     answer: String,
     body: String,
+    defaultCode: String,
     securityType: { type: String, default: 'public', required: true },
     teacherAccess: [Schema.Types.ObjectId],
     department: {
