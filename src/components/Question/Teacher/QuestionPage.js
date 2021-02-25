@@ -16,6 +16,7 @@ import MCQ from './components/MCQ'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import Loading from '../../Common/Loading'
+import CodeEditor from './components/CodeEditor'
 
 const { Option } = Select
 const QuestionBodyRow = styled.div`
@@ -89,7 +90,8 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
           department: newQuestion.department,
           options: newQuestion.options,
           answer: newQuestion.answer,
-          body: newQuestion.body
+          body: newQuestion.body,
+          defaultCode: newQuestion.defaultCode,
         })
       } catch (err) {
         console.log(err)
@@ -197,6 +199,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               >
                 <Option value="mcq">MCQ</Option>
                 <Option value="broad">Broad</Option>
+                <Option value="codingQuestion">Coding Question</Option>
               </Select>
             </HeaderRow>
 
@@ -228,6 +231,18 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               <MCQRow>
                 <MCQ question={question} setQuestionValue={setValue} />
               </MCQRow>
+            }
+            {question.type === 'codingQuestion' &&
+              <>
+                <QuestionBodyRow>
+                  <LabelWrapper>Body</LabelWrapper>
+                  <QuestionBody question={question} setQuestionValue={setValue} />
+                </QuestionBodyRow>
+                <LabelWrapper> Default Code: </LabelWrapper>
+                <QuestionBodyRow>
+                  <CodeEditor question={question} setQuestionValue={setValue} />
+                </QuestionBodyRow>
+              </>
             }
           </Row>
           <Row columns="1fr 1fr">

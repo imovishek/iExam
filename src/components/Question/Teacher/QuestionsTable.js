@@ -23,7 +23,7 @@ const getName = obj => `${obj.firstName} ${obj.lastName}`
 const QuestionCard = ({ dispatch, question, setQuestionToEdit, showCreateEditModal, deleteQuestion, authorName }) => (
   <TableRowStyled columns="repeat(4, 1fr) 60px" onClick={() => dispatch(push(`/question/${question._id}`))}>
     <TableRowChild> { question.title } </TableRowChild>
-    <TableRowChild> { (question.type || '').toUpperCase() } </TableRowChild>
+    <TableRowChild> { question.type === "codingQuestion" ? "CODE" : (question.type || '').toUpperCase() } </TableRowChild>
     <TableRowChild> { question.marks } </TableRowChild>
     <TableRowChild> { authorName } </TableRowChild>
     <TableRowChild>
