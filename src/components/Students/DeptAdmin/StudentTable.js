@@ -6,6 +6,7 @@ import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { NoDataComponent } from '../../../utitlities/common.functions'
 
 const StudentCard = ({ dispatch, student, setStudentToEdit, showCreateEditModal, deleteStudent }) => (
   <TableRow>
@@ -53,6 +54,7 @@ const StudentTable = ({
     setTotal(students.length)
   }, [students])
   const paginatedStudents = students.slice((current - 1) * pageSize, current * pageSize)
+  const isNoData = students.length === 0
   return (
     <div>
       <TableHeader>
@@ -63,6 +65,7 @@ const StudentTable = ({
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
+      {(isNoData && !isLoading) && <NoDataComponent title="No Students Added" />}
       { !isLoading && _.map(paginatedStudents, (student, index) => (
         <StudentCard
           key={`students_${index}`}
@@ -73,7 +76,7 @@ const StudentTable = ({
           dispatch={dispatch}
         />
       ))}
-      { !isLoading &&
+      { !isLoading && !isNoData &&
         <Pagination
           current={current}
           pageSize={pageSize}

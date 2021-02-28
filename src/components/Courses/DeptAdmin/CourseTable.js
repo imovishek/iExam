@@ -5,8 +5,8 @@ import Pagination from '../../Common/Pagination';
 import React, { useState, useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
-import { smartLabel } from '../../../utitlities/common.functions';
-import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { NoDataComponent, smartLabel } from '../../../utitlities/common.functions';
+import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
@@ -51,7 +51,6 @@ const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, de
   </TableRow>
 )
 
-const NoData = () => <CenterNoData>No Data</CenterNoData>
 
 const CourseTable = ({
   courses = [],
@@ -81,7 +80,7 @@ const CourseTable = ({
         <TableHeaderChild> Status </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
-      {(isNoData && !isLoading) && <NoData />}
+      {(isNoData && !isLoading) && <NoDataComponent title="No Courses Added" />}
       { !isLoading && _.map(paginatedCourses, (course, index) => (
         <CourseCard
           key={`courses_${index}`}

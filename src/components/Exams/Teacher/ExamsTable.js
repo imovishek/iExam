@@ -4,7 +4,8 @@ import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
-import { TableRow, TableRowChild, OperationWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { TableRow, TableRowChild, OperationWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { NoDataComponent } from '../../../utitlities/common.functions'
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
@@ -30,8 +31,6 @@ const ExamCard = ({ dispatch, exam }) => (
     </TableRowChild>
   </TableRow>
 )
-
-const NoData = () => <CenterNoData>No Exams :)</CenterNoData>
 
 const ExamTable = ({
   exams = [],
@@ -61,7 +60,7 @@ const ExamTable = ({
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
-      {(isNoData && !isLoading) && <NoData />}
+      {(isNoData && !isLoading) && <NoDataComponent title="No Exams Created" />}
       { !isLoading && _.map(paginatedExams, (exam, index) => (
         <ExamCard
           key={`exams_${index}`}
