@@ -6,10 +6,11 @@ import Pagination from '../../Common/Pagination';
 import React, { useState, useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
-import { TableRowChild, CenterNoData, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles';
+import { TableRowChild, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles';
 import api from '../../../utitlities/api';
 import { AwesomeIcon } from '../../../utitlities/styles';
 import { RightButtonWrapper, Row } from '../../styles/pageStyles';
+import { NoDataComponent } from '../../../utitlities/common.functions';
 
 const TableRowStyled = styled(Row)`
   cursor: pointer;
@@ -53,8 +54,6 @@ const QuestionCard = ({ dispatch, question, setQuestionToEdit, showCreateEditMod
   </TableRowStyled>
 )
 
-const NoData = () => <CenterNoData>No Questions</CenterNoData>
-
 const QuestionTable = ({
   questions = [],
   isLoading,
@@ -88,7 +87,7 @@ const QuestionTable = ({
         <TableHeaderChild> Author </TableHeaderChild>
         <TableHeaderChild> </TableHeaderChild>
       </Row>
-      {(isNoData && !isLoading) && <NoData />}
+      {(isNoData && !isLoading) && <NoDataComponent title="No Questions Created" />}
       { !isLoading && _.map(paginatedQuestions, (question, index) => (
         <QuestionCard
           key={`questions_${index}`}

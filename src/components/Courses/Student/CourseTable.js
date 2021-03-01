@@ -7,8 +7,8 @@ import React, { useState, useEffect } from 'react'
 import api, { deleteCourse } from '../../../utitlities/api'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
-import { smartLabel } from '../../../utitlities/common.functions'
-import { TableRowChild, OperationWrapper, CenterNoData, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { NoDataComponent, smartLabel } from '../../../utitlities/common.functions'
+import { TableRowChild, OperationWrapper, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
 import { Row } from '../../styles/pageStyles'
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
@@ -89,8 +89,6 @@ const CourseCard = ({
   )
 }
 
-const NoData = () => <CenterNoData>No Courses</CenterNoData>
-
 const CourseTable = ({
   user,
   courses = [],
@@ -119,7 +117,7 @@ const CourseTable = ({
         <TableHeaderChild> Status </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </Row>
-      {(isNoData && !isLoading) && <NoData />}
+      {(isNoData && !isLoading) && <NoDataComponent title="No Courses Added" />}
       { !isLoading && _.map(paginatedCourses, (course, index) => (
         <CourseCard
           user={user}

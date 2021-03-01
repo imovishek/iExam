@@ -6,6 +6,7 @@ import { faTrash, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import api from '../../../../utitlities/api'
 import { useEffect, useState } from 'react'
+import { NoDataComponent } from '../../../../utitlities/common.functions'
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -139,6 +140,7 @@ const Students = ({
     )
     setSearchStudents(afterSearchStudents)
   }
+  const isNoData = students.length === 0
   return (
     <Container>
       <SearchStyled
@@ -152,6 +154,7 @@ const Students = ({
         <HeaderLabel></HeaderLabel>
       </Row>
       <Body>
+        { isNoData && <NoDataComponent />}
         {_.map(searchStudents, (student, index) => <Card
           key={`student_${index}`}
           student={student}

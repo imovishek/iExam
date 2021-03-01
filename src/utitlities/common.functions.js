@@ -5,6 +5,7 @@ import CheckAuthentication from '../components/CheckAuthentication/CheckAuthenti
 import { BodyWrapper } from './styles'
 import NavBar from '../components/NavBar/NavBar'
 import { ignoreKeys, timeFormat } from './constants'
+import { CenterNoData } from '../components/styles/tableStyles'
 
 export const joiObjectParser = (object, validator) => {
   const { error } = Joi.validate(object, validator, {
@@ -166,3 +167,5 @@ export const meGotBanned = (exam, user) => _.any(exam.bannedParticipants, pt => 
 export const getName = obj => `${obj.firstName} ${obj.lastName}`
 
 export const allCap = str => (str || '').toUpperCase();
+
+export const NoDataComponent = ({ title = "No Data Found" }) => <CenterNoData>{ title }</CenterNoData>

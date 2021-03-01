@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
 import { mapDesignations } from '../../../utitlities/constants'
+import { NoDataComponent } from '../../../utitlities/common.functions'
 
 const TeacherCard = ({ dispatch, teacher, setTeacherToEdit, showCreateEditModal, deleteTeacher }) => (
   <TableRow>
@@ -53,6 +54,7 @@ const TeacherTable = ({
     setTotal(teachers.length)
   }, [teachers])
   const paginatedTeachers = teachers.slice((current - 1) * pageSize, current * pageSize)
+  const isNoData = teachers.length === 0;
   return (
     <div>
       <TableHeader>
@@ -63,6 +65,7 @@ const TeacherTable = ({
         <TableHeaderChild> Email </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
+      {isNoData && !isLoading && <NoDataComponent title="No Teachers Added" />}
       { !isLoading && _.map(paginatedTeachers, (teacher, index) => (
         <TeacherCard
           key={`teachers_${index}`}
@@ -73,7 +76,7 @@ const TeacherTable = ({
           dispatch={dispatch}
         />
       ))}
-      { !isLoading &&
+      { !isLoading && !isNoData &&
         <Pagination
           current={current}
           pageSize={pageSize}
