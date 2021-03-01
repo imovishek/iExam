@@ -1,10 +1,18 @@
+import _ from "underscore";
+
+export const RUNNING = "running";
+export const BROAD = "broad";
+export const MCQ = "mcq";
+export const FILLINTHEBLANK = "fillInTheBlank";
+export const MATCHING = "matching";
+
 export const hasPageAccess = {
   deptAdmin: {
     Courses: true,
     Teachers: true,
     Students: true,
     CoursePage: true,
-    ExamPage: true
+    ExamPage: true,
   },
   student: {
     Exams: true,
@@ -15,26 +23,38 @@ export const hasPageAccess = {
     Exams: true,
     Courses: true,
     Questions: true,
-  }
-}
+  },
+};
 
 export const ignoreKeys = {
   updatedAt: true,
   createdAt: true,
   __v: true,
-  department: true
-}
-export const timeFormat = 'hh:mm A'
-export const durationFormat = 'HH:mm'
+  department: true,
+};
+export const timeFormat = "hh:mm A";
+export const durationFormat = "HH:mm";
 
 export const mapDesignations = {
-  "guest-lecturer": 'Guest Lecturer',
-  "lecturer": 'Lecturer',
-  "assistant-professor": 'Assistant Professor',
-  "associate-professor": 'Associate Professor',
-  "professor": 'Professor',
+  "guest-lecturer": "Guest Lecturer",
+  lecturer: "Lecturer",
+  "assistant-professor": "Assistant Professor",
+  "associate-professor": "Associate Professor",
+  professor: "Professor",
 };
-
+const isAnswered = (ans) => {
+  if (!ans) return false;
+  try {
+    const parsed = JSON.parse(ans);
+    if (_.isArray(parsed)) {
+      const filtered = _.filter(parsed, (a) => a);
+      return filtered.length;
+    }
+    return ans;
+  } catch (e) {
+    return ans;
+  }
+};
 export const sortArrayByMap = {
   random: (array) => {
     if (!array) return array;
@@ -43,7 +63,7 @@ export const sortArrayByMap = {
     if (!n) return array;
     const set = new Set();
     while (set.size < array.length) {
-      const i = Math.floor(Math.random()*100000) % n;
+      const i = Math.floor(Math.random() * 100000) % n;
       if (set.has(i)) continue;
       set.add(i);
       newArray.push(array[i]);
@@ -59,7 +79,7 @@ export const sortArrayByMap = {
       if (a < b) return -1;
       if (a > b) return 1;
       return 0;
-    })
+    });
     return newArray;
   },
   marksDESC: (array, obj) => {
@@ -71,7 +91,7 @@ export const sortArrayByMap = {
       if (a > b) return -1;
       if (a < b) return 1;
       return 0;
-    })
+    });
     return newArray;
   },
   mcqFirst: (array, obj) => {
@@ -83,7 +103,7 @@ export const sortArrayByMap = {
       if (a && !b) return -1;
       if (!a && b) return 1;
       return 0;
-    })
+    });
     return newArray;
   },
   questionTitle: (array, obj) => {
@@ -95,19 +115,19 @@ export const sortArrayByMap = {
       if (a < b) return -1;
       if (a > b) return 1;
       return 0;
-    })
+    });
     return newArray;
   },
   unAnsweredFirst: (array) => {
     if (!array) return array;
     const newArray = [...array];
     newArray.sort((ansA, ansB) => {
-      const a = ansA.answer;
-      const b = ansB.answer;
+      const a = isAnswered(ansA.answer);
+      const b = isAnswered(ansB.answer);
       if (!a && b) return -1;
       if (a && !b) return 1;
       return 0;
-    })
+    });
     return newArray;
   },
   answeredFirst: (array) => {
@@ -119,7 +139,7 @@ export const sortArrayByMap = {
       if (a && !b) return -1;
       if (!a && b) return 1;
       return 0;
-    })
+    });
     return newArray;
   },
-}
+};

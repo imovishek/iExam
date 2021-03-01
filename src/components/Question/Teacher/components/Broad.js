@@ -6,7 +6,7 @@ const Container = styled.div`
   z-index: -1;
 `
 
-const QuestionBody = ({
+const Broad = ({
   question,
   setQuestionValue
 }) => (
@@ -40,4 +40,4 @@ const QuestionBody = ({
   </Container>
 )
 
-export default QuestionBody
+export default Broad
