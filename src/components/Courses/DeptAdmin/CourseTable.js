@@ -15,6 +15,7 @@ const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, de
     <TableRowChild> { course.title } </TableRowChild>
     <TableRowChild> { course.courseCode } </TableRowChild>
     <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
+    <TableRowChild> { course.batchCode || "Other" } </TableRowChild>
     <TableRowChild> { course.department.departmentCode } </TableRowChild>
     <TableRowChild> { smartLabel(course.status) } </TableRowChild>
     <TableRowChild>
@@ -76,6 +77,7 @@ const CourseTable = ({
         <TableHeaderChild> Course Title </TableHeaderChild>
         <TableHeaderChild> Course Code </TableHeaderChild>
         <TableHeaderChild> Assigned Teacher </TableHeaderChild>
+        <TableHeaderChild> Batch </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild> Status </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>

@@ -65,11 +65,12 @@ const CourseCard = ({
   }
 
   return (
-    <Row columns="repeat(5, 1fr) 240px">
+    <Row columns="repeat(6, 1fr) 240px">
       <TableRowChild> { course.title } </TableRowChild>
       <TableRowChild> { course.courseCode } </TableRowChild>
       <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
       <TableRowChild> { course.department.departmentCode } </TableRowChild>
+      <TableRowChild> { course.batchCode || 'Others' } </TableRowChild>
       <TableRowChild> { smartLabel(course.status) } </TableRowChild>
       <TableRowChild>
         <OperationWrapper>
@@ -109,11 +110,12 @@ const CourseTable = ({
   const isNoData = courses.length === 0
   return (
     <div>
-      <Row columns="repeat(5, 1fr) 240px">
+      <Row columns="repeat(6, 1fr) 240px">
         <TableHeaderChild> Course Title </TableHeaderChild>
         <TableHeaderChild> Course Code </TableHeaderChild>
         <TableHeaderChild> Assigned Teacher </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
+        <TableHeaderChild> Batch </TableHeaderChild>
         <TableHeaderChild> Status </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </Row>

@@ -42,6 +42,17 @@ export const mapDesignations = {
   "associate-professor": "Associate Professor",
   professor: "Professor",
 };
+
+export const allBatches = {
+  2019: '2019 Batch',
+  2018: '2018 Batch',
+  2017: '2017 Batch',
+  2016: '2016 Batch',
+  2015: '2015 Batch',
+  others: 'Others',
+};
+            
+
 export const isAnswered = (ans) => {
   if (!ans) return false;
   try {
