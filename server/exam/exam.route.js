@@ -52,4 +52,12 @@ router
     examController.updateExamPaperForTeacher
   )
 
+router
+  .route('/exam/:id/filter')
+  .post(
+    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    examController.getExamUsingFilterByID
+  )
+
+
 module.exports = router;

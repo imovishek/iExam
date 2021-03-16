@@ -18,6 +18,14 @@ const examSchema = new Schema({
 	bannedParticipants: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
 	papers: [{ type: Schema.Types.ObjectId, ref: 'Paper' }],
 	resultPublished: { type: Boolean, default: false },
+	announcements: [{
+		dateTime: { type: Date, default: Date.now() },
+		body: { type: String, required: true },
+		securityType: { type: String, required: true, default: 'public' },
+		access: [{ type: Schema.Types.ObjectId }],
+		authorID: Schema.Types.ObjectId,
+		seen: [Schema.Types.ObjectId]
+	}],
 	resultPublishedDate: Date,
 	totalMarks: Number
 },

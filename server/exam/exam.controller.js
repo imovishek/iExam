@@ -78,6 +78,22 @@ exports.getExamByIDWithUserPaper = async (req, res) => {
   }
 };
 
+exports.getExamUsingFilterByID = async (req, res) => {
+  const { body } = req;
+  const { id } = req.params;
+  try {
+    const exams = await examHelper.getExamAggregate(id, body);
+    res.status(httpStatuses.OK).send({ payload: exams[0] });
+  } catch (err) {
+    console.log(err);
+    res
+    .status(httpStatuses.INTERNAL_SERVER_ERROR)
+    .send({ error: true, message: err.message });
+  }
+}
+
+// UPDATE
+
 exports.updateExamPaperForStudent = async (req, res) => {
   const { id } = req.params;
   const { paper } = req.body;
