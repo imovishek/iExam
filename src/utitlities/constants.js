@@ -42,7 +42,7 @@ export const mapDesignations = {
   "associate-professor": "Associate Professor",
   professor: "Professor",
 };
-const isAnswered = (ans) => {
+export const isAnswered = (ans) => {
   if (!ans) return false;
   try {
     const parsed = JSON.parse(ans);
@@ -143,3 +143,6 @@ export const sortArrayByMap = {
     return newArray;
   },
 };
+
+export const PUBLIC = 'public';
+export const PRIVATE = 'private';

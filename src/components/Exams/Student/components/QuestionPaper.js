@@ -130,7 +130,6 @@ const QuestionPaper = ({ disabled, exam, paper, setPaper, questions }) => {
       });
       setAnswers(newAnswers || []);
     }
-    console.log(paper);
   }, [paper]);
   const sortingTypes = {
     random: "Shuffle",

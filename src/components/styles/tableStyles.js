@@ -29,7 +29,6 @@ export const TableRow = styled.div`
   flex-direction: row;
   justify-content: space-between;
   border-radius: 8px;
-  background: #f1f1f1;
   margin-top: 5px;
 `;
 
@@ -73,3 +72,12 @@ export const CenterNoData = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+export const TableRowHoverStyled = styled(TableRow)`
+  cursor: pointer;
+  background: none;
+  :hover {
+    background: #96c1c1;
+    color: black;
+  }
+`

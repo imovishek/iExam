@@ -120,7 +120,7 @@ const SingleQuestion = ({
   const isFillInTheBlank = question.type === FILLINTHEBLANK;
   const isMATCHING = question.type === MATCHING;
   const [isSingleAutoLoading, setIsSingleAutoLoading] = useState(false);
-  const getMatchingAnswer = (answer, question) => {
+  const getMatchingAnswer = (answer = "", question) => {
     let parsedAnswer = [];
     const { leftSide, rightSide } = question.matchingOptions;
     const maxLen = Math.max(leftSide.length, rightSide.length);
@@ -129,7 +129,10 @@ const SingleQuestion = ({
     } catch (e) {}
     if (parsedAnswer.length === 0) {
       for (let i = 0; i < maxLen; i++) {
-        parsedAnswer.push([leftSide[i].id || "", rightSide[i].id || ""]);
+        parsedAnswer.push([
+          (leftSide[i] && leftSide[i].id) || "",
+          (rightSide[i] && rightSide[i].id) || "",
+        ]);
       }
     }
     return JSON.stringify(parsedAnswer);

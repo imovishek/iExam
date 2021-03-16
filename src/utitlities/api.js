@@ -177,7 +177,9 @@ export const updateExamPaperForStudent = (id, paper) =>
 export const updateExamPaperForTeacher = (id, paper) =>
   requestApiAndGetResponse(`${apiUrl}/exam/${id}/evaluatepaper`, 'put', { paper })
     .then(res => res.data)
-
+export const getExamUsingFilterByID = (id, filter) =>
+  requestApiAndGetResponse(`${apiUrl}/exam/${id}/filter`, 'post', filter)
+    .then(res => res.data)
 const api = {
   apiLogin,
   getCourses,
@@ -210,7 +212,8 @@ const api = {
   deleteQuestion,
   getExamByIDWithPaper,
   updateExamPaperForStudent,
-  updateExamPaperForTeacher
+  updateExamPaperForTeacher,
+  getExamUsingFilterByID
 }
 
 export default api

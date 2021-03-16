@@ -6,23 +6,11 @@ import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
-import {TableRowChild, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import {TableRowChild, TableHeader, TableHeaderChild, SpinWrapper, TableRowHoverStyled } from '../../styles/tableStyles'
 import { NoDataComponent } from '../../../utitlities/common.functions'
 
 const TableBodyWrapper = styled.div`
   overflow: auto;
-`
-export const TableRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-radius: 8px;
-  background: #f3f3f3;
-  margin-top: 5px;
-  cursor: pointer;
-  :hover {
-    background: #dedede;
-  }
 `
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
@@ -31,7 +19,7 @@ const ResultCard = ({ exam, user, dispatch }) => {
   const papers = _.filter(exam.papers, paper => paper.student === user._id);
   const paper = papers[0] || { answers: [] };
   return (
-    <TableRow onClick={() => dispatch(push(`/exam/${exam._id}`))}>
+    <TableRowHoverStyled onClick={() => dispatch(push(`/exam/${exam._id}`))}>
       <TableRowChild> { exam.title } </TableRowChild>
       <TableRowChild> { exam.course.title } </TableRowChild>
       <TableRowChild> { exam.course.assignedTeacher ? getName(exam.course.assignedTeacher) : 'Unassigned'} </TableRowChild>
@@ -40,7 +28,7 @@ const ResultCard = ({ exam, user, dispatch }) => {
       <TableRowChild>
         {`${paper.totalMarks || 'N/A'} / ${exam.totalMarks}`}
       </TableRowChild>
-    </TableRow>
+    </TableRowHoverStyled>
   )
 }
 

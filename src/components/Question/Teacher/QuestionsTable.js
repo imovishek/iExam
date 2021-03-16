@@ -14,8 +14,10 @@ import { NoDataComponent } from '../../../utitlities/common.functions';
 
 const TableRowStyled = styled(Row)`
   cursor: pointer;
+  border-radius: 8px;
   :hover {
-    background: #e4e4e4;
+    background: #96c1c1;
+    color: black;
   }
 `
 

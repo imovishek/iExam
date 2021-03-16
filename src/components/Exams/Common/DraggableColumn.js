@@ -34,7 +34,7 @@ const DraggableColumn = ({
   }, [values]);
 
   const getListStyle = (isDraggingOver) => ({
-    background: isDraggingOver ? "lightgrey" : "lightgrey",
+    background: "#c5cccc",
     padding: grid,
     width: "100%",
     minHeight: minHeight || "200px",
@@ -50,7 +50,7 @@ const DraggableColumn = ({
     alignItems: "center",
     cursor: isEditing ? "pointer" : "auto",
     // change background colour if dragging
-    background: isDragging ? "#f3f3f3" : "#f3f3f3",
+    background: "rgb(255 255 255)",
     border: matchingIndexes[index]
       ? "2px solid #14c719"
       : "2px solid lightgrey",

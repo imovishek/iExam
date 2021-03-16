@@ -12,7 +12,8 @@ import { TableRow, TableRowChild, TableHeader, TableHeaderChild, SpinWrapper } f
 const TableRowStyled = styled(TableRow)`
   cursor: pointer;
   :hover {
-    background: #e4e4e4;
+    background: #96c1c1;
+    color: black;
   }
 `
 

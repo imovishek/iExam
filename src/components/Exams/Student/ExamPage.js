@@ -2,18 +2,24 @@ import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
 import NavBar from "../../NavBar/NavBar";
 import { connect } from "react-redux";
 import _ from "underscore";
-import { BodyWrapper, Container, Col } from "../../../utitlities/styles";
+import {
+  BodyWrapper,
+  Container,
+  Col,
+  CenterText,
+} from "../../../utitlities/styles";
 import React, { useEffect, useState } from "react";
 import api from "../../../utitlities/api";
 import styled from "styled-components";
 import { Button, message, Switch } from "antd";
 import {
   getExamStatus,
+  getExamTimeDiffInFormat,
   meGotBanned,
 } from "../../../utitlities/common.functions";
 import { useParams } from "react-router";
 import { goBack, push } from "connected-react-router";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faBullhorn } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Row,
@@ -28,6 +34,8 @@ import Announcements from "./components/Announcements";
 import Loading from "../../Common/Loading";
 import { setUserAction } from "../../Login/actions";
 import { MATCHING } from "../../../utitlities/constants";
+import { ExamTitleWrapper, TimeDiffWrapper } from "../styles";
+import ShowExamStatusTitle from "../Common/ShowExamStatusTitle";
 
 const ButtonStyled = styled(Button)`
   height: 30px;
@@ -40,7 +48,7 @@ const FontAwesomeIconWrapper = styled.div`
 `;
 
 const TileBodyWrapper = styled.div`
-  background: #f9f9f9;
+  background: #ffffff;
 `;
 const RedText = styled.span`
   margin-left: 10px;
@@ -218,8 +226,8 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 1fr" gridGap="20px">
-          <TileHeaderWrapper columns="1fr 1fr">
+        <Container rows="90px 1fr" gridGap="20px">
+          <TileHeaderWrapper columns="1fr 1fr 1fr">
             <div>
               {hasBack && (
                 <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
@@ -229,35 +237,40 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               <PageHeader>Exam</PageHeader>
               {meGotBanned(exam, user) && <RedText>Banned</RedText>}
             </div>
-            {showingPaper && (
-              <RightButtonWrapper>
-                <Col rows="1fr 1fr" gridGap="3px" style={{ width: "170px" }}>
-                  <div>
-                    <span style={{ marginRight: "10px" }}>Auto submit: </span>
-                    <Switch
-                      loading={switchLoading}
-                      disabled={isDisabled}
-                      checked={user.autoSubmitPaper}
-                      onChange={autoSubmitUpdateHandler}
-                      style={{ marginRight: "10px" }}
-                    />
-                  </div>
-                  {user.autoSubmitPaper && <div>{savedText}</div>}
-                </Col>
+            <ShowExamStatusTitle exam={exam}/>
+            
+            
+            <div>
+              {showingPaper && (
+                <RightButtonWrapper>
+                  <Col rows="1fr 1fr" gridGap="3px" style={{ width: "170px" }}>
+                    <div>
+                      <span style={{ marginRight: "10px" }}>Auto submit: </span>
+                      <Switch
+                        loading={switchLoading}
+                        disabled={isDisabled}
+                        checked={user.autoSubmitPaper}
+                        onChange={autoSubmitUpdateHandler}
+                        style={{ marginRight: "10px" }}
+                      />
+                    </div>
+                    {user.autoSubmitPaper && <div>{savedText}</div>}
+                  </Col>
 
-                <ButtonStyled
-                  disabled={isDisabled}
-                  type="primary"
-                  onClick={() => submitPaperHandler()}
-                >
-                  Submit
-                </ButtonStyled>
-              </RightButtonWrapper>
-            )}
+                  <ButtonStyled
+                    disabled={isDisabled}
+                    type="primary"
+                    onClick={() => submitPaperHandler()}
+                  >
+                    Submit
+                  </ButtonStyled>
+                </RightButtonWrapper>
+              )}
+            </div>
           </TileHeaderWrapper>
           <TileBodyWrapper>
             {showingPaper && (
-              <div style={{ height: "calc(100vh - 120px)" }}>
+              <div style={{ height: "calc(100vh - 170px)" }}>
                 <QuestionPaper
                   disabled={isDisabled}
                   exam={exam}
@@ -270,13 +283,14 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
             {!showingPaper && (
               <Row columns=".7fr .3fr">
                 <Questions
+                  paper={paper}
                   exam={exam}
                   onShowingPaper={() =>
                     dispatch(push(`/exam/${exam._id}/answer`))
                   }
                   questions={exam.questions}
                 />
-                <Announcements announcements={announcements} />
+                <Announcements exam={exam} />
               </Row>
             )}
           </TileBodyWrapper>

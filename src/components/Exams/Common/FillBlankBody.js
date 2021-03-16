@@ -1,6 +1,7 @@
 import { Input } from "antd";
 import styled from "styled-components";
 import _ from "underscore";
+import { getQuestionSplitFBlank } from "../../../utitlities/common.functions";
 import { Col } from "../../../utitlities/styles";
 import { LabelWrapper } from "../../styles/pageStyles";
 import { AddPadding } from "../Student/components/BroadBody";
@@ -15,32 +16,32 @@ const HeaderWrapper = styled.div`
   padding-left: 10px;
 `;
 
-const BodyWithInputs = ({ isEditing, body, answer, setAnswerValue }) => {
-  const array = body.split("$blank$");
+const BodyWithInputs = ({ isEditing, body: questionBody, answer, setAnswerValue }) => {
+  const array = getQuestionSplitFBlank(questionBody);
   let parsedAnswer = [];
   try {
     parsedAnswer = JSON.parse(answer);
   } catch (e) {}
-  return _.map(array, (val, index) => {
-    if (index === 0) return <TextWrapper key={index}>{val}</TextWrapper>;
+  return _.map(array, (ele, index) => {
+    if (index === array.length - 1) return <TextWrapper key={index}>{ele.text}</TextWrapper>;
     else
       return (
         <span key={index}>
+          <TextWrapper>{ele.text}</TextWrapper>
           <Input
             disabled={!isEditing}
             style={{
               background: isEditing ? "white" : "#ffffff",
               color: "black",
-              width: "100px",
+              width: ele.width,
               height: "30px",
             }}
-            value={parsedAnswer[index - 1]}
+            value={parsedAnswer[index]}
             onChange={(e) => {
-              parsedAnswer[index - 1] = e.target.value;
+              parsedAnswer[index] = e.target.value;
               setAnswerValue(JSON.stringify(parsedAnswer));
             }}
           />
-          <TextWrapper>{val}</TextWrapper>
         </span>
       );
   });

@@ -7,7 +7,7 @@ const { TextArea } = Input;
 
 const BroadAnswer = styled.pre`
   border: 1px solid #888888;
-  box-shadow: 0px 0px 3px 0px;
+  box-shadow: 0 1px 1px 0px;
   margin: 3px;
   padding: 10px;
   font-size: 14px;
