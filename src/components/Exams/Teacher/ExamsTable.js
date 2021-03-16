@@ -60,7 +60,7 @@ const ExamTable = ({
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
-      {(isNoData && !isLoading) && <NoDataComponent title="No Exams Created" />}
+      {(isNoData && !isLoading) && <NoDataComponent title="No Exams" />}
       { !isLoading && _.map(paginatedExams, (exam, index) => (
         <ExamCard
           key={`exams_${index}`}
