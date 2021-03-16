@@ -1,5 +1,7 @@
 const Exam = require('./exam.model');
 const _ = require('underscore');
+const { filter } = require('underscore');
+const mongoose = require('mongoose');
 
 // CREATE
 exports.createExam = (exam) =>
@@ -35,7 +37,19 @@ exports.getExams = (query, sort = { createdAt: -1 }) =>
     .populate("bannedParticipants")
     .populate("papers")
     .sort(sort);
-
+exports.getExamAggregate = async (id, filter) =>
+    Exam.aggregate([
+      {
+        $match: {
+          _id: mongoose.Types.ObjectId(id),
+        }
+      },
+      {
+        $project: {
+          ...filter
+        }
+      }
+    ])
 
 // UPDATE
 exports.updateExamByID = (_id, body) =>
