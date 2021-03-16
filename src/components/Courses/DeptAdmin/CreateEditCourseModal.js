@@ -5,6 +5,7 @@ import { Modal, Input, Select, DatePicker } from 'antd'
 import moment from 'moment'
 import _ from 'underscore'
 import { joiObjectParser } from '../../../utitlities/common.functions'
+import { allBatches } from '../../../utitlities/constants'
 import api from '../../../utitlities/api'
 
 const { Option } = Select
@@ -164,12 +165,7 @@ const CreateEditCourseModal = ({
             value={course.batchCode}
             onChange={(value) => setValue('batchCode', value)}
           >
-            <Option value="2019">2019 Batch</Option>
-            <Option value="2018">2018 Batch</Option>
-            <Option value="2017">2017 Batch</Option>
-            <Option value="2016">2016 Batch</Option>
-            <Option value="2015">2015 Batch</Option>
-            <Option value="others">Others</Option>
+            {_.map(allBatches, (label, key) => <Option value={key}>{label}</Option> )}
           </SelectStyled>
           <ErrorWrapper> {errors.batchCode} </ErrorWrapper>
         </ColumnWrapper>

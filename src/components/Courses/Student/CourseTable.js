@@ -7,8 +7,8 @@ import React, { useState, useEffect } from 'react'
 import api, { deleteCourse } from '../../../utitlities/api'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
-import { smartLabel } from '../../../utitlities/common.functions'
-import { TableRowChild, OperationWrapper, CenterNoData, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { NoDataComponent, smartLabel } from '../../../utitlities/common.functions'
+import { TableRowChild, OperationWrapper, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
 import { Row } from '../../styles/pageStyles'
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
@@ -65,11 +65,12 @@ const CourseCard = ({
   }
 
   return (
-    <Row columns="repeat(5, 1fr) 240px">
+    <Row columns="repeat(6, 1fr) 240px">
       <TableRowChild> { course.title } </TableRowChild>
       <TableRowChild> { course.courseCode } </TableRowChild>
       <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
       <TableRowChild> { course.department.departmentCode } </TableRowChild>
+      <TableRowChild> { course.batchCode || 'Others' } </TableRowChild>
       <TableRowChild> { smartLabel(course.status) } </TableRowChild>
       <TableRowChild>
         <OperationWrapper>
@@ -88,8 +89,6 @@ const CourseCard = ({
     </Row>
   )
 }
-
-const NoData = () => <CenterNoData>No Courses</CenterNoData>
 
 const CourseTable = ({
   user,
@@ -111,15 +110,16 @@ const CourseTable = ({
   const isNoData = courses.length === 0
   return (
     <div>
-      <Row columns="repeat(5, 1fr) 240px">
+      <Row columns="repeat(6, 1fr) 240px">
         <TableHeaderChild> Course Title </TableHeaderChild>
         <TableHeaderChild> Course Code </TableHeaderChild>
         <TableHeaderChild> Assigned Teacher </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
+        <TableHeaderChild> Batch </TableHeaderChild>
         <TableHeaderChild> Status </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </Row>
-      {(isNoData && !isLoading) && <NoData />}
+      {(isNoData && !isLoading) && <NoDataComponent title="No Courses Added" />}
       { !isLoading && _.map(paginatedCourses, (course, index) => (
         <CourseCard
           user={user}

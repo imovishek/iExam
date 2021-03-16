@@ -51,7 +51,6 @@ const MCQ = ({
 
   return (
     <Container>
-      <LabelWrapper>Question</LabelWrapper>
       <InputWrapper
         placeholder="Enter the question"
         value={question.body}

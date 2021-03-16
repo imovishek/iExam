@@ -28,10 +28,14 @@ import { useParams } from 'react-router'
 import { goBack, push } from 'connected-react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import { getObjectByAddingID } from '../../../utitlities/common.functions'
+import { getExamTimeDiffInFormat, getObjectByAddingID } from '../../../utitlities/common.functions'
 import Loading from '../../Common/Loading'
 import EditExamModal from './EditExamModal'
 import ImportQuestionsModal from './ImportQuestionModal'
+import { ExamTitleWrapper, TimeDiffWrapper } from '../styles'
+import NewAnnouncementModal from './NewAnnouncementModal'
+import ShowAnnouncementModal from './ShowAnnouncementModla'
+import ShowExamStatusTitle from '../Common/ShowExamStatusTitle'
 
 const { Option } = Select;
 
@@ -53,7 +57,9 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [showEditExam, setShowEditExam] = useState(false);
   const [showingStudentType, setShowingStudentType] = useState("participants");
   const [showImportQuestions, setShowImportQuestions] = useState(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const [showNewAnnouncementModal, setShowNewAnnouncementModal] = useState(false);
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+
   useEffect(async () => {
     try {
       let { payload = {} } = await api.getExamByID(id)
@@ -68,7 +74,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     } finally {
       setIsLoading(false)
     }
-  }, [id])
+  }, [id]);
 
   const updateExamParticipantOnUI = async () => {
     try {
@@ -86,6 +92,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     try {
       const newExam = { ...exam }
       delete newExam.papers
+      delete newExam.announcements;
       await api.updateExam(exam, getObjectByAddingID(newExam))
       await updateExamParticipantOnUI()
       message.success('Successfully Updated!')
@@ -186,10 +193,24 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
         exam={exam}
         updateExamOnUI={updateExamParticipantOnUI}
       />
+      <NewAnnouncementModal
+        user={user}
+        visible={showNewAnnouncementModal}
+        setVisibility={setShowNewAnnouncementModal}
+        exam={exam}
+        updateExamOnUI={updateExamParticipantOnUI}
+      />
+      <ShowAnnouncementModal
+        user={user}
+        visible={showAnnouncementModal}
+        setVisibility={setShowAnnouncementModal}
+        exam={exam}
+        updateExamOnUI={updateExamParticipantOnUI}
+      />
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 60px 1fr" gridGap="20px">
-          <TileHeaderWrapper columns="1fr 1fr">
+        <Container rows="90px 60px 1fr" gridGap="20px">
+          <TileHeaderWrapper columns="1fr 1fr 1fr">
             <div>
               {hasBack &&
                 <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
@@ -198,18 +219,25 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               }
               <PageHeader>Exam</PageHeader>
             </div>
+            <ShowExamStatusTitle exam={exam}/>
             <RightButtonWrapper>
               <ButtonStyled type="primary" onClick={() => setShowEditExam(true)}>
                 Edit Exam
               </ButtonStyled>
             </RightButtonWrapper>
           </TileHeaderWrapper>
-          <Row columns="1fr">
+          <Row columns="137px 216px 168px">
             <StyledDropdown overlay={gotoMenu} trigger={['click']}>
               <Button>
               Goto <DownOutlined />
               </Button>
             </StyledDropdown>
+
+            <Button onClick={() => setShowNewAnnouncementModal(true)}>
+              Create new announcement
+            </Button>
+          
+            <Button onClick={() => setShowAnnouncementModal(true)}> View Announcements</Button>
           </Row>
           <Row columns="3fr 2fr">
             <StyledBodyRow>

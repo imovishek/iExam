@@ -1,153 +1,202 @@
-import CheckAuthentication from '../../CheckAuthentication/CheckAuthentication'
-import NavBar from '../../NavBar/NavBar'
-import { connect } from 'react-redux'
-import _ from 'underscore'
-import { BodyWrapper, Container, Col } from '../../../utitlities/styles'
-import React, { useEffect, useState } from 'react'
-import api from '../../../utitlities/api'
-import styled from 'styled-components'
-import { Button, message, Switch } from 'antd'
-import { getExamStatus, meGotBanned } from '../../../utitlities/common.functions'
-import { useParams } from 'react-router'
-import { goBack } from 'connected-react-router'
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper } from '../../styles/pageStyles'
-import { announcements } from '../../../utitlities/dummy'
-import QuestionPaper from './components/QuestionPaper'
-import Questions from './components/Questions'
-import Announcements from './components/Announcements'
-import Loading from '../../Common/Loading'
-import { setUserAction } from '../../Login/actions'
-
+import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
+import NavBar from "../../NavBar/NavBar";
+import { connect } from "react-redux";
+import _ from "underscore";
+import {
+  BodyWrapper,
+  Container,
+  Col,
+  CenterText,
+} from "../../../utitlities/styles";
+import React, { useEffect, useState } from "react";
+import api from "../../../utitlities/api";
+import styled from "styled-components";
+import { Button, message, Switch } from "antd";
+import {
+  getExamStatus,
+  getExamTimeDiffInFormat,
+  meGotBanned,
+} from "../../../utitlities/common.functions";
+import { useParams } from "react-router";
+import { goBack, push } from "connected-react-router";
+import { faArrowLeft, faBullhorn } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  Row,
+  PageHeader,
+  TileHeaderWrapper,
+  RightButtonWrapper,
+} from "../../styles/pageStyles";
+import { announcements } from "../../../utitlities/dummy";
+import QuestionPaper from "./components/QuestionPaper";
+import Questions from "./components/Questions";
+import Announcements from "./components/Announcements";
+import Loading from "../../Common/Loading";
+import { setUserAction } from "../../Login/actions";
+import { MATCHING } from "../../../utitlities/constants";
+import { ExamTitleWrapper, TimeDiffWrapper } from "../styles";
+import ShowExamStatusTitle from "../Common/ShowExamStatusTitle";
 
 const ButtonStyled = styled(Button)`
   height: 30px;
-`
+`;
 
 const FontAwesomeIconWrapper = styled.div`
   width: 30px;
   display: inline-block;
   cursor: pointer;
-`
+`;
 
 const TileBodyWrapper = styled.div`
-  background: #f9f9f9;
-`
+  background: #ffffff;
+`;
 const RedText = styled.span`
   margin-left: 10px;
   color: red;
-`
+`;
 
 const virtualState = {};
 const ExamPage = ({ dispatch, user, hasBack = true }) => {
-  const { id } = useParams()
-  if (!id) dispatch(goBack())
-  const [isLoading, setIsLoading] = useState(true)
-  const [exam, setExam] = useState({})
-  const [showingPaper, setShowingPaper] = useState(false)
-  const [paper, setPaper] = useState({})
+  const { id } = useParams();
+  const showingPaper = window.location.pathname.match(/\/answer$/);
+  if (!id) dispatch(goBack());
+  const [isLoading, setIsLoading] = useState(true);
+  const [exam, setExam] = useState({});
+  const [paper, setPaper] = useState({});
   const [switchLoading, setSwitchLoading] = useState(false);
   const [savedText, setSavedText] = useState("");
 
+  const getAnswerFromOptions = ({ leftSide, rightSide }) => {
+    const arr = [];
+    const len = Math.max(leftSide.length, rightSide.length);
+    for (let i = 0; i < len; i++) {
+      const subarray = [];
+      if (leftSide[i] && leftSide[i].id) subarray.push(leftSide[i].id);
+      else subarray.push("");
+      if (rightSide[i] && rightSide[i].id) subarray.push(rightSide[i].id);
+      else subarray.push("");
+      arr.push(subarray);
+    }
+    return JSON.stringify(arr);
+  };
   const createPaperForMe = (exam, newPaper) => {
-    const answerObj = {}
-    _.map(newPaper.answers, answer => {
+    const answerObj = {};
+    _.map(newPaper.answers, (answer) => {
       answerObj[answer.questionID] = {
         answer: answer.answer,
-        marks: answer.marks
+        marks: answer.marks,
+      };
+    });
+    const getParsedAnswer = (a) => {
+      let b = [];
+      try {
+        b = JSON.parse(a);
+      } catch (e) {}
+      return b;
+    };
+    newPaper.answers = _.map(exam.questions, (question) => {
+      let answer = (answerObj[question._id] || {}).answer;
+      if (question.type === MATCHING) {
+        if (
+          question.type === MATCHING &&
+          (!answer || getParsedAnswer(answer).length === 0)
+        ) {
+          answer = getAnswerFromOptions(question.matchingOptions);
+        }
       }
-    })
-    newPaper.answers = _.map(exam.questions, question => ({
-      questionID: question._id,
-      answer: (answerObj[question._id] || {}).answer || '',
-      marks: (answerObj[question._id] || {}).marks || 0
-    })
-    )
-    return newPaper
-  }
+      return {
+        questionID: question._id,
+        answer: answer,
+        marks: (answerObj[question._id] || {}).marks || 0,
+      };
+    });
+    return newPaper;
+  };
   const updateExamOnUI = async () => {
-    const { payload = {} } = await api.getExamByIDWithPaper(id)
+    const { payload = {} } = await api.getExamByIDWithPaper(id);
     const { exam: updatedExam, paper: updatedPaper } = payload;
-    setExam(updatedExam)
+    setExam(updatedExam);
     const newPaper = createPaperForMe(updatedExam, updatedPaper);
     setPaper(newPaper);
     virtualState.paper = newPaper;
     virtualState.exam = updatedExam;
-  }
+  };
 
   const setPaperHandler = (newPaper) => {
     setPaper(newPaper);
     virtualState.paper = newPaper;
-  }
+  };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     try {
-      await updateExamOnUI()
+      await updateExamOnUI();
     } catch (err) {
-      console.log(err)
+      console.log(err);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }, [id])
+  }, [id]);
 
   const submitPaperHandler = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     const cleanPaper = {
-      ...paper
-    }
+      ...paper,
+    };
     try {
-      const { payload: nowExam } = await api.getExamByID(id)
-      if (getExamStatus(nowExam) === 'ended') {
-        message.error("Sorry exam ended you can't submit now")
+      const { payload: nowExam } = await api.getExamByID(id);
+      if (getExamStatus(nowExam) === "ended") {
+        message.error("Sorry exam ended you can't submit now");
         setSavedText("");
-        return await updateExamOnUI();
-      } else if(meGotBanned(nowExam, user)) {
+        await updateExamOnUI();
+      } else if (meGotBanned(nowExam, user)) {
         message.error("You got banned from this exam");
         setSavedText("");
-        return await updateExamOnUI();
+        await updateExamOnUI();
+      } else {
+        await api.updateExamPaperForStudent(id, cleanPaper);
+        await updateExamOnUI();
+        message.success("Submitted Successfully");
       }
-      await api.updateExamPaperForStudent(id, cleanPaper)
-      await updateExamOnUI()
-      message.success('Submitted Successfully')
     } catch (err) {
-      console.log(err)
+      console.log(err);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const submitSilentPaperHandler = async () => {
     const cleanPaper = {
-      ...virtualState.paper
+      ...virtualState.paper,
     };
     try {
-      const { payload: nowExam } = await api.getExamByID(id)
-      if (getExamStatus(nowExam) === 'ended') {
+      const { payload: nowExam } = await api.getExamByID(id);
+      if (getExamStatus(nowExam) === "ended") {
         message.info("Exam ended");
         setSavedText("");
         await updateExamOnUI();
         return;
-      } else if(meGotBanned(nowExam, user)) {
+      } else if (meGotBanned(nowExam, user)) {
         message.error("You got banned from this exam");
         setSavedText("");
         await updateExamOnUI();
         return;
       }
-      await api.updateExamPaperForStudent(id, cleanPaper)
-      setSavedText('Saved a few seconds ago');
+      await api.updateExamPaperForStudent(id, cleanPaper);
+      setSavedText("Saved a few seconds ago");
     } catch (err) {
-      console.log(err)
-      setSavedText('Error saving');
+      console.log(err);
+      setSavedText("Error saving");
     }
-  }
+  };
 
   const autoSubmitUpdateHandler = async (checked) => {
     setSwitchLoading(true);
-    const { payload: newUser } = await api.updateUserByID(user._id, { autoSubmitPaper: checked });
+    const { payload: newUser } = await api.updateUserByID(user._id, {
+      autoSubmitPaper: checked,
+    });
     dispatch(setUserAction(newUser));
     setSwitchLoading(false);
-  }
+  };
 
   useEffect(() => {
     if (user.autoSubmitPaper) {
@@ -155,63 +204,73 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       const interval = setInterval(async () => {
         if (
           virtualState.exam &&
-          (
-            getExamStatus(virtualState.exam) === 'ended' ||
-            meGotBanned(virtualState.exam, user)
-          )
+          (getExamStatus(virtualState.exam) === "ended" ||
+            meGotBanned(virtualState.exam, user))
         ) {
-          setSavedText('');
+          setSavedText("");
           return clearInterval(interval);
         }
-        setSavedText('Saving...');
+        setSavedText("Saving...");
         await submitSilentPaperHandler();
       }, 5000);
       return () => {
         // console.log('Killing prev one........');
         clearInterval(interval);
-      }
+      };
     }
-  }, [user.autoSubmitPaper])
-  const isDisabled = getExamStatus(exam) !== 'running' || meGotBanned(exam, user) || isLoading;
+  }, [user.autoSubmitPaper]);
+  const isDisabled =
+    getExamStatus(exam) !== "running" || meGotBanned(exam, user) || isLoading;
   return (
     <div>
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 1fr" gridGap="20px">
-          <TileHeaderWrapper columns="1fr 1fr">
+        <Container rows="90px 1fr" gridGap="20px">
+          <TileHeaderWrapper columns="1fr 1fr 1fr">
             <div>
-              {hasBack &&
-                <FontAwesomeIconWrapper
-                  onClick={() => {
-                    if (showingPaper) setShowingPaper(false)
-                    else dispatch(goBack())
-                  }}>
-                  <FontAwesomeIcon icon={faArrowLeft} size="lg"/>
+              {hasBack && (
+                <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
+                  <FontAwesomeIcon icon={faArrowLeft} size="lg" />
                 </FontAwesomeIconWrapper>
-              }
+              )}
               <PageHeader>Exam</PageHeader>
               {meGotBanned(exam, user) && <RedText>Banned</RedText>}
             </div>
-            {showingPaper &&
-              <RightButtonWrapper>
-                <Col rows="1fr 1fr" gridGap="3px" style={{width: "170px"}}>
-                  <div>
-                    <span style={{marginRight: '10px'}}>Auto submit: </span>
-                    <Switch loading={switchLoading} disabled={isDisabled} checked={user.autoSubmitPaper} onChange={autoSubmitUpdateHandler} style={{ marginRight: '10px' }}/>
-                  </div>
-                  {user.autoSubmitPaper && <div>{savedText}</div>}
-                </Col>
-                
-                <ButtonStyled disabled={isDisabled} type="primary" onClick={() => submitPaperHandler()}>
-                  Submit
-                </ButtonStyled>
-              </RightButtonWrapper>
-            }
+            <ShowExamStatusTitle exam={exam}/>
+            
+            
+            <div>
+              {showingPaper && (
+                <RightButtonWrapper>
+                  <Col rows="1fr 1fr" gridGap="3px" style={{ width: "170px" }}>
+                    <div>
+                      <span style={{ marginRight: "10px" }}>Auto submit: </span>
+                      <Switch
+                        loading={switchLoading}
+                        disabled={isDisabled}
+                        checked={user.autoSubmitPaper}
+                        onChange={autoSubmitUpdateHandler}
+                        style={{ marginRight: "10px" }}
+                      />
+                    </div>
+                    {user.autoSubmitPaper && <div>{savedText}</div>}
+                  </Col>
+
+                  <ButtonStyled
+                    disabled={isDisabled}
+                    type="primary"
+                    onClick={() => submitPaperHandler()}
+                  >
+                    Submit
+                  </ButtonStyled>
+                </RightButtonWrapper>
+              )}
+            </div>
           </TileHeaderWrapper>
           <TileBodyWrapper>
             {showingPaper && (
-              <div style={{ height: 'calc(100vh - 120px)' }}>
+              <div style={{ height: "calc(100vh - 170px)" }}>
                 <QuestionPaper
                   disabled={isDisabled}
                   exam={exam}
@@ -223,24 +282,30 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
             )}
             {!showingPaper && (
               <Row columns=".7fr .3fr">
-                <Questions exam={exam} onShowingPaper={() => setShowingPaper(true)} questions={exam.questions}/>
-                <Announcements announcements={announcements} />
+                <Questions
+                  paper={paper}
+                  exam={exam}
+                  onShowingPaper={() =>
+                    dispatch(push(`/exam/${exam._id}/answer`))
+                  }
+                  questions={exam.questions}
+                />
+                <Announcements exam={exam} />
               </Row>
             )}
           </TileBodyWrapper>
-
         </Container>
       </BodyWrapper>
-      { isLoading && <Loading isLoading={isLoading} /> }
+      {isLoading && <Loading isLoading={isLoading} />}
     </div>
-  )
-}
-const mapStateToProps = state => ({
-  user: state.login.user
-})
+  );
+};
+const mapStateToProps = (state) => ({
+  user: state.login.user,
+});
 
-const mapDispatchToProps = dispatch => ({
-  dispatch
-})
+const mapDispatchToProps = (dispatch) => ({
+  dispatch,
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExamPage)
+export default connect(mapStateToProps, mapDispatchToProps)(ExamPage);

@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 import api from '../../../utitlities/api'
 import styled from 'styled-components'
 import moment from 'moment'
-import { Button, Input, Select, DatePicker } from 'antd'
+import { Button, Input, Select, DatePicker, message } from 'antd'
 import EnrolledStudents from './components/EnrolledStudents'
 import Exams from './components/Exams'
 import EnrollmentRequest from './components/EnrollmentRequest'
@@ -19,6 +19,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper, BodyRow } from '../../styles/pageStyles'
 import ImportStudentsModal from './ImportStudentsModal'
+import { allBatches } from '../../../utitlities/constants'
 const { Option } = Select
 
 const InputWrapper = styled(Input)`
@@ -88,6 +89,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
     setLoading(true)
     const newCourse = getObjectByAddingID(course)
     await api.updateCourse(newCourse)
+    message.success('Course updated!')
     const { payload = {} } = await api.getCourseByID(id)
     setLoading(false)
     setCourse(payload)
@@ -135,7 +137,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
               </RightButtonWrapper>
             </Row>
           </TileHeaderWrapper>
-          <Row columns="1fr 1fr">
+          <Row columns="1fr 1fr 1fr">
             <HeaderRow>
               <LabelWrapper>Title</LabelWrapper>
               <InputWrapper
@@ -150,6 +152,17 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
                 disabled={true}
                 value={course.department && course.department.departmentName}
               />
+            </HeaderRow>
+
+            <HeaderRow>
+              <LabelWrapper>Batch</LabelWrapper>
+              <SelectStyled
+                placeholder="Please select a batch"
+                value={course.batchCode}
+                onChange={(value) => setValue('batchCode', value)}
+              >
+                {_.map(allBatches, (label, key) => <Option value={key}>{label}</Option> )}
+              </SelectStyled>
             </HeaderRow>
 
           </Row>

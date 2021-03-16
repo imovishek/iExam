@@ -6,13 +6,14 @@ import Pagination from '../../Common/Pagination';
 import React, { useState, useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
-import { smartLabel } from '../../../utitlities/common.functions';
-import { TableRow, TableRowChild, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles';
+import { NoDataComponent, smartLabel } from '../../../utitlities/common.functions';
+import { TableRow, TableRowChild, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles';
 
 const TableRowStyled = styled(TableRow)`
   cursor: pointer;
   :hover {
-    background: #e4e4e4;
+    background: #96c1c1;
+    color: black;
   }
 `
 
@@ -24,11 +25,10 @@ const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, de
     <TableRowChild> { course.courseCode } </TableRowChild>
     <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
     <TableRowChild> { course.department.departmentCode } </TableRowChild>
+    <TableRowChild> { course.batchCode || 'Others' } </TableRowChild>
     <TableRowChild> { smartLabel(course.status) } </TableRowChild>
   </TableRowStyled>
 )
-
-const NoData = () => <CenterNoData>No Data</CenterNoData>
 
 const CourseTable = ({
   courses = [],
@@ -55,9 +55,10 @@ const CourseTable = ({
         <TableHeaderChild> Course Code </TableHeaderChild>
         <TableHeaderChild> Assigned Teacher </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
+        <TableHeaderChild> Batch </TableHeaderChild>
         <TableHeaderChild> Status </TableHeaderChild>
       </TableHeader>
-      {(isNoData && !isLoading) && <NoData />}
+      {(isNoData && !isLoading) && <NoDataComponent title="No Courses Added" />}
       { !isLoading && _.map(paginatedCourses, (course, index) => (
         <CourseCard
           key={`courses_${index}`}

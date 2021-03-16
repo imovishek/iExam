@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import _ from 'underscore'
-import { stFormatDate, splitDuration, splitStartTime, getExamStatus, smartLabel } from '../../../../utitlities/common.functions'
+import { stFormatDate, splitDuration, splitStartTime, getExamStatus, smartLabel, NoDataComponent } from '../../../../utitlities/common.functions'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
 
@@ -54,21 +54,25 @@ const Card = ({ exam, dispatch }) => (
 
 const Exams = ({
   exams, dispatch
-}) => (
-  <Container>
-    <Row header columns="repeat(5, 1fr)">
-      <HeaderLabel>Title</HeaderLabel>
-      <HeaderLabel>Date</HeaderLabel>
-      <HeaderLabel>Start Time</HeaderLabel>
-      <HeaderLabel>Duration</HeaderLabel>
-      <HeaderLabel>Status</HeaderLabel>
-    </Row>
-    <Body>
-      {_.map(exams, (exam, index) => <Card dispatch={dispatch} key={`exam_${index}`} exam={exam} />)}
-    </Body>
-    
-  </Container>
-)
+}) => {
+  const isNoData = !exams || exams.length === 0
+  return (
+    <Container>
+      <Row header columns="repeat(5, 1fr)">
+        <HeaderLabel>Title</HeaderLabel>
+        <HeaderLabel>Date</HeaderLabel>
+        <HeaderLabel>Start Time</HeaderLabel>
+        <HeaderLabel>Duration</HeaderLabel>
+        <HeaderLabel>Status</HeaderLabel>
+      </Row>
+      <Body>
+        { isNoData && <NoDataComponent title="No exams created for this course" />}
+        { !isNoData && _.map(exams, (exam, index) => <Card dispatch={dispatch} key={`exam_${index}`} exam={exam} />)}
+      </Body>
+      
+    </Container>
+  );
+}
 
 const mapDispatchToProps = (dispatch) => ({ dispatch })
 export default connect(null, mapDispatchToProps)(Exams)

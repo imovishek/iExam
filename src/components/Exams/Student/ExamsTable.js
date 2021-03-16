@@ -6,8 +6,8 @@ import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
-import { getExamStatus } from '../../../utitlities/common.functions'
-import { TableRow, TableRowChild, OperationWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { getExamStatus, NoDataComponent } from '../../../utitlities/common.functions'
+import { TableRow, TableRowChild, OperationWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
 
 const TableBodyWrapper = styled.div`
   overflow: auto;
@@ -44,7 +44,6 @@ const ExamCard = ({ dispatch, exam }) => {
   )
 }
 
-const NoData = () => <CenterNoData>No Exams :)</CenterNoData>
 
 const ExamTable = ({
   exams = [],
@@ -74,7 +73,7 @@ const ExamTable = ({
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
-      {(isNoData && !isLoading) && <NoData />}
+      {(isNoData && !isLoading) && <NoDataComponent title="No Exams" />}
       <TableBodyWrapper>
         { !isLoading && _.map(paginatedExams, (exam, index) => (
           <ExamCard

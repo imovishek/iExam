@@ -5,8 +5,8 @@ import Pagination from '../../Common/Pagination';
 import React, { useState, useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
-import { smartLabel } from '../../../utitlities/common.functions';
-import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, CenterNoData, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { NoDataComponent, smartLabel } from '../../../utitlities/common.functions';
+import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
@@ -15,6 +15,7 @@ const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, de
     <TableRowChild> { course.title } </TableRowChild>
     <TableRowChild> { course.courseCode } </TableRowChild>
     <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
+    <TableRowChild> { course.batchCode || "Other" } </TableRowChild>
     <TableRowChild> { course.department.departmentCode } </TableRowChild>
     <TableRowChild> { smartLabel(course.status) } </TableRowChild>
     <TableRowChild>
@@ -51,7 +52,6 @@ const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, de
   </TableRow>
 )
 
-const NoData = () => <CenterNoData>No Data</CenterNoData>
 
 const CourseTable = ({
   courses = [],
@@ -77,11 +77,12 @@ const CourseTable = ({
         <TableHeaderChild> Course Title </TableHeaderChild>
         <TableHeaderChild> Course Code </TableHeaderChild>
         <TableHeaderChild> Assigned Teacher </TableHeaderChild>
+        <TableHeaderChild> Batch </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild> Status </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
-      {(isNoData && !isLoading) && <NoData />}
+      {(isNoData && !isLoading) && <NoDataComponent title="No Courses Added" />}
       { !isLoading && _.map(paginatedCourses, (course, index) => (
         <CourseCard
           key={`courses_${index}`}

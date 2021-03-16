@@ -1,31 +1,38 @@
-import CheckAuthentication from '../../CheckAuthentication/CheckAuthentication'
-import NavBar from '../../NavBar/NavBar'
-import { connect } from 'react-redux'
-import { BodyWrapper, Container } from '../../../utitlities/styles'
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { Button, Input, Select, message } from 'antd'
-import _ from 'underscore'
-import QuestionBody from './components/QuestionBody'
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, HeaderRow, LabelWrapper } from '../../styles/pageStyles'
-import { push, goBack } from 'connected-react-router'
-import { deepCopy } from '../../../utitlities/common.functions'
-import api from '../../../utitlities/api'
-import { useParams } from 'react-router'
-import MCQ from './components/MCQ'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import Loading from '../../Common/Loading'
-import CodeEditor from './components/CodeEditor'
+import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
+import NavBar from "../../NavBar/NavBar";
+import { connect } from "react-redux";
+import { BodyWrapper, Container } from "../../../utitlities/styles";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { Button, Input, Select, message } from "antd";
+import _ from "underscore";
+import QuestionBody from "./QuestionBody";
+import {
+  Row,
+  PageHeader,
+  TileHeaderWrapper,
+  RightButtonWrapper,
+  HeaderRow,
+  LabelWrapper,
+} from "../../styles/pageStyles";
+import { push, goBack } from "connected-react-router";
+import { deepCopy } from "../../../utitlities/common.functions";
+import api from "../../../utitlities/api";
+import { useParams } from "react-router";
+import MCQ from "./components/MCQ";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import Loading from "../../Common/Loading";
+import CodeEditor from "./components/CodeEditor";
+import { questionTypes } from "../constants";
 
-const { Option } = Select
+const { Option } = Select;
 const QuestionBodyRow = styled.div`
   padding: 10px;
-  height: 500px;
   margin-bottom: 20px;
   margin-top: 30px;
   border: 1px solid rgba(10, 10, 10, 0.3);
-`
+`;
 
 const MCQRow = styled.div`
   padding: 10px;
@@ -34,147 +41,170 @@ const MCQRow = styled.div`
   margin-bottom: 20px;
   margin-top: 30px;
   border: 1px solid rgba(10, 10, 10, 0.3);
-`
+`;
 
 const InputWrapper = styled(Input)`
   && {
     width: 100%;
   }
-`
+`;
 
 const ButtonStyled = styled(Button)`
   height: 30px;
   margin-right: 10px;
-`
+`;
 
-const getName = obj => `${obj.firstName} ${obj.lastName}`
+const getName = (obj) => `${obj.firstName} ${obj.lastName}`;
 const FontAwesomeIconWrapper = styled.div`
   width: 30px;
   display: inline-block;
   cursor: pointer;
-`
+`;
 
 const QuestionPage = ({ user, dispatch, hasBack = true }) => {
-  const { examID, questionID } = useParams()
-  if (!questionID) dispatch(goBack())
+  const { examID, questionID } = useParams();
+  if (!questionID) dispatch(goBack());
   const defaultQuestion = {
-    title: '',
+    title: "",
     authorID: user._id,
-    type: 'mcq',
+    type: "mcq",
     marks: 10,
-    department: user.department
-  }
-  const [question, setQuestion] = useState(deepCopy(defaultQuestion))
-  const [errors, setErrors] = useState({})
-  const [isLoading, setLoading] = useState(false)
-  const [teachersObj, setTeachersObj] = useState({})
+    department: user.department,
+  };
+  const [question, setQuestion] = useState(deepCopy(defaultQuestion));
+  const [errors, setErrors] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const [teachersObj, setTeachersObj] = useState({});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
-    const { payload: teachers } = await api.getTeachers({})
-    const obj = {}
-    _.map(teachers, teacher => { obj[teacher._id] = getName(teacher) })
-    setTeachersObj(obj)
-  }, [question.authorID])
+    const { payload: teachers } = await api.getTeachers({});
+    const obj = {};
+    _.map(teachers, (teacher) => {
+      obj[teacher._id] = getName(teacher);
+    });
+    setTeachersObj(obj);
+  }, [question.authorID]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
-    if (questionID !== 'new') {
+    if (questionID !== "new") {
       try {
-        const { payload: newQuestion } = await api.getQuestionByID(questionID)
-        setQuestion({
-          _id: newQuestion._id,
-          title: newQuestion.title,
-          authorID: newQuestion.authorID,
-          type: newQuestion.type,
-          marks: newQuestion.marks,
-          department: newQuestion.department,
-          options: newQuestion.options,
-          answer: newQuestion.answer,
-          body: newQuestion.body,
-          defaultCode: newQuestion.defaultCode,
-        })
+        const { payload: newQuestion } = await api.getQuestionByID(questionID);
+        setQuestion({ ...newQuestion });
       } catch (err) {
-        console.log(err)
-        message.error('Cannot find the question')
-        dispatch(push('/'))
+        console.log(err);
+        message.error("Cannot find the question");
+        dispatch(push("/"));
       }
     } else {
       setQuestion({
         department: user.department,
-        type: 'mcq',
+        type: "mcq",
         authorID: user._id,
         marks: 0,
-      })
+      });
     }
-  }, [questionID])
+  }, [questionID]);
 
   const setValue = (key, value) => {
     const newQuestion = {
       ...question,
-      [key]: value
-    }
+      [key]: value,
+    };
     const newErrors = {
-      ...errors
-    }
-    delete newErrors[key]
-    setQuestion(newQuestion)
-    setErrors(newErrors)
-  }
+      ...errors,
+    };
+    delete newErrors[key];
+    setQuestion(newQuestion);
+    setErrors(newErrors);
+  };
 
   const saveQuestionHandler = async () => {
-    setLoading(true)
-    const isCreate = questionID === 'new'
+    setLoading(true);
+    const isCreate = questionID === "new";
     try {
-      if (questionID === 'new') {
+      if (questionID === "new") {
         const { payload: newQuestion } = await api.createQuestion(question);
-        setQuestion(newQuestion)
+        setQuestion(newQuestion);
         if (examID) {
-          await api.updateExam({ _id: examID }, { $push: { questions: newQuestion._id } })
+          await api.updateExam(
+            { _id: examID },
+            { $push: { questions: newQuestion._id } }
+          );
           const { payload: exam } = await api.getExamByID(examID);
-          const totalMarks = _.reduce(exam.questions, (sum, q) => (sum + q.marks), 0);
+          const totalMarks = _.reduce(
+            exam.questions,
+            (sum, q) => sum + q.marks,
+            0
+          );
           await api.updateExam({ _id: examID }, { totalMarks });
         }
-        await api.updateUserByID(user._id, { $push: { questionIDs: newQuestion._id } })
-        message.success('Question Creation Successful!')
-        dispatch(push(`${examID ? `/exam/${examID}` : ''}/question/${newQuestion._id}`))
+        await api.updateUserByID(user._id, {
+          $push: { questionIDs: newQuestion._id },
+        });
+        message.success("Question Creation Successful!");
+        dispatch(
+          push(`${examID ? `/exam/${examID}` : ""}/question/${newQuestion._id}`)
+        );
       } else {
         await api.updateQuestion(question, question);
         if (examID) {
           const { payload: exam } = await api.getExamByID(examID);
-          const totalMarks = _.reduce(exam.questions, (sum, q) => (sum + q.marks), 0);
+          const totalMarks = _.reduce(
+            exam.questions,
+            (sum, q) => sum + q.marks,
+            0
+          );
           await api.updateExam({ _id: examID }, { totalMarks });
         }
-        message.success('Question Updated!')
+        message.success("Question Updated!");
       }
     } catch (err) {
-      message.error(`Failed to ${isCreate ? 'create' : 'udpate'} this question please try again later!`)
-      console.log(err)
+      message.error(
+        `Failed to ${
+          isCreate ? "create" : "udpate"
+        } this question please try again later!`
+      );
+      console.log(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div>
       <CheckAuthentication />
-      {isLoading && <Loading isLoading={isLoading}/>}
+      {isLoading && <Loading isLoading={isLoading} />}
       <BodyWrapper>
         <NavBar />
         <Container rows="55px 70px 1fr">
           <TileHeaderWrapper columns="1fr 1fr">
             <div>
-              {hasBack &&
+              {hasBack && (
                 <FontAwesomeIconWrapper onClick={() => dispatch(goBack())}>
-                  <FontAwesomeIcon icon={faArrowLeft} size="lg"/>
+                  <FontAwesomeIcon icon={faArrowLeft} size="lg" />
                 </FontAwesomeIconWrapper>
-              }
+              )}
               <PageHeader>Question</PageHeader>
             </div>
             <RightButtonWrapper>
-              <ButtonStyled type="primary" onClick={() => saveQuestionHandler()} disabled={isLoading}>
+              <ButtonStyled
+                type="primary"
+                onClick={() => saveQuestionHandler()}
+                disabled={isLoading}
+              >
                 Save
               </ButtonStyled>
-              <ButtonStyled type="primary" onClick={() => dispatch(push(examID ? `/exam/${examID}/question/new` : '/question/new'))}>
+              <ButtonStyled
+                type="primary"
+                onClick={() =>
+                  dispatch(
+                    push(
+                      examID ? `/exam/${examID}/question/new` : "/question/new"
+                    )
+                  )
+                }
+              >
                 Create Another
               </ButtonStyled>
             </RightButtonWrapper>
@@ -185,21 +215,21 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               <InputWrapper
                 placeholder="Enter a title"
                 value={question.title}
-                onChange={(e) => setValue('title', e.target.value)}
+                onChange={(e) => setValue("title", e.target.value)}
               />
             </HeaderRow>
 
             <HeaderRow>
               <LabelWrapper>Question Type</LabelWrapper>
               <Select
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
                 placeholder="Select a status"
                 value={question.type}
-                onChange={(value) => setValue('type', value)}
+                onChange={(value) => setValue("type", value)}
               >
-                <Option value="mcq">MCQ</Option>
-                <Option value="broad">Broad</Option>
-                <Option value="codingQuestion">Coding Question</Option>
+                {_.map(questionTypes, (val, key) => (
+                  <Option value={key}>{val}</Option>
+                ))}
               </Select>
             </HeaderRow>
 
@@ -207,7 +237,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               <LabelWrapper>Author</LabelWrapper>
               <InputWrapper
                 disabled={true}
-                value={ teachersObj[question.authorID] || 'Anonymous'}
+                value={teachersObj[question.authorID] || "Anonymous"}
               />
             </HeaderRow>
 
@@ -215,35 +245,15 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               <LabelWrapper>Marks</LabelWrapper>
               <InputWrapper
                 value={question.marks}
-                onChange={(e) => setValue('marks', e.target.value)}
+                onChange={(e) => setValue("marks", e.target.value)}
               />
             </HeaderRow>
-
           </Row>
           <Row columns="1fr">
-            {question.type === 'broad' &&
-              <QuestionBodyRow>
-                <LabelWrapper>Body</LabelWrapper>
-                <QuestionBody question={question} setQuestionValue={setValue} />
-              </QuestionBodyRow>
-            }
-            {question.type === 'mcq' &&
-              <MCQRow>
-                <MCQ question={question} setQuestionValue={setValue} />
-              </MCQRow>
-            }
-            {question.type === 'codingQuestion' &&
-              <>
-                <QuestionBodyRow>
-                  <LabelWrapper>Body</LabelWrapper>
-                  <QuestionBody question={question} setQuestionValue={setValue} />
-                </QuestionBodyRow>
-                <LabelWrapper> Default Code: </LabelWrapper>
-                <QuestionBodyRow>
-                  <CodeEditor question={question} setQuestionValue={setValue} />
-                </QuestionBodyRow>
-              </>
-            }
+            <QuestionBodyRow>
+              <LabelWrapper>Question</LabelWrapper>
+              <QuestionBody question={question} setQuestionValue={setValue} />
+            </QuestionBodyRow>
           </Row>
           <Row columns="1fr 1fr">
             {/* <BodyRow>
@@ -272,14 +282,14 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
         </Container>
       </BodyWrapper>
     </div>
-  )
-}
-const mapStateToProps = state => ({
-  user: state.login.user
-})
+  );
+};
+const mapStateToProps = (state) => ({
+  user: state.login.user,
+});
 
-const mapDispatchToProps = dispatch => ({
-  dispatch
-})
+const mapDispatchToProps = (dispatch) => ({
+  dispatch,
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(QuestionPage)
+export default connect(mapStateToProps, mapDispatchToProps)(QuestionPage);
