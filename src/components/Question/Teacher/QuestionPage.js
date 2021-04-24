@@ -70,6 +70,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
     type: "mcq",
     marks: 10,
     department: user.department,
+    body: "",
   };
   const [question, setQuestion] = useState(deepCopy(defaultQuestion));
   const [errors, setErrors] = useState({});
@@ -98,10 +99,12 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
       }
     } else {
       setQuestion({
-        department: user.department,
-        type: "mcq",
+        title: "",
         authorID: user._id,
-        marks: 0,
+        type: "mcq",
+        marks: 10,
+        department: user.department,
+        body: "",
       });
     }
   }, [questionID]);
