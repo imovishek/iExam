@@ -19,8 +19,10 @@ const ShowExamStatusTitle = ({ exam }) => {
       };
     }
   }, [exam]);
+  let examTitle = exam.title || '';
+  if (examTitle.length > 25) examTitle = `${examTitle.slice(0, 22)  }...`;
   return <Col rows="1fr 1fr" gridGap="3px">
-    <ExamTitleWrapper>{exam.title}</ExamTitleWrapper>
+    <ExamTitleWrapper>{examTitle}</ExamTitleWrapper>
     <div style={{ display: "flex", justifyContent: "center" }}>
       <Row columns="1fr 1fr" gridGap="3px">
         <CenterText>{timeDifference.status}</CenterText>
