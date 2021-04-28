@@ -71,6 +71,13 @@ const HeaderRow = styled.div`
   user-select: none;
 `;
 
+const CenterTextWrapper = styled.h1`
+  color: grey;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const Card = ({ question, isAnswered, dispatch, examID }) => (
   <Row columns="repeat(2, 1fr) 100px 40px" onClick={() => dispatch(push(`/exam/${examID}/answer?top=${question._id}`))}>
     <Wrapper>{question.title}</Wrapper>
@@ -83,6 +90,15 @@ const Card = ({ question, isAnswered, dispatch, examID }) => (
 const Questions = ({ exam, questions = [], onShowingPaper, paper, dispatch }) => {
   const answersObj = {};
   (paper.answers || []).map(answer => (answersObj[answer.questionID] = answer.answer));
+  const status = getExamStatus(exam);
+  const shouldRevealQuestions = (status || '').toLowerCase() === 'ended' || (status || '').toLowerCase() === 'running'
+  if (!shouldRevealQuestions) {
+    return(
+      <Container rows="70px 70px 1fr 15px">
+        <CenterTextWrapper>Exam will start soon</CenterTextWrapper>
+      </Container>
+    );
+  }
   return (
     <Container rows="70px 70px 1fr 15px">
       <TileHeaderWrapper columns="1fr 1fr" gridGap="20px">

@@ -5,8 +5,9 @@ import { Spin, Button } from 'antd'
 import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { push } from 'connected-react-router'
+import moment from 'moment';
 import { connect } from 'react-redux'
-import { getExamStatus, NoDataComponent } from '../../../utitlities/common.functions'
+import { NoDataComponent } from '../../../utitlities/common.functions'
 import { TableRow, TableRowChild, OperationWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
 
 const TableBodyWrapper = styled.div`
@@ -16,15 +17,15 @@ const TableBodyWrapper = styled.div`
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
 const ExamCard = ({ dispatch, exam }) => {
-  const status = getExamStatus(exam)
-  const shouldEnter = (status || '').toLowerCase() === 'ended' || (status || '').toLowerCase() === 'running'
+  const shouldEnter = true;
+  const formatDateAndTime = (date, time) => `${moment(date).format('DD/MM/YYYY')} ${time}`;
   return (
     <TableRow>
       <TableRowChild> { exam.title } </TableRowChild>
       <TableRowChild> { exam.course.title } </TableRowChild>
       <TableRowChild> { exam.course.courseCode } </TableRowChild>
       <TableRowChild> { exam.course.assignedTeacher ? getName(exam.course.assignedTeacher) : 'Unassigned'} </TableRowChild>
-      <TableRowChild> { exam.department.departmentCode } </TableRowChild>
+      <TableRowChild> { formatDateAndTime(exam.startDate, exam.startTime) } </TableRowChild>
       <TableRowChild>
         <OperationWrapper>
           { shouldEnter &&
@@ -70,7 +71,7 @@ const ExamTable = ({
         <TableHeaderChild> Course </TableHeaderChild>
         <TableHeaderChild> Course Code </TableHeaderChild>
         <TableHeaderChild> Course Teacher </TableHeaderChild>
-        <TableHeaderChild> Department </TableHeaderChild>
+        <TableHeaderChild> Start Time </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
       {(isNoData && !isLoading) && <NoDataComponent title="No Exams" />}

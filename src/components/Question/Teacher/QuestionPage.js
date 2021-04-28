@@ -71,6 +71,10 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
     marks: 10,
     department: user.department,
     body: "",
+    matchingOptions: {
+      leftSide: [],
+      rightSide: [],
+    }
   };
   const [question, setQuestion] = useState(deepCopy(defaultQuestion));
   const [errors, setErrors] = useState({});
@@ -98,14 +102,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
         dispatch(push("/"));
       }
     } else {
-      setQuestion({
-        title: "",
-        authorID: user._id,
-        type: "mcq",
-        marks: 10,
-        department: user.department,
-        body: "",
-      });
+      setQuestion({...defaultQuestion});
     }
   }, [questionID]);
 

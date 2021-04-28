@@ -257,7 +257,7 @@ export const getQuestionSplitFBlank = (questionBody) => {
         cnt++;
         i++;
       }
-      const width = `${Math.max(10 * cnt, 35)}px`;
+      const width = `${Math.max(20 * cnt, 35)}px`;
       array.push({
         text: str,
         width,

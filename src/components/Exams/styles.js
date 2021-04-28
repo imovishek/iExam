@@ -30,4 +30,7 @@ export const ExamTitleWrapper = styled(CenterText)`
   -webkit-text-stroke: 1px #000000;
   letter-spacing: 2px;
   align-items: flex-start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
