@@ -3,9 +3,7 @@ import styled from "styled-components";
 import _ from "underscore";
 import { getQuestionSplitFBlank } from "../../../utitlities/common.functions";
 import { Col } from "../../../utitlities/styles";
-import { LabelWrapper } from "../../styles/pageStyles";
-import { AddPadding } from "../Student/components/BroadBody";
-const { TextArea } = Input;
+
 const TextWrapper = styled.span`
   font-size: 15px;
 `;

@@ -1,26 +1,24 @@
 import styled from "styled-components";
 import _ from "underscore";
 import {
-  getExamTimeStatus,
   getExamStatus,
 } from "../../../../utitlities/common.functions";
 import {
+  PageHeader,
   RightButtonWrapper,
   TileHeaderWrapper,
 } from "../../../styles/pageStyles";
 import { AwesomeIcon, ButtonStyled } from "../../../../utitlities/styles";
 import { isAnswered } from "../../../../utitlities/constants";
-import { useEffect, useState } from "react";
-import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
+import { TableRowStyled } from "../../../styles/tableStyles";
 
 const Container = styled.div`
   border-radius: 8px;
-  padding: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  height: calc(100vh - 200px);
+  padding: 20px;
+  box-shadow: 3px 3px 15px #bbbbbb;
+  height: calc(100vh - 160px);
   min-height: 260px;
   min-width: 500px;
 `;
@@ -33,8 +31,7 @@ const Body = styled.div`
   }
 `;
 
-const HeaderLabel = styled.div`
-  color: grey;
+const HeaderLabel = styled.h2`
   padding: 10px;
 `;
 
@@ -42,7 +39,6 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   height: 40px;
-  font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
   padding: 10px;
@@ -50,22 +46,9 @@ const Wrapper = styled.div`
   height: 50px;
 `;
 
-const Row = styled.div`
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: ${(props) => props.columns || "auto"};
-  user-select: none;
-  border-radius: 6px;
-  cursor: pointer;
-  :hover {
-    background: #96c1c1;
-    color: black;
-  }
-`;
-
 const HeaderRow = styled.div`
   display: grid;
-  grid-gap: 10px;
+  grid-gap: 20px;
   grid-template-columns: ${(props) => props.columns || "auto"};
   border-radius: 8px;
   user-select: none;
@@ -79,12 +62,12 @@ const CenterTextWrapper = styled.h1`
 `;
 
 const Card = ({ question, isAnswered, dispatch, examID }) => (
-  <Row columns="repeat(2, 1fr) 100px 40px" onClick={() => dispatch(push(`/exam/${examID}/answer?top=${question._id}`))}>
+  <TableRowStyled columns="repeat(2, 1fr) 100px 40px" onClick={() => dispatch(push(`/exam/${examID}/answer?top=${question._id}`))}>
     <Wrapper>{question.title}</Wrapper>
     <Wrapper>{question.type}</Wrapper>
     <Wrapper>{question.marks}</Wrapper>
     {isAnswered && <AwesomeIcon />}
-  </Row>
+  </TableRowStyled>
 );
 
 const Questions = ({ exam, questions = [], onShowingPaper, paper, dispatch }) => {
@@ -102,7 +85,7 @@ const Questions = ({ exam, questions = [], onShowingPaper, paper, dispatch }) =>
   return (
     <Container rows="70px 70px 1fr 15px">
       <TileHeaderWrapper columns="1fr 1fr" gridGap="20px">
-        <div>Total {questions.length} questions</div>
+        <PageHeader>Total {questions.length} questions</PageHeader>
 
         <RightButtonWrapper>
           {getExamStatus(exam) !== "upcoming" && (

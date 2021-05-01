@@ -4,15 +4,8 @@ import { connect } from 'react-redux';
 import { BodyWrapper, Container } from '../../../utitlities/styles';
 import React, { useEffect, useState } from 'react';
 import api from '../../../utitlities/api';
-import styled from 'styled-components';
 import CourseTable from './CourseTable';
-
-const PageHeader = styled.div`
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
-  user-select: none;
-`
+import { PageHeader } from '../../styles/pageStyles';
 
 const Courses = ({ user, dispatch }) => {
   const [isCoursesChanged, setCourseChanged] = useState(true)

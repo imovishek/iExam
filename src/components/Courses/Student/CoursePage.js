@@ -9,10 +9,8 @@ import { useParams } from 'react-router';
 import { goBack } from 'connected-react-router';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Row, PageHeader, TileHeaderWrapper, LabelWrapper } from '../../styles/pageStyles';
+import { Row, PageHeader, TileHeaderWrapper, SecondHeader } from '../../styles/pageStyles';
 import Exams from './components/Exams';
-import { announcements } from '../../../utitlities/dummy';
-import Announcements from './components/Announcements';
 
 
 const FontAwesomeIconWrapper = styled.div`
@@ -40,7 +38,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 1fr" gridGap="20px">
+        <Container rows="80px 1fr" gridGap="20px">
           {/* <Header>{departmentName}</Header> */}
           <TileHeaderWrapper columns="1fr">
             <div>
@@ -54,7 +52,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
           </TileHeaderWrapper>
           <Row columns="1fr">
             <div>
-              <LabelWrapper>Exams</LabelWrapper>
+              <SecondHeader>Exams</SecondHeader>
               <Exams exams={course.exams}/>
             </div>
           </Row>

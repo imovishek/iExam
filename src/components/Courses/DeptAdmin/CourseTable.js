@@ -6,12 +6,12 @@ import React, { useState, useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 import { NoDataComponent, smartLabel } from '../../../utitlities/common.functions';
-import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { TableWrapper, TableRowFlex, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
 const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, deleteCourse }) => (
-  <TableRow>
+  <TableRowFlex>
     <TableRowChild> { course.title } </TableRowChild>
     <TableRowChild> { course.courseCode } </TableRowChild>
     <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
@@ -49,7 +49,7 @@ const CourseCard = ({ dispatch, course, setCourseToEdit, showCreateEditModal, de
 
       </OperationWrapper>
     </TableRowChild>
-  </TableRow>
+  </TableRowFlex>
 )
 
 
@@ -62,7 +62,7 @@ const CourseTable = ({
   dispatch
 }) => {
   const [current, setCurrent] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(1)
   const paginatedCourses = courses.slice((current - 1) * pageSize, current * pageSize)
 
@@ -72,7 +72,7 @@ const CourseTable = ({
   }, [courses, paginatedCourses.length])
   const isNoData = courses.length === 0
   return (
-    <div>
+    <TableWrapper>
       <TableHeader>
         <TableHeaderChild> Course Title </TableHeaderChild>
         <TableHeaderChild> Course Code </TableHeaderChild>
@@ -109,7 +109,7 @@ const CourseTable = ({
           <Spin size="large" />
         </SpinWrapper>
       }
-    </div>
+    </TableWrapper>
   )
 }
 

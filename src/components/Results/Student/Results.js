@@ -6,15 +6,8 @@ import { connect } from 'react-redux'
 import { BodyWrapper, Container } from '../../../utitlities/styles'
 import React, { useEffect, useState } from 'react'
 import api from '../../../utitlities/api'
-import styled from 'styled-components'
 import ResultsTable from './ResultsTable'
-const PageHeader = styled.div`
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
-  user-select: none;
-  margin-bottom: 20px;
-`
+import { PageHeader } from '../../styles/pageStyles';
 
 const Results = ({ courses = [], user, dispatch }) => {
   const [isLoading, setLoading] = useState(false)
@@ -53,7 +46,7 @@ const Results = ({ courses = [], user, dispatch }) => {
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 1fr">
+        <Container rows="80px 1fr">
           <PageHeader>Results</PageHeader>
           <ResultsTable exams={exams} isLoading={isLoading} />
         </Container>

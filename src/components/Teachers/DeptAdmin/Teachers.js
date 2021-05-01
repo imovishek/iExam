@@ -11,17 +11,10 @@ import TeacherTable from './TeacherTable'
 import { Button, message } from 'antd'
 import CreateEditTeacherModal from './CreateEditTeacherModal'
 import { setUserAction } from '../../Login/actions'
-import { Row } from '../../styles/pageStyles'
+import { PageHeader, Row } from '../../styles/pageStyles'
 
 const TeacherTableWrapper = styled.div`
 `
-const PageHeader = styled.div`
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
-  user-select: none;
-`
-
 
 const Teachers = ({ teachers, user, dispatch }) => {
   const [isTeachersChanged, setTeacherChanged] = useState(true)

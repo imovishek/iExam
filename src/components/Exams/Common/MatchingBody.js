@@ -100,18 +100,6 @@ const MatchingBody = ({
             matchingIndexes={matchingIndexes}
             minHeight={minHeight}
             setValues={(leftSide) => {
-              // console.log(
-              //   "--- left ---",
-              //   leftSide,
-              //   getAnswerFromOptions({
-              //     ...matchingOptions,
-              //     leftSide,
-              //   })
-              // );
-              // setMatchingOptions({
-              //   ...matchingOptions,
-              //   leftSide,
-              // });
               setAnswerValue(
                 getAnswerFromOptions({
                   ...matchingOptions,

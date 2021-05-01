@@ -18,7 +18,7 @@ const reorder = (list, startIndex, endIndex) => {
 const grid = 8;
 
 const getListStyle = (isDraggingOver) => ({
-  background: isDraggingOver ? "lightgrey" : "lightgrey",
+  boxShadow: "0px 0px 5px #bbbbbb",
   padding: grid,
   width: "100%",
   minHeight: "500px",

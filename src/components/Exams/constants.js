@@ -9,7 +9,8 @@ import {
 } from "../../utitlities/constants";
 import MatchingBody from "./Common/MatchingBody";
 
-export const ON_UPDATE_EXAMS = "ON_UPDATE_EXAMS";
+export const ON_UPDATE_EXAMS = "exams/ON_UPDATE_EXAMS";
+export const ON_UPDATE_CURRENT_TAB = "exams/ON_UPDATE_CURRENT_TAB";
 
 export const typeToQuestionBody = {
   [MCQ]: MCQBody,

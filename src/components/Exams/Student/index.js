@@ -5,23 +5,17 @@ import { connect } from "react-redux";
 import { BodyWrapper, Container } from "../../../utitlities/styles";
 import React, { useEffect, useState } from "react";
 import api from "../../../utitlities/api";
-import styled from "styled-components";
 import { Tabs } from "antd";
 import ExamsTable from "./ExamsTable";
 import {
   smartLabel,
   getExamStatus,
 } from "../../../utitlities/common.functions";
+import { PageHeader } from "../../styles/pageStyles";
+import { onUpdateCurrentTab } from "../actions";
 const { TabPane } = Tabs;
-const PageHeader = styled.div`
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
-  user-select: none;
-  margin-bottom: 20px;
-`;
 
-const ExamsForStudent = ({ courses = [], user, dispatch }) => {
+const ExamsForStudent = ({ courses = [], user, dispatch, currentTab }) => {
   const [isLoading, setLoading] = useState(false);
   const [isExamsChanged, setExamsChanged] = useState(true);
   const [examsObj, setExamsObj] = useState({});
@@ -59,12 +53,11 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 1fr">
+        <Container rows="80px 1fr">
           <PageHeader>Exams</PageHeader>
-
-          <Tabs defaultActiveKey="1" tabPosition="left" style={{ height: 450 }}>
+          <Tabs activeKey={currentTab} onChange={(activeKey => dispatch(onUpdateCurrentTab(activeKey)))} tabPosition="left">
             {_.map(["upcoming", "running", "ended"], (v, i) => (
-              <TabPane tab={smartLabel(v)} key={i}>
+              <TabPane tab={<h3>{smartLabel(v)}</h3>} key={v}>
                 <ExamsTable
                   noEnterButton={v === "upcoming"}
                   exams={examsObj[v]}
@@ -81,6 +74,7 @@ const ExamsForStudent = ({ courses = [], user, dispatch }) => {
 const mapStateToProps = (state) => ({
   user: state.login.user,
   courses: state.courseData.courses,
+  currentTab: state.examData.currentTab,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -4,12 +4,12 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { TableRowFlex, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper, TableWrapper } from '../../styles/tableStyles'
 import { mapDesignations } from '../../../utitlities/constants'
 import { NoDataComponent } from '../../../utitlities/common.functions'
 
 const TeacherCard = ({ dispatch, teacher, setTeacherToEdit, showCreateEditModal, deleteTeacher }) => (
-  <TableRow>
+  <TableRowFlex>
     <TableRowChild> { `${teacher.firstName} ${teacher.lastName}` } </TableRowChild>
     <TableRowChild> { mapDesignations[teacher.designation] } </TableRowChild>
     <TableRowChild> { teacher.department.departmentCode } </TableRowChild>
@@ -35,7 +35,7 @@ const TeacherCard = ({ dispatch, teacher, setTeacherToEdit, showCreateEditModal,
         </Popconfirm>
       </OperationWrapper>
     </TableRowChild>
-  </TableRow>
+  </TableRowFlex>
 )
 
 const TeacherTable = ({
@@ -47,7 +47,7 @@ const TeacherTable = ({
   dispatch
 }) => {
   const [current, setCurrent] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(1)
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const TeacherTable = ({
   const paginatedTeachers = teachers.slice((current - 1) * pageSize, current * pageSize)
   const isNoData = teachers.length === 0;
   return (
-    <div>
+    <TableWrapper>
       <TableHeader>
         <TableHeaderChild> Name </TableHeaderChild>
         <TableHeaderChild> Designation </TableHeaderChild>
@@ -92,7 +92,7 @@ const TeacherTable = ({
           <Spin size="large" />
         </SpinWrapper>
       }
-    </div>
+    </TableWrapper>
   )
 }
 

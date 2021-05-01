@@ -1,15 +1,13 @@
+import produce from 'immer';
 import { SET_USER } from './constants'
 
-const reducer = (state = { user: {} }, action) => {
+const INITIAL_STATE = { user: {} };
+
+const reducer = produce((draft, action) => {
   switch (action.type) {
     case SET_USER:
-      return {
-        ...state,
-        user: action.user
-      }
-    default:
-      return state
+      draft.user = action.user
+      break;
   }
-}
-
+}, INITIAL_STATE)
 export default reducer

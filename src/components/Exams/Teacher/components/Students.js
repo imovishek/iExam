@@ -8,8 +8,9 @@ import { connect } from 'react-redux'
 import { useParams } from 'react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
-import { Dropdown, Menu } from 'antd'
-
+import { Dropdown, Menu, Select } from 'antd'
+import { TableRowStyled, TableWrapper } from '../../../styles/tableStyles'
+const { Option } = Select;
 const SearchStyled = styled(Search)`
   width: 100%;
   margin-bottom: 10px;
@@ -20,14 +21,12 @@ const Container = styled.div`
   grid-template-rows: ${props => props.rows || 'auto'};
 `
 
-const HeaderLabel = styled.div`
-  color: grey;
+const HeaderLabel = styled.h3`
 `
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  font-size: 12px;
   height: 30px;
   white-space: nowrap;
   overflow: hidden;
@@ -36,23 +35,8 @@ const Wrapper = styled.div`
 const Row = styled.div`
   display: grid;
   grid-gap: 10px;
-  padding: 3px;
   border-radius: 5px;
   grid-template-columns: ${props => props.columns || 'auto'};
-`
-
-const BodyRow = styled.div`
-  padding: 3px;
-  border-radius: 5px;
-  user-select: none;
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: ${props => props.columns || 'auto'};
-  background: ${props => props.isSelected ? '#a3b1bd' : 'none'};
-  cursor: pointer;
-  :hover {
-    background: ${props => props.isSelected ? '#a3b1bd' : '#e4e4e4'};
-  }
 `
 
 const Body = styled.div`
@@ -140,7 +124,7 @@ const Card = ({
   )
 
   return (
-    <BodyRow isSelected={studentID === student._id} onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 80px 20px">
+    <TableRowStyled gridGap="10px" isSelected={studentID === student._id} onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 80px 20px">
       <Wrapper>{student.registrationNo}</Wrapper>
       <Wrapper>{getName(student)}</Wrapper>
       <Wrapper> <TextCenter>{totalMarks || 0} </TextCenter> </Wrapper>
@@ -154,7 +138,7 @@ const Card = ({
           />
         </Dropdown>
       </Wrapper>
-    </BodyRow>
+    </TableRowStyled>
   )
 }
 
@@ -163,11 +147,12 @@ const Students = ({
   bannedParticipants,
   exam,
   updateExamOnUI,
-  dispatch,
-  showingStudentType
+  dispatch
 }) => {
   const [students, setStudents] = useState([]);
   const [searchStudents, setSearchStudents] = useState([])
+  const [showingStudentType, setShowingStudentType] = useState("participants");
+  console.log(searchStudents);
   useEffect(() => {
     const newStudents = showingStudentType === 'participants' ?
       participants :
@@ -200,31 +185,44 @@ const Students = ({
     setMarksObj(newMarksObj)
   }, [exam.papers])
   return (
-    <Container rows="32px 32px 1fr">
-      <SearchStyled
-        allowClear
-        placeholder="Search"
-        onChange={(e) => handleSearch(e.target.value)}
-      />
-      <Row columns="repeat(2, 1fr) 80px 20px">
-        <HeaderLabel>Regi No.</HeaderLabel>
-        <HeaderLabel>Name</HeaderLabel>
-        <HeaderLabel><TextCenter> Total Marks </TextCenter></HeaderLabel>
-        <div> </div>
+    <Container rows="32px 1fr">
+      <Row columns="1fr 1fr">
+        <Select
+          style={{ width: '200px' }}
+          value={showingStudentType}
+          onChange={v => setShowingStudentType(v)}
+        >
+          <Option key="participants" value="participants">Participants ({(exam.participants || []).length})</Option>
+          <Option key="banned" value="banned">Banned Students ({(exam.bannedParticipants || []).length})</Option>
+        </Select>
+        <SearchStyled
+          allowClear
+          placeholder="Search"
+          onChange={(e) => handleSearch(e.target.value)}
+        />
       </Row>
-      <Body>
-        {_.map(searchStudents, (student, index) => (
-          <Card
-            dispatch={dispatch}
-            totalMarks={marksObj[student._id]}
-            key={`student_${index}`}
-            student={student}
-            exam={exam}
-            updateExamOnUI={updateExamOnUI}
-            showingStudentType={showingStudentType}
-          />
-        ))}
-      </Body>
+      <TableWrapper>
+        <Row columns="repeat(2, 1fr) 80px 20px">
+          <HeaderLabel>Regi No.</HeaderLabel>
+          <HeaderLabel>Name</HeaderLabel>
+          <HeaderLabel><TextCenter> Marks </TextCenter></HeaderLabel>
+          <div> </div>
+        </Row>
+        <Body>
+          {_.map(searchStudents, (student, index) => (
+            <Card
+              dispatch={dispatch}
+              totalMarks={marksObj[student._id]}
+              key={`student_${index}`}
+              student={student}
+              exam={exam}
+              updateExamOnUI={updateExamOnUI}
+              showingStudentType={showingStudentType}
+            />
+          ))}
+        </Body>
+      </TableWrapper>
+      
     </Container>
   )
 }

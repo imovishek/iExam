@@ -1,15 +1,14 @@
+import produce from 'immer';
 import { ON_UPDATE_COURSES } from './constants'
 
-const reducer = (state = { courses: [] }, action) => {
+const INITIAL_STATE = { courses: [] };
+
+const reducer = produce((draft, action) => {
   switch (action.type) {
     case ON_UPDATE_COURSES:
-      return {
-        ...state,
-        courses: action.courses
-      }
-    default:
-      return state
+      draft.courses = action.courses;
+      break;
   }
-}
+}, INITIAL_STATE)
 
 export default reducer

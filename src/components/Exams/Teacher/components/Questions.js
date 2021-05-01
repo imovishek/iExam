@@ -6,27 +6,25 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Popconfirm } from 'antd'
 import api from '../../../../utitlities/api'
+import { TableRowStyled } from '../../../styles/tableStyles'
 
 const Container = styled.div`
   
 `
 
-const HeaderLabel = styled.div`
-  color: grey;
+const HeaderLabel = styled.h3`
 `
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 20px;
-  font-size: 12px;
+  height: 40px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `
 
 const Row = styled.div`
-  padding: 10px;
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
@@ -46,7 +44,7 @@ const Body = styled.div`
 `
 
 const Card = ({ onUpdateExamUI, teachersObj = {}, question, dispatch, exam }) => (
-  <Row columns="repeat(4, 1fr) 30px" onClick={() => dispatch(push(`/exam/${exam._id}/question/${question._id}`))}>
+  <TableRowStyled columns="repeat(4, 1fr) 30px" onClick={() => dispatch(push(`/exam/${exam._id}/question/${question._id}`))}>
     <Wrapper>{question.title}</Wrapper>
     <Wrapper>{getName(teachersObj[question.authorID])}</Wrapper>
     <Wrapper>{smartLabel(question.type)}</Wrapper>
@@ -76,7 +74,7 @@ const Card = ({ onUpdateExamUI, teachersObj = {}, question, dispatch, exam }) =>
         />
       </Popconfirm>
     </Wrapper>
-  </Row>
+  </TableRowStyled>
 )
 
 const Questions = ({

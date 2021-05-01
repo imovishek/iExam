@@ -273,3 +273,16 @@ export const getQuestionSplitFBlank = (questionBody) => {
   });
   return array;
 }
+
+export const getStatusColor = (status) => {
+  switch (status) {
+    case 'ended':
+      return 'red';
+    case 'running':
+      return 'green';
+    case 'upcoming':
+      return 'brown';
+  }
+}
+
+export const formatDateAndTime = (date, time) => `${moment(date).format('DD/MM/YYYY')} ${time}`;

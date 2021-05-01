@@ -7,8 +7,8 @@ import React, { useState, useEffect } from 'react'
 import { push } from 'connected-react-router'
 import moment from 'moment';
 import { connect } from 'react-redux'
-import { NoDataComponent } from '../../../utitlities/common.functions'
-import { TableRow, TableRowChild, OperationWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { formatDateAndTime, NoDataComponent } from '../../../utitlities/common.functions'
+import { TableRowFlex, TableRowChild, OperationWrapper, TableHeader, TableHeaderChild, SpinWrapper, TableWrapper } from '../../styles/tableStyles'
 
 const TableBodyWrapper = styled.div`
   overflow: auto;
@@ -18,14 +18,14 @@ const getName = obj => `${obj.firstName} ${obj.lastName}`
 
 const ExamCard = ({ dispatch, exam }) => {
   const shouldEnter = true;
-  const formatDateAndTime = (date, time) => `${moment(date).format('DD/MM/YYYY')} ${time}`;
   return (
-    <TableRow>
+    <TableRowFlex>
       <TableRowChild> { exam.title } </TableRowChild>
       <TableRowChild> { exam.course.title } </TableRowChild>
       <TableRowChild> { exam.course.courseCode } </TableRowChild>
       <TableRowChild> { exam.course.assignedTeacher ? getName(exam.course.assignedTeacher) : 'Unassigned'} </TableRowChild>
       <TableRowChild> { formatDateAndTime(exam.startDate, exam.startTime) } </TableRowChild>
+      <TableRowChild> { exam.duration } </TableRowChild>
       <TableRowChild>
         <OperationWrapper>
           { shouldEnter &&
@@ -41,7 +41,7 @@ const ExamCard = ({ dispatch, exam }) => {
           }
         </OperationWrapper>
       </TableRowChild>
-    </TableRow>
+    </TableRowFlex>
   )
 }
 
@@ -55,7 +55,7 @@ const ExamTable = ({
   dispatch
 }) => {
   const [current, setCurrent] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(1)
   const paginatedExams = exams.slice((current - 1) * pageSize, current * pageSize)
 
@@ -65,13 +65,14 @@ const ExamTable = ({
   }, [exams, paginatedExams.length])
   const isNoData = exams.length === 0
   return (
-    <div>
+    <TableWrapper>
       <TableHeader>
         <TableHeaderChild> </TableHeaderChild>
         <TableHeaderChild> Course </TableHeaderChild>
         <TableHeaderChild> Course Code </TableHeaderChild>
         <TableHeaderChild> Course Teacher </TableHeaderChild>
         <TableHeaderChild> Start Time </TableHeaderChild>
+        <TableHeaderChild> Duration </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </TableHeader>
       {(isNoData && !isLoading) && <NoDataComponent title="No Exams" />}
@@ -104,7 +105,7 @@ const ExamTable = ({
           <Spin size="large" />
         </SpinWrapper>
       }
-    </div>
+    </TableWrapper>
   )
 }
 

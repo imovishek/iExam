@@ -13,31 +13,53 @@ const BodyWrapper = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  `
+`;
 
 const SubWrapper = styled.div`
-  width: 350px;
-  height: 270px;
-  padding: 30px 20px;
-  box-shadow: 5px 4px 15px -4px #000000;
-  border-radius: 5px;
+  width: 360px;
+  height: 300px;
+  padding: 30px 30px;
+  box-shadow: 3px 3px 30px 0px #e8eaec;
+  border-radius: 14px;
+  --antd-wave-shadow-color: none;
+  .ant-input:hover {
+    border-color: white;
+    border-right-width: 0px !important;
+  }
+  .ant-input:focus {
+    border-color: white;
+    border-right-width: 0px !important;
+  }
+
+  input:-internal-autofill-selected {
+    appearance: menulist-button;
+    background-color: #f6f6f7;
+    background-image: none !important;
+    color: -internal-light-dark(black, white) !important;
+  }
 `
 
 const InputWrapper = styled(Input)`
-  margin-bottom: 15px;
-  height: 40px;
-  border-radius: 5px;
+  margin-bottom: 14px;
+  height: 44px;
+  border-radius: 8px;
+  font-size: 14px;
+  border: 0px solid grey;
+  background-color: #f6f6f7;
 `
 
 const ButtonWrapper = styled(Button)`
   width: 50%;
+  height: 44px;
+  border-radius: 8px;
 `
 const TextWrapper = styled.p`
   display: inline;
-  margin-left: 20px;
+  margin-left: 14px;
 `
 const HeaderWrapper = styled.h1`
   font-weight: 100;
+  font-family: system-ui;
 `
 
 const SpinWrapper = styled.div`

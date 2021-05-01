@@ -14,7 +14,7 @@ import Loading from '../../Common/Loading';
 import { goBack } from 'connected-react-router';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, LabelWrapper, BodyRow } from '../../styles/pageStyles';
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, LabelWrapper, BodyRow, SecondHeader } from '../../styles/pageStyles';
 import ImportStudentsModal from './ImportStudentsModal';
 import CreateExamModal from './CreateExamModal';
 const { Option } = Select
@@ -40,7 +40,6 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
     try {
       setLoading(true)
       const { payload = {} } = await api.getCourseByID(id)
-      const { payload: fetchedTeachers = [] } = await api.getTeachers({})
       setCourse(payload)
     } catch (err) {
       console.log(err)
@@ -85,7 +84,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
       {isLoading && <Loading isLoading={isLoading}/>}
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 1fr 1fr" gridGap="20px">
+        <Container rows="80px 1fr 1fr" gridGap="20px">
           <ImportStudentsModal
             visible={showImportStudentModal}
             setVisibility={setShowImportStudentModal}
@@ -107,7 +106,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
           <Row columns="7fr 5fr">
             <StyledBodyRow>
               <Row columns="1fr 1fr">
-                <LabelWrapper>Exams</LabelWrapper>
+                <SecondHeader>Exams</SecondHeader>
                 <RightButtonWrapper>
                   <ButtonStyled type="primary" onClick={() => setShowCreateExam(true)}>
                     Create Exam
