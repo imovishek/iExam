@@ -34,7 +34,7 @@ const DraggableColumn = ({
   }, [values]);
 
   const getListStyle = (isDraggingOver) => ({
-    background: "#c5cccc",
+    boxShadow: "0px 0px 5px #bbbbbb",
     padding: grid,
     width: "100%",
     minHeight: minHeight || "200px",

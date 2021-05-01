@@ -6,7 +6,7 @@ import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
-import {TableRowChild, TableHeader, TableHeaderChild, SpinWrapper, TableRowHoverStyled } from '../../styles/tableStyles'
+import {TableRowChild, TableHeader, TableHeaderChild, SpinWrapper, TableRowFlex, TableWrapper } from '../../styles/tableStyles'
 import { NoDataComponent } from '../../../utitlities/common.functions'
 
 const TableBodyWrapper = styled.div`
@@ -19,7 +19,7 @@ const ResultCard = ({ exam, user, dispatch }) => {
   const papers = _.filter(exam.papers, paper => paper.student === user._id);
   const paper = papers[0] || { answers: [] };
   return (
-    <TableRowHoverStyled onClick={() => dispatch(push(`/exam/${exam._id}`))}>
+    <TableRowFlex onClick={() => dispatch(push(`/exam/${exam._id}`))}>
       <TableRowChild> { exam.title } </TableRowChild>
       <TableRowChild> { exam.course.title } </TableRowChild>
       <TableRowChild> { exam.course.assignedTeacher ? getName(exam.course.assignedTeacher) : 'Unassigned'} </TableRowChild>
@@ -28,7 +28,7 @@ const ResultCard = ({ exam, user, dispatch }) => {
       <TableRowChild>
         {`${paper.totalMarks || 'N/A'} / ${exam.totalMarks}`}
       </TableRowChild>
-    </TableRowHoverStyled>
+    </TableRowFlex>
   )
 }
 
@@ -39,7 +39,7 @@ const ResultsTable = ({
   user
 }) => {
   const [current, setCurrent] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(1)
   const paginatedExams = exams.slice((current - 1) * pageSize, current * pageSize)
 
@@ -49,7 +49,7 @@ const ResultsTable = ({
   }, [exams, paginatedExams.length])
   const isNoData = exams.length === 0
   return (
-    <div>
+    <TableWrapper>
       <TableHeader>
         <TableHeaderChild> Exam Title </TableHeaderChild>
         <TableHeaderChild> Course </TableHeaderChild>
@@ -86,7 +86,7 @@ const ResultsTable = ({
           <Spin size="large" />
         </SpinWrapper>
       }
-    </div>
+    </TableWrapper>
   )
 }
 const mapStateToProps = state => ({

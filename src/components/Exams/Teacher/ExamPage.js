@@ -5,7 +5,7 @@ import { BodyWrapper, Container, Col, ButtonStyled, CenterText } from '../../../
 import React, { useEffect, useState } from 'react'
 import api from '../../../utitlities/api'
 import styled from 'styled-components'
-import { message, Menu, Dropdown, Button, Select } from 'antd'
+import { message, Menu, Dropdown, Button } from 'antd'
 import {
   DownOutlined,
   UserOutlined,
@@ -21,23 +21,20 @@ import {
   PageHeader,
   TileHeaderWrapper,
   RightButtonWrapper,
-  LabelWrapper,
-  BodyRow
+  BodyRow,
+  SecondHeader
 } from '../../styles/pageStyles'
 import { useParams } from 'react-router'
 import { goBack, push } from 'connected-react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import { getExamTimeDiffInFormat, getObjectByAddingID } from '../../../utitlities/common.functions'
+import { getObjectByAddingID } from '../../../utitlities/common.functions'
 import Loading from '../../Common/Loading'
 import EditExamModal from './EditExamModal'
 import ImportQuestionsModal from './ImportQuestionModal'
-import { ExamTitleWrapper, TimeDiffWrapper } from '../styles'
 import NewAnnouncementModal from './NewAnnouncementModal'
 import ShowAnnouncementModal from './ShowAnnouncementModla'
 import ShowExamStatusTitle from '../Common/ShowExamStatusTitle'
-
-const { Option } = Select;
 
 const StyledDropdown = styled(Dropdown)`
   width: 130px;
@@ -55,7 +52,6 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [exam, setExam] = useState({})
   const [teachersObj, setTeachersObj] = useState({})
   const [showEditExam, setShowEditExam] = useState(false);
-  const [showingStudentType, setShowingStudentType] = useState("participants");
   const [showImportQuestions, setShowImportQuestions] = useState(false);
   const [showNewAnnouncementModal, setShowNewAnnouncementModal] = useState(false);
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
@@ -209,7 +205,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       />
       <BodyWrapper>
         <NavBar />
-        <Container rows="90px 60px 1fr" gridGap="20px">
+        <Container rows="80px 60px 1fr" gridGap="20px">
           <TileHeaderWrapper columns="1fr 1fr 1fr">
             <div>
               {hasBack &&
@@ -233,16 +229,16 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               </Button>
             </StyledDropdown>
 
-            <Button onClick={() => setShowNewAnnouncementModal(true)}>
+            <ButtonStyled type="primary" onClick={() => setShowNewAnnouncementModal(true)}>
               Create new announcement
-            </Button>
+            </ButtonStyled>
           
             <Button onClick={() => setShowAnnouncementModal(true)}> View Announcements</Button>
           </Row>
           <Row columns="3fr 2fr">
             <StyledBodyRow>
               <TileHeaderWrapper columns="1fr 1fr">
-                <LabelWrapper>Questions ({(exam.questions || []).length})</LabelWrapper>
+                <SecondHeader>Questions ({(exam.questions || []).length})</SecondHeader>
                 <RightButtonWrapper>
                   <CenterText style={{marginRight: '10px'}}>Total Marks: {exam.totalMarks} </CenterText>
                   <StyledDropdown overlay={questionActionMenu} trigger={['click']}>
@@ -260,16 +256,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               />
             </StyledBodyRow>
             <StyledBodyRow>
-              <Select
-                style={{ width: '200px' }}
-                value={showingStudentType}
-                onChange={v => setShowingStudentType(v)}
-              >
-                <Option key="participants" value="participants">Participants ({(exam.participants || []).length})</Option>
-                <Option key="banned" value="banned">Banned Students ({(exam.bannedParticipants || []).length})</Option>
-              </Select>
               <Students
-                showingStudentType={showingStudentType}
                 participants={exam.participants}
                 bannedParticipants={exam.bannedParticipants}
                 exam={exam}

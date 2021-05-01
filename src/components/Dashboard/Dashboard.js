@@ -1,9 +1,10 @@
 import CheckAuthentication from '../CheckAuthentication/CheckAuthentication'
 import NavBar from '../NavBar/NavBar'
-import { BodyWrapper, Container, Text } from '../../utitlities/styles'
+import { BodyWrapper, Container } from '../../utitlities/styles'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
+import { PageHeader } from '../styles/pageStyles'
 
 const LinkWrapper = styled.div`
   border: 1px solid green;
@@ -26,8 +27,8 @@ const Dashboard = ({ dispatch }) => {
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
-        <Container rows="40px 30px">
-          <Text>Welcome to dashboard</Text>
+        <Container rows="80px 30px">
+          <PageHeader>Welcome to dashboard</PageHeader>
           <LinkWrapper onClick={() => redirectTo('logout')}> Logout </LinkWrapper>
         </Container>
       </BodyWrapper>

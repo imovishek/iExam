@@ -1,25 +1,15 @@
 
-import styled from 'styled-components';
 import _ from 'underscore';
 import { Spin, Popconfirm } from 'antd';
 import Pagination from '../../Common/Pagination';
 import React, { useState, useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
-import { TableRowChild, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles';
+import { TableRowChild, TableHeaderChild, SpinWrapper, TableRowStyled, TableWrapper } from '../../styles/tableStyles';
 import api from '../../../utitlities/api';
 import { AwesomeIcon } from '../../../utitlities/styles';
 import { RightButtonWrapper, Row } from '../../styles/pageStyles';
 import { NoDataComponent } from '../../../utitlities/common.functions';
-
-const TableRowStyled = styled(Row)`
-  cursor: pointer;
-  border-radius: 8px;
-  :hover {
-    background: #96c1c1;
-    color: black;
-  }
-`
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
@@ -65,7 +55,7 @@ const QuestionTable = ({
   dispatch
 }) => {
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(1);
   const [teachersObj, setTeachersObj] = useState({});
   const paginatedQuestions = questions.slice((current - 1) * pageSize, current * pageSize);
@@ -81,7 +71,7 @@ const QuestionTable = ({
   }, [questions, paginatedQuestions.length])
   const isNoData = questions.length === 0
   return (
-    <div>
+    <TableWrapper>
       <Row columns="repeat(4, 1fr) 60px">
         <TableHeaderChild> Question Title </TableHeaderChild>
         <TableHeaderChild> Question Type </TableHeaderChild>
@@ -117,7 +107,7 @@ const QuestionTable = ({
           <Spin size="large" />
         </SpinWrapper>
       }
-    </div>
+    </TableWrapper>
   )
 }
 

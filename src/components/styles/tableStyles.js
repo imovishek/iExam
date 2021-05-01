@@ -1,21 +1,18 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Row } from "./pageStyles";
 
 export const TableHeader = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border-radius: 8px;
   background: none;
   margin-top: 5px;
 `;
 
-export const TableHeaderChild = styled.div`
+export const TableHeaderChild = styled.h2`
   flex: 1;
-  font-weight: 600;
-  color: grey;
   padding: 10px;
-  text-align: center;
   height: 30px;
   line-height: 15px;
   overflow: hidden;
@@ -24,24 +21,16 @@ export const TableHeaderChild = styled.div`
   user-select: none;
 `;
 
-export const TableRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-radius: 8px;
-  margin-top: 5px;
-`;
-
 export const TableRowChild = styled.div`
   flex: 1;
   font-weight: 400;
   padding: 10px;
-  text-align: center;
   height: 60px;
   line-height: 40px;
   overflow: hidden;
   text-overflow: ellipsis;
   user-select: none;
+  color: ${props => props.color || 'inherit'};
 `;
 
 export const SpinWrapper = styled.div`
@@ -73,11 +62,35 @@ export const CenterNoData = styled.div`
   justify-content: center;
 `;
 
-export const TableRowHoverStyled = styled(TableRow)`
-  cursor: pointer;
+export const TableRowFlex = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 5px;
   background: none;
-  :hover {
-    background: #96c1c1;
-    color: black;
-  }
+  border-bottom: 1px solid #d0d0d0;
+  ${props => props.onClick ?
+    `cursor: pointer;
+    :hover {
+      font-size: 18px;
+    }` : ''}
+  transition-duration: 100ms;
 `
+export const TableRowStyled = styled(Row)`
+  background: none;
+  border-bottom: 1px solid #d0d0d0;
+  ${props => props.onClick ?
+    `cursor: pointer;
+     :hover {
+       font-size: 18px;
+     }` : ''} 
+  transition-duration: 100ms;
+  ${props => props.gridGap ?
+    `grid-gap: ${props.gridGap}` : ''}
+  ${props => props.isSelected ?
+    `font-size: 18px;` : ''}
+`;
+
+export const TableWrapper = styled.div`
+  padding: 20px;
+`;

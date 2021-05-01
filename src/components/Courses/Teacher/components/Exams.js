@@ -1,34 +1,33 @@
 import styled from 'styled-components'
 import _ from 'underscore'
-import { stFormatDate, splitDuration, splitStartTime, getExamStatus, smartLabel, NoDataComponent } from '../../../../utitlities/common.functions'
+import { stFormatDate, splitDuration, splitStartTime, getExamStatus, smartLabel, NoDataComponent, getStatusColor } from '../../../../utitlities/common.functions'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
+import { TableRowStyled } from '../../../styles/tableStyles'
 
 const Container = styled.div`
 `
 
-const HeaderLabel = styled.div`
-  color: grey;
+const HeaderLabel = styled.h3`
+  
 `
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 20px;
-  font-size: 12px;
+  height: 40px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: ${props => props.color || 'inherit'};
 `
 
 const Row = styled.div`
-  padding: 10px;
   display: grid;
-  grid-gap: 10px;
+  grid-gap: 20px;
   grid-template-columns: ${props => props.columns || 'auto'};
   user-select: none;
   border-radius: 5px;
-  cursor: pointer;
   :hover {
     background: ${p => p.header ? 'none' : '#e4e4e4'};
   }
@@ -43,13 +42,13 @@ const Body = styled.div`
 `
 
 const Card = ({ exam, dispatch }) => (
-  <Row columns="repeat(5, 1fr)" onClick={() => dispatch(push(`/exam/${exam._id}`))}>
+  <TableRowStyled columns="repeat(5, 1fr)" onClick={() => dispatch(push(`/exam/${exam._id}`))}>
     <Wrapper>{exam.title}</Wrapper>
     <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
     <Wrapper>{splitStartTime(exam.startTime)}</Wrapper>
     <Wrapper>{splitDuration(exam.duration)}</Wrapper>
-    <Wrapper>{smartLabel(getExamStatus(exam))}</Wrapper>
-  </Row>
+    <Wrapper color={getStatusColor(getExamStatus(exam))}>{smartLabel(getExamStatus(exam))}</Wrapper>
+  </TableRowStyled>
 )
 
 const Exams = ({

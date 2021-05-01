@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React, { memo } from 'react';
-import { Modal, Popconfirm } from 'antd';
+import { Modal, Popconfirm, Tooltip } from 'antd';
 import moment from 'moment';
 import api from '../../../utitlities/api';
 import { PUBLIC } from '../../../utitlities/constants';
@@ -8,10 +8,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobeAsia, faLock } from '@fortawesome/free-solid-svg-icons';
 import { Row } from '../../../utitlities/styles';
 import { useEffect } from 'react/cjs/react.development';
+import { smartLabel } from '../../../utitlities/common.functions';
 
 const BodyWrapper = styled.div`
   font-size: 16px;
-  color: #24262d;
+  color: #000000;
+  overflow: hidden;
+  text-overflow: elipsis;
+  white-space: nowrap;
 `
 
 const TimeWrapper = styled.div`
@@ -26,6 +30,10 @@ const AnnouncementWrapper = styled.div`
   font-size: 14px;
   color: #608794;
   margin-bottom: 10px;
+  height: 60px;
+  background: #ffeb00;
+  padding: 10px;
+  border-radius: 5px;
 `
 const DeleteButton = styled.div`
   border-radius: 3px;
@@ -104,7 +112,9 @@ const ShowAnnouncementModal = ({
         {(exam.announcements || []).sort(comp).map((a, index) => (
           <AnnouncementWrapper key={Math.random().toString(16)}>
             <Row columns="1fr 1fr">
-              <BodyWrapper>{a.body}</BodyWrapper>
+              <Tooltip mouseEnterDelay={0.5} title={a.body} placement="topLeft">
+                <BodyWrapper>{a.body}</BodyWrapper>
+              </Tooltip>
               <div>
                 <Popconfirm
                   title="Are you sure？"
@@ -116,8 +126,9 @@ const ShowAnnouncementModal = ({
                 </Popconfirm>
               </div>
             </Row>
-            
-            <FontAwesomeIcon color="black" icon={a.securityType === PUBLIC ? faGlobeAsia : faLock} />
+            <Tooltip title={smartLabel(a.securityType)}>
+              <FontAwesomeIcon color="black" icon={a.securityType === PUBLIC ? faGlobeAsia : faLock} />
+            </Tooltip>
             <TimeWrapper>{getTimeDiff(a.dateTime, moment())}</TimeWrapper>
 
           </AnnouncementWrapper>

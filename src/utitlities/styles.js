@@ -52,7 +52,6 @@ export const Col = styled.div`
 export const ButtonStyled = styled(Button)`
   height: 30px;
   margin-left: 10px;
-  background: #7b91ad;
   transition-duration: 500ms;
 `;
 

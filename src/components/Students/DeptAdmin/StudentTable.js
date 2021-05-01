@@ -5,11 +5,11 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { TableRow, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { TableRowFlex, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper, TableWrapper } from '../../styles/tableStyles'
 import { NoDataComponent } from '../../../utitlities/common.functions'
 
 const StudentCard = ({ dispatch, student, setStudentToEdit, showCreateEditModal, deleteStudent }) => (
-  <TableRow>
+  <TableRowFlex>
     <TableRowChild> { `${student.firstName} ${student.lastName}` } </TableRowChild>
     <TableRowChild> { student.registrationNo } </TableRowChild>
     <TableRowChild> { student.phoneNumber } </TableRowChild>
@@ -35,7 +35,7 @@ const StudentCard = ({ dispatch, student, setStudentToEdit, showCreateEditModal,
         </Popconfirm>
       </OperationWrapper>
     </TableRowChild>
-  </TableRow>
+  </TableRowFlex>
 )
 
 const StudentTable = ({
@@ -47,7 +47,7 @@ const StudentTable = ({
   dispatch
 }) => {
   const [current, setCurrent] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(1)
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const StudentTable = ({
   const paginatedStudents = students.slice((current - 1) * pageSize, current * pageSize)
   const isNoData = students.length === 0
   return (
-    <div>
+    <TableWrapper>
       <TableHeader>
         <TableHeaderChild> Name </TableHeaderChild>
         <TableHeaderChild> Registration No </TableHeaderChild>
@@ -92,7 +92,7 @@ const StudentTable = ({
           <Spin size="large" />
         </SpinWrapper>
       }
-    </div>
+    </TableWrapper>
   )
 }
 

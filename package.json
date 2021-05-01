@@ -19,6 +19,7 @@
     "connected-react-router": "^6.0.0",
     "dotenv": "^8.2.0",
     "history": "^4.10.1",
+    "immer": "^9.0.2",
     "joi-date-extensions": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "katex": "^0.12.0",

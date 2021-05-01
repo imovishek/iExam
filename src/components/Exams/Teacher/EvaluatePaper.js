@@ -32,9 +32,8 @@ const FontAwesomeIconWrapper = styled.div`
 const TileBodyWrapper = styled.div`
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: minmax(380px, 1fr) minmax(380px, 3fr);
   height: calc(100vh - 120px);
-  background: #f9f9f9;
 `
 
 const FontAwesomeIconStyled = styled(FontAwesomeIcon)`
@@ -145,7 +144,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
       { isLoading && <Loading isLoading={isLoading} /> }
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 1fr">
+        <Container rows="80px 1fr">
           <TileHeaderWrapper columns="1fr 1fr">
             <div>
               {hasBack &&

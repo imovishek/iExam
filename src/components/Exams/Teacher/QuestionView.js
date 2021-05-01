@@ -56,7 +56,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
       { isLoading && <Loading isLoading={isLoading} /> }
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 1fr">
+        <Container rows="80px 1fr">
           <TileHeaderWrapper columns="1fr 1fr">
             <div>
               {hasBack &&

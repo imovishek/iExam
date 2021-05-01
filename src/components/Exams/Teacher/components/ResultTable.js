@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { RightButtonWrapper } from '../../../styles/pageStyles'
 import { Button, message } from 'antd'
 import confirm from 'antd/lib/modal/confirm'
+import { TableRowStyled } from '../../../styles/tableStyles';
 
 const SearchStyled = styled(Search)`
   width: 100%;
@@ -19,17 +20,16 @@ const SearchStyled = styled(Search)`
 const Container = styled.div`
   overflow: auto;
   height: 100%;
+  padding: 20px;
 `
 
-const HeaderLabel = styled.div`
-  color: grey;
+const HeaderLabel = styled.h3`
 `
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 30px;
-  font-size: 12px;
+  height: 60px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -39,18 +39,7 @@ const Row = styled.div`
   display: grid;
   border-radius: 5px;
   grid-gap: 10px;
-  padding: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
-`
-
-const BodyRow = styled(Row)`
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: ${props => props.columns || 'auto'};
-  cursor: pointer;
-  :hover {
-    background: #e4e4e4;
-  }
 `
 
 const Body = styled.div`
@@ -87,14 +76,14 @@ const Card = ({ dispatch, student, exam, updateExamOnUI, isBanNotShowing = false
   }
 
   return (
-    <BodyRow onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 1fr 1fr">
+    <TableRowStyled onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 1fr 1fr">
       <Wrapper>{student.registrationNo}</Wrapper>
       <Wrapper>{getName(student)}</Wrapper>
       <Wrapper> {count} </Wrapper>
       <Wrapper>
         {paper ? paper.totalMarks : '0'}
       </Wrapper>
-    </BodyRow>
+    </TableRowStyled>
   )
 }
 

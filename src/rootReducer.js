@@ -5,6 +5,7 @@ import coursesReducer from './components/Courses/reducer'
 import questionReducer from './components/Question/reducer'
 import teacherReducer from './components/Teachers/reducer'
 import studentReducer from './components/Students/reducer'
+import examReducer from './components/Exams/reducer'
 import { connectRouter } from 'connected-react-router'
 
 const createReducers = (history) =>
@@ -15,6 +16,7 @@ const createReducers = (history) =>
     teacherData: teacherReducer,
     studentData: studentReducer,
     questionData: questionReducer,
+    examData: examReducer,
     router: connectRouter(history)
   })
 export default createReducers

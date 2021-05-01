@@ -19,25 +19,14 @@ import { push, goBack } from "connected-react-router";
 import { deepCopy } from "../../../utitlities/common.functions";
 import api from "../../../utitlities/api";
 import { useParams } from "react-router";
-import MCQ from "./components/MCQ";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../../Common/Loading";
-import CodeEditor from "./components/CodeEditor";
 import { questionTypes } from "../constants";
 
 const { Option } = Select;
 const QuestionBodyRow = styled.div`
   padding: 10px;
-  margin-bottom: 20px;
-  margin-top: 30px;
-  border: 1px solid rgba(10, 10, 10, 0.3);
-`;
-
-const MCQRow = styled.div`
-  padding: 10px;
-  height: 500px;
-  width: 800px;
   margin-bottom: 20px;
   margin-top: 30px;
   border: 1px solid rgba(10, 10, 10, 0.3);
@@ -177,7 +166,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
       {isLoading && <Loading isLoading={isLoading} />}
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 70px 1fr">
+        <Container rows="80px 70px 1fr">
           <TileHeaderWrapper columns="1fr 1fr">
             <div>
               {hasBack && (

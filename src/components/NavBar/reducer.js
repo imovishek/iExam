@@ -1,12 +1,14 @@
+import produce from 'immer';
 import { SET_NAVIGATION_TAB } from './constants'
 
-const reducer = (state = {}, action) => {
+const INITIAL_STATE = {};
+
+const reducer = produce((draft, action) => {
   switch (action.type) {
     case SET_NAVIGATION_TAB:
-      return { ...state, tabKey: action.key }
-    default:
-      return state
+      draft.tabKey = action.key;
+      break;
   }
-}
+}, INITIAL_STATE)
 
 export default reducer

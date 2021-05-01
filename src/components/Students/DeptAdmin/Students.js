@@ -10,14 +10,9 @@ import StudentTable from './StudentTable'
 import { Button, message } from 'antd'
 import CreateEditStudentModal from './CreateEditStudentModal'
 import { setUserAction } from '../../Login/actions'
+import { PageHeader } from '../../styles/pageStyles'
 
 const StudentTableWrapper = styled.div`
-`
-const PageHeader = styled.div`
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
-  user-select: none;
 `
 
 const Students = ({ students, user, dispatch }) => {

@@ -109,7 +109,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
       {isLoading && <Loading isLoading={isLoading}/>}
       <BodyWrapper>
         <NavBar />
-        <Container rows="55px 90px 90px 1fr">
+        <Container rows="80px 90px 90px 1fr">
           <ImportStudentsModal
             visible={showImportStudentModal}
             setVisibility={setShowImportStudentModal}

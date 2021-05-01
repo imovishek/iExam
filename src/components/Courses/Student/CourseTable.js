@@ -1,14 +1,14 @@
 
 import styled from 'styled-components'
 import _ from 'underscore'
-import { Spin, Button } from 'antd'
+import { Spin, Button, message } from 'antd'
 import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import api, { deleteCourse } from '../../../utitlities/api'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
 import { NoDataComponent, smartLabel } from '../../../utitlities/common.functions'
-import { TableRowChild, OperationWrapper, TableHeaderChild, SpinWrapper } from '../../styles/tableStyles'
+import { TableRowChild, OperationWrapper, TableHeaderChild, SpinWrapper, TableRowStyled, TableWrapper } from '../../styles/tableStyles'
 import { Row } from '../../styles/pageStyles'
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
@@ -38,10 +38,10 @@ const CourseCard = ({
         newStyle.background = '#1e8efb'
         break
       case 'Enter':
-        newStyle.background = 'rgb(71, 119, 71)'
+        newStyle.background = 'rgb(2 148 2)'
         break
       case 'Pending':
-        newStyle.background = 'rgb(111, 56, 58)'
+        newStyle.background = 'rgb(234 97 0 / 86%)'
         break
       default:
         break
@@ -52,20 +52,20 @@ const CourseCard = ({
 
   const enrollRequestHandler = async (e) => {
     try {
-      setIsLoading(true);
       await api.updateCourse(course, {
         $push: {
           pendingEnrollStudents: user._id
         }
-      })
-      await updateCoursesOnUI()
+      });
+      message.success('Enrollment request sent!');
+      await updateCoursesOnUI(course._id)
     } catch (err) {
       console.log(err);
     }
   }
 
   return (
-    <Row columns="repeat(6, 1fr) 240px">
+    <TableRowStyled columns="repeat(6, 1fr) 240px">
       <TableRowChild> { course.title } </TableRowChild>
       <TableRowChild> { course.courseCode } </TableRowChild>
       <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
@@ -86,7 +86,7 @@ const CourseCard = ({
           </ButtonSyled>
         </OperationWrapper>
       </TableRowChild>
-    </Row>
+    </TableRowStyled>
   )
 }
 
@@ -99,7 +99,7 @@ const CourseTable = ({
   dispatch
 }) => {
   const [current, setCurrent] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(1)
   const paginatedCourses = courses.slice((current - 1) * pageSize, current * pageSize)
 
@@ -109,7 +109,7 @@ const CourseTable = ({
   }, [courses, paginatedCourses.length])
   const isNoData = courses.length === 0
   return (
-    <div>
+    <TableWrapper>
       <Row columns="repeat(6, 1fr) 240px">
         <TableHeaderChild> Course Title </TableHeaderChild>
         <TableHeaderChild> Course Code </TableHeaderChild>
@@ -147,7 +147,7 @@ const CourseTable = ({
           <Spin size="large" />
         </SpinWrapper>
       }
-    </div>
+    </TableWrapper>
   )
 }
 

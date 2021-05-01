@@ -11,15 +11,10 @@ import { Button } from 'antd'
 import CreateEditCourseModal from './CreateEditCourseModal'
 import { setUserAction } from '../../Login/actions'
 import _ from 'underscore';
+import { PageHeader } from '../../styles/pageStyles'
 
 const CourseTableWrapper = styled.div`
 
-`
-const PageHeader = styled.div`
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
-  user-select: none;
 `
 
 const ButtonStyled = styled(Button)`

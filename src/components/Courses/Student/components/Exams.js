@@ -11,11 +11,11 @@ import {
 import { useState, useEffect } from "react";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
+import { TableRowStyled } from "../../../styles/tableStyles";
 
 const Container = styled.div`
   border-radius: 8px;
   padding: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
 `;
 
 const Body = styled.div`
@@ -26,8 +26,7 @@ const Body = styled.div`
   }
 `;
 
-const HeaderLabel = styled.div`
-  color: grey;
+const HeaderLabel = styled.h3`
   padding: 10px;
 `;
 
@@ -35,7 +34,6 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   height: 40px;
-  font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
   padding: 10px;
@@ -75,13 +73,13 @@ const Card = ({ exam, onClick }) => {
   }, [exam]);
 
   return (
-    <Row columns="repeat(5, 1fr)" onClick={onClick}>
+    <TableRowStyled columns="repeat(5, 1fr)" onClick={onClick}>
       <Wrapper>{exam.title}</Wrapper>
       <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
       <Wrapper>{splitDuration(exam.duration)}</Wrapper>
       <Wrapper>{smartLabel(getExamStatus(exam))}</Wrapper>
       <Wrapper>{detailDuration}</Wrapper>
-    </Row>
+    </TableRowStyled>
   );
 };
 

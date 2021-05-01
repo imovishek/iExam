@@ -9,8 +9,9 @@ export const Row = styled.div`
 export const HeaderRow = styled.div``;
 
 export const BodyRow = styled.div`
-  border: 1px solid rgba(10, 10, 10, 0.3);
-  padding: 13px;
+  box-shadow: 0px 0px 5px #bbbbbb;
+  border-radius: 8px;
+  padding: 20px;
   border-radius: 8px;
 `;
 
@@ -19,6 +20,7 @@ export const LabelWrapper = styled.div`
   margin-bottom: 10px;
   user-select: none;
 `;
+
 export const TileHeaderWrapper = styled.div`
   display: grid;
   grid-template-columns: ${(props) => props.columns || "auto"};
@@ -29,10 +31,12 @@ export const RightButtonWrapper = styled.div`
   justify-content: flex-end;
 `;
 
-export const PageHeader = styled.div`
+export const PageHeader = styled.h1`
   display: inline;
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
+  user-select: none;
+`;
+
+export const SecondHeader = styled.h2`
+  display: inline;
   user-select: none;
 `;

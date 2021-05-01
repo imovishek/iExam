@@ -5,18 +5,10 @@ import { BodyWrapper, Container } from '../../../utitlities/styles';
 import React, { useEffect, useState } from 'react';
 import api from '../../../utitlities/api';
 import { onUpdateQuestions } from '../actions';
-import styled from 'styled-components';
 import QuestionTable from './QuestionsTable';
-import { TileHeaderWrapper, RightButtonWrapper } from '../../styles/pageStyles';
+import { TileHeaderWrapper, RightButtonWrapper, PageHeader } from '../../styles/pageStyles';
 import { Button, message } from 'antd';
 import { push } from 'connected-react-router';
-
-const PageHeader = styled.div`
-  font-weight: 600;
-  font-size: 20px;
-  color: #828b94;
-  user-select: none;
-`
 
 const Questions = ({ questions, user, dispatch }) => {
   const [isQuestionsChanged, setQuestionChanged] = useState(true)

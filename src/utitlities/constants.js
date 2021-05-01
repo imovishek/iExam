@@ -8,6 +8,7 @@ export const MATCHING = "matching";
 
 export const hasPageAccess = {
   deptAdmin: {
+    Dashboard: true,
     Courses: true,
     Teachers: true,
     Students: true,
@@ -15,11 +16,13 @@ export const hasPageAccess = {
     ExamPage: true,
   },
   student: {
+    Dashboard: true,
     Exams: true,
     Courses: true,
     Results: true,
   },
   teacher: {
+    Dashboard: true,
     Exams: true,
     Courses: true,
     Questions: true,
