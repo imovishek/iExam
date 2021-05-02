@@ -12,6 +12,7 @@ import CreateEditCourseModal from './CreateEditCourseModal'
 import { setUserAction } from '../../Login/actions'
 import _ from 'underscore';
 import { PageHeader } from '../../styles/pageStyles'
+import ImportCoursesModal from './ImportCoursesModal'
 
 const CourseTableWrapper = styled.div`
 
@@ -23,17 +24,17 @@ const ButtonStyled = styled(Button)`
 `
 
 const Courses = ({ courses, user, dispatch }) => {
-  const [isCoursesChanged, setCourseChanged] = useState(true)
-  const [isLoading, setLoading] = useState(true)
-  const [selectedCourse, setSelectedCourse] = useState(null)
-  const [showCreateEditModal, setShowCreateEditModal] = useState(false)
-
+  const [isCoursesChanged, setCourseChanged] = useState(true);
+  const [isLoading, setLoading] = useState(true);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [showCreateEditModal, setShowCreateEditModal] = useState(false);
+  const [showImportCoursesModal, setShowImportCoursesModal] = useState(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     if (isCoursesChanged) {
       const { courseIDs = [] } = user
       try {
-        const { payload = [] } = await api.getCourses({ _id: { $in: courseIDs } })
+        const { payload = [] } = await api.getCourses({ 'department.departmentCode': user.department.departmentCode })
         dispatch(onUpdateCourses(payload))
       } catch (err) {
         console.log(err)
@@ -78,13 +79,19 @@ const Courses = ({ courses, user, dispatch }) => {
 
   return (
     <div>
+      <ImportCoursesModal
+        visible={showImportCoursesModal}
+        setVisibility={setShowImportCoursesModal}
+        setCourseChanged={setCourseChanged}
+        user={user}
+      />
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
         <Container rows="80px 1fr">
           <Row columns="1fr 150px 170px">
             <PageHeader>Courses</PageHeader>
-            <ButtonStyled type="primary">
+            <ButtonStyled type="primary" onClick={() => setShowImportCoursesModal(true)}>
               Import Courses
             </ButtonStyled>
             <ButtonStyled

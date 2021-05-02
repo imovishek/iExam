@@ -41,7 +41,7 @@ const AnnouncementWrapper = styled.div`
   color: #608794;
   margin-bottom: 10px;
   height: 60px;
-  background: #ffeb00;
+  background: #ffd030;
   padding: 10px;
   border-radius: 5px;
 `
