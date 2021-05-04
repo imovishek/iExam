@@ -6,7 +6,7 @@ const { userTypeToHelperMapping } = require('../../config/const');
 const firstUpperCase = userType => userType.replace(/\b\w/g, c => c.toUpperCase());
 // GET USER
 exports.getUsers = async (req, res) => {
-  const { userType = 'deptAdmin' } = req.user;
+  const { userType = 'deptAdmin' } = req.query;
   const userHelper = userTypeToHelperMapping[userType];
   const UserType = firstUpperCase(userType);
   const { query } = req;
