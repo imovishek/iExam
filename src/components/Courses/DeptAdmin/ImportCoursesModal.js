@@ -4,22 +4,31 @@ import { Modal, Button, message, Spin } from 'antd';
 import Dropzone from '../../Common/Dropzone';
 import api from '../../../utitlities/api';
 import { CenterText, LinkStyled } from '../../../utitlities/styles';
+import { FontAwesomeIconWrapper } from '../../styles/tableStyles';
+import { faFile, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 
 const CenterTextWrapper = styled(CenterText)`
   margin-bottom: 20px;
-`
-
+`;
+const FileNameWrapper = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 10px;
+`;
 const ImportStudentsModal = ({
   visible,
   setVisibility,
   setCourseChanged,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-
+  const [file, setFile] = useState({});
   const closeModal = () => {
+    setFile({});
     setVisibility(false)
   };
-  const onSubmitHandler = async (file) => {
+  const onSubmitHandler = async () => {
+    if (!file.name) return message.error('Please select a file!');
     try {
       setIsLoading(true);
       const { payload: courseIDs } = await api.uploadCoursesFile(file);
@@ -31,6 +40,7 @@ const ImportStudentsModal = ({
     } finally {
       setIsLoading(false);
     }
+    closeModal();
   }
   return (
     <Modal
@@ -43,16 +53,16 @@ const ImportStudentsModal = ({
       onCancel={() => closeModal()}
       
       footer={[
-        <Button key="back" onClick={() => closeModal()}>
-          Ok
+        <Button key="back" onClick={() => onSubmitHandler()} loading={isLoading}>
+          Upload
         </Button>
       ]}
     >
       <CenterTextWrapper>
         <LinkStyled href="/files/sampleCourseUpload.csv" download>Download Sample File</LinkStyled>
       </CenterTextWrapper>
-      <Dropzone onSubmit={onSubmitHandler}/>
-      {isLoading && <Spin style={{display: 'flex', justifyContent: 'center'}} spinning={true}/>}
+      <Dropzone onSubmit={(file) => setFile(file)}/>
+      {file.name && <FileNameWrapper><FontAwesomeIconWrapper icon={faFile} color="#40A9FF"/>{file.name}</FileNameWrapper>}
     </Modal>
   )
 }
