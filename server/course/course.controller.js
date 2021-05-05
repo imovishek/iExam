@@ -115,6 +115,7 @@ exports.coursesFileUpload = async (req, res) => {
   try {
     const courses = await readCSV(filePath);
     courses.splice(-1, 1);
+    if (!courses.length) throw new Error('Please select a valid file!');
     const mappedCourses = mapCsvToCourse(courses, user);
     let createdCourses = await courseHelper.createOrUpdateCourse(mappedCourses, user);
     createdCourses = createdCourses.filter(course => course);
