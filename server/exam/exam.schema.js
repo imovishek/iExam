@@ -21,8 +21,14 @@ const examSchema = new Schema({
 	announcements: [{
 		dateTime: { type: Date, default: Date.now() },
 		body: { type: String, required: true },
-		securityType: { type: String, required: true, default: 'public' },
-		access: [{ type: Schema.Types.ObjectId }],
+		securityType: {
+			type: String,
+			enum: {
+				values: ['public', 'private']
+			},
+			required: true,
+			default: 'public' },
+		access: { type: [Schema.Types.ObjectId], default: [] },
 		authorID: Schema.Types.ObjectId,
 		seen: [Schema.Types.ObjectId]
 	}],
