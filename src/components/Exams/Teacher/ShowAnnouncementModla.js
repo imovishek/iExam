@@ -77,10 +77,7 @@ const ShowAnnouncementModal = ({
   exam,
   updateExamOnUI
 }) => {
-  
-  const createAnnouncementHandler = async (e) => {
-    
-  }
+
   const [enrolledStudents, setEnrolledStudents] = useState([]);
   useEffect(async () => {
     if (!exam.course) return {};
