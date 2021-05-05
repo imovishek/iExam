@@ -26,9 +26,14 @@ const ExamsForStudent = ({ courses = [], user, dispatch, currentTab }) => {
         _.each(mycourses, course => {
           exams = exams.concat(course.exams)
         })
+        const examIDs = _.map(exams, (exam) => exam._id);
+        const { payload: loadExams } = await api.getExams({
+          _id: { $in: examIDs },
+        });
+
         setExamsObj(
-          _.groupBy(exams, exam => getExamStatus(exam).toLowerCase())
-        )
+          _.groupBy(loadExams, (exam) => getExamStatus(exam).toLowerCase())
+        );
       } catch (err) {
         console.log(err)
       } finally {
