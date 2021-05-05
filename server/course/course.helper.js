@@ -1,5 +1,6 @@
 const Course = require('./course.model');
 const _ = require('underscore');
+const moment = require('moment');
 
 // CREATE
 exports.createCourse = (course) =>
@@ -46,4 +47,21 @@ exports.deleteCourseByID = _id => {
 exports.deleteCourses = query => {
   if (_.isEmpty(query)) return null;
   return Course.remove(query);
+}
+
+exports.createOrUpdateCourse = (courses = [], user) => {
+  return Promise.all(courses.map(async course => {
+    const oldCourseCount = await Course.find({
+      title: course.title,
+      courseCode: course.courseCode,
+      'department.departmentCode': user.department.departmentCode,
+      batchCode: course.batchCode,
+      startDate: {
+        $gte: moment(course.startDate).startOf('day'),
+        $lte: moment(course.startDate).endOf('day'),
+      }
+    }).countDocuments();
+    if (oldCourseCount) return null;
+    return new Course(course).save();
+  }));
 }

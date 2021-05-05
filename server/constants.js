@@ -1,5 +1,43 @@
 exports.httpStatuses = {
-    OK: 200,
-    INTERNAL_SERVER_ERROR: 500,
-    NOT_FOUND: 404,
+  OK: 200,
+  INTERNAL_SERVER_ERROR: 500,
+  NOT_FOUND: 404,
+}
+
+exports.allBatches = {
+  2019: '2019 Batch',
+  2018: '2018 Batch',
+  2017: '2017 Batch',
+  2016: '2016 Batch',
+  2015: '2015 Batch',
+  others: 'Others',
+};
+
+exports.allStatuses = {
+  upcoming: 'Upcoming',
+  running: 'Running',
+  ended: 'Ended',
+}
+
+exports.inputDateFormats = [
+  'DD/MM/YY',
+  'DD/MM/YY',
+  'DD-MM-YY',
+  'MM-DD-YY',
+  'MM/DD/YY',
+  'DD/MM/YYYY',
+  'DD/MM/YYYY',
+  'DD-MM-YYYY',
+  'MM-DD-YYYY',
+  'MM/DD/YYYY',
+];
+
+exports.requiredCsvHeaders = {
+  COURSE: [
+    "Course Title",
+    "Course Code",
+    "Batch",
+    "Start Date",
+    "Status"
+  ]
 }
