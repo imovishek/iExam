@@ -32,7 +32,7 @@ export const Text = styled.div`
 `;
 
 export const Box = styled.div`
-  background: ${(props) => props.bgColor || "gray"};
+  background: ${(props) => props.bgColor || "none"};
   width: ${(props) => props.width || "200px"};
   height: ${(props) => props.height || "70px"};
   display: block;
@@ -50,12 +50,18 @@ export const Col = styled.div`
   grid-template-rows: ${(props) => props.rows || "none"};
 `;
 export const ButtonStyled = styled(Button)`
-  height: 30px;
+  height: 32px;
   margin-left: 10px;
   transition-duration: 500ms;
 `;
 
 export const CenterText = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Center = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

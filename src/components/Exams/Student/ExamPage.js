@@ -6,7 +6,6 @@ import {
   BodyWrapper,
   Container,
   Col,
-  CenterText,
 } from "../../../utitlities/styles";
 import React, { useEffect, useState } from "react";
 import api from "../../../utitlities/api";
@@ -14,12 +13,11 @@ import styled from "styled-components";
 import { Button, message, Switch } from "antd";
 import {
   getExamStatus,
-  getExamTimeDiffInFormat,
   meGotBanned,
 } from "../../../utitlities/common.functions";
 import { useParams } from "react-router";
 import { goBack, push } from "connected-react-router";
-import { faArrowLeft, faBullhorn } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Row,
@@ -27,32 +25,30 @@ import {
   TileHeaderWrapper,
   RightButtonWrapper,
 } from "../../styles/pageStyles";
-import { announcements } from "../../../utitlities/dummy";
 import QuestionPaper from "./components/QuestionPaper";
 import Questions from "./components/Questions";
-import Announcements from "./components/Announcements";
 import Loading from "../../Common/Loading";
 import { setUserAction } from "../../Login/actions";
 import { MATCHING } from "../../../utitlities/constants";
-import { ExamTitleWrapper, TimeDiffWrapper } from "../styles";
 import ShowExamStatusTitle from "../Common/ShowExamStatusTitle";
+import ClarificationOrAnnouncement from "./components/ClarificationOrAnnouncement";
 
 const ButtonStyled = styled(Button)`
   height: 30px;
 `;
 
 const FontAwesomeIconWrapper = styled.div`
-  width: 30px;
-  display: inline-block;
-  cursor: pointer;
+width: 30px;
+display: inline-block;
+cursor: pointer;
 `;
 
 const TileBodyWrapper = styled.div`
-  background: #ffffff;
+background: #ffffff;
 `;
 const RedText = styled.span`
-  margin-left: 10px;
-  color: red;
+margin-left: 10px;
+color: red;
 `;
 
 const virtualState = {};
@@ -65,7 +61,8 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [paper, setPaper] = useState({});
   const [switchLoading, setSwitchLoading] = useState(false);
   const [savedText, setSavedText] = useState("");
-
+  const [clarifications, setClarifications] = useState([]);
+  const [clarificationsUpdated, setClarificationsUpdated] = useState({})
   const getAnswerFromOptions = ({ leftSide, rightSide }) => {
     const arr = [];
     const len = Math.max(leftSide.length, rightSide.length);
@@ -137,6 +134,24 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     }
   }, [id]);
 
+  useEffect(async () => {
+    if (!exam._id) return;
+    try {
+      const { payload: claries } = await api.getClarifications({ examID: exam._id });
+      const userIDsObj = {};
+      _.forEach(claries, clarie => {
+        if (clarie.userID) userIDsObj[clarie.userID] = true;
+      })
+      const { payload: newUsers } = await api.getUsers({ userType: 'student', _id: { $in: Object.keys(userIDsObj) } });
+      _.forEach(newUsers, user => (userIDsObj[user._id] = user));
+      _.forEach(claries, clarie => {
+        clarie.user = userIDsObj[clarie.userID];
+      })
+      setClarifications(claries);
+    } catch (e) {
+
+    }
+  }, [exam, clarificationsUpdated]);
   const submitPaperHandler = async () => {
     setIsLoading(true);
     const cleanPaper = {
@@ -290,7 +305,11 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                   }
                   questions={exam.questions}
                 />
-                <Announcements exam={exam} />
+                <ClarificationOrAnnouncement
+                  exam={exam}
+                  clarifications={clarifications}
+                  setClarificationsUpdated={setClarificationsUpdated}
+                />
               </Row>
             )}
           </TileBodyWrapper>

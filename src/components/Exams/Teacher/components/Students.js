@@ -37,13 +37,21 @@ const Row = styled.div`
   grid-gap: 10px;
   border-radius: 5px;
   grid-template-columns: ${props => props.columns || 'auto'};
+  padding: 10px;
 `
+
+const StyledSelect = styled(Select)`
+  .ant-select-arrow {
+    top: 17px; 
+  }
+  width: 100%;
+`;
 
 const Body = styled.div`
   overflow: auto;
   display: flex;
   height: 100%;
-  max-height: calc(100vh - 200px);
+  /*max-height: calc(100vh - 200px);*/
   flex-direction: column;
   ::-webkit-scrollbar {
     width: 0px;
@@ -124,7 +132,7 @@ const Card = ({
   )
 
   return (
-    <TableRowStyled gridGap="10px" isSelected={studentID === student._id} onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 80px 20px">
+    <TableRowStyled style={{padding: '3px', borderRadius: '3px'}} gridGap="10px" isSelected={studentID === student._id} onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))} columns="repeat(2, 1fr) 80px 20px">
       <Wrapper>{student.registrationNo}</Wrapper>
       <Wrapper>{getName(student)}</Wrapper>
       <Wrapper> <TextCenter>{totalMarks || 0} </TextCenter> </Wrapper>
@@ -152,7 +160,6 @@ const Students = ({
   const [students, setStudents] = useState([]);
   const [searchStudents, setSearchStudents] = useState([])
   const [showingStudentType, setShowingStudentType] = useState("participants");
-  console.log(searchStudents);
   useEffect(() => {
     const newStudents = showingStudentType === 'participants' ?
       participants :
@@ -187,14 +194,13 @@ const Students = ({
   return (
     <Container rows="32px 1fr">
       <Row columns="1fr 1fr">
-        <Select
-          style={{ width: '200px' }}
+        <StyledSelect
           value={showingStudentType}
           onChange={v => setShowingStudentType(v)}
         >
           <Option key="participants" value="participants">Participants ({(exam.participants || []).length})</Option>
           <Option key="banned" value="banned">Banned Students ({(exam.bannedParticipants || []).length})</Option>
-        </Select>
+        </StyledSelect>
         <SearchStyled
           allowClear
           placeholder="Search"

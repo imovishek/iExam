@@ -1,29 +1,24 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
-import { Modal, Select, Button, Upload, Dropdown, message } from "antd";
-import _ from "underscore";
+import { Modal, Select, message } from "antd";
 import api from "../../../utitlities/api";
 
-import { UploadOutlined } from "@ant-design/icons";
-import { options } from "@hapi/joi";
 import TextArea from "antd/lib/input/TextArea";
-import { Col } from "../../../utitlities/styles";
+import { CenterText, Col } from "../../../utitlities/styles";
+import { PRIVATE } from "../../../utitlities/constants";
+import { getName } from "../../../utitlities/common.functions";
 
 const { Option } = Select;
 
 const Row = styled.div`
   display: grid;
+  grid-gap: 10px;
   grid-template-columns: ${(props) => props.columns || "none"};
 `;
 
-const ColumnWrapper = styled.div`
-  margin-right: 20px;
-  margin-bottom: 15px;
-`;
 
 const StyledSelect = styled(Select)`
-  margin-left: 20px;
-  width: 120px;
+  width: 100%;
 `;
 
 const NewAnnouncementModal = ({
@@ -41,7 +36,21 @@ const NewAnnouncementModal = ({
     await updateExamOnUI();
     message.success('Successfully created!')
   };
-
+  const [enrolledStudents, setEnrolledStudents] = useState([]);
+  useEffect(async () => {
+    if (!exam.course) return {};
+    try {
+      const { payload: users } = await api.getUsers({
+        _id: {
+          $in: exam.course.enrolledStudents,
+        },
+        userType: 'student',
+      });
+      setEnrolledStudents(users);
+    } catch (error) {
+      
+    }
+  }, [exam])
   const closeModal = () => {
     setVisibility(false);
     setForm(defaultAnnouncement);
@@ -64,13 +73,33 @@ const NewAnnouncementModal = ({
       okText="Create"
     >
       <Col rows="30px 1fr">
-        <div>
-          To:
+        <Row columns="30px 1fr 2fr">
+          <CenterText>To: </CenterText>
           <StyledSelect value={form.securityType} onChange={(value) => setForm({ ...form, securityType: value })} >
             <Option value="public">Public</Option>
             <Option value="private">Private</Option>
           </StyledSelect>
-        </div>
+          {form.securityType === PRIVATE && (
+            <Select
+              style={{ width: '100%' }}
+              showSearch
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              filterSort={(optionA, optionB) =>
+                optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
+              }
+              onChange={(v) => setForm({...form, access: [v]})}
+              value={form.access && form.access[0]}
+              placeholder="Select Student"
+            >
+              {enrolledStudents.map((std, index) => (
+                <Option key={std._id} value={std._id}>{`${getName(std)} (${std.registrationNo})`}</Option>
+              ))}
+            </Select>
+          )}
+        </Row>
         <TextArea value={form.body} rows={5} onChange={(e) => setForm({ ...form, body: e.target.value })} />
       </Col>
     </Modal>

@@ -203,8 +203,7 @@ export const getExamTimeDiffInFormat = (exam) => {
     timeString = formatSeconds(seconds);
   } else if (moment().isAfter(endDate)) {
     status = "Ended";
-    const seconds = moment().diff(endDate, "seconds");
-    timeString = `- ${formatSeconds(seconds)}`;
+    timeString = `${formatSeconds(0)}`;
   } else {
     status = "Running";
     const seconds = endDate.diff(moment(), "seconds");
@@ -286,3 +285,18 @@ export const getStatusColor = (status) => {
 }
 
 export const formatDateAndTime = (date, time) => `${moment(date).format('DD/MM/YYYY')} ${time}`;
+
+export const getTimeDiff = (t1, t2) => {
+  const seconds = moment(t2).diff(t1, 'seconds');
+  const dayInSecond = 24*3600;
+  const hourInSecond = 3600;
+  const minuteInSecond = 60;
+
+  let days = Math.floor(seconds / dayInSecond); days %= dayInSecond;
+  let hours = Math.floor(seconds / hourInSecond); hours %= hourInSecond;
+  let minutes = Math.floor(seconds / minuteInSecond); minutes %= minuteInSecond;
+  if (days) return `${days}d`;
+  if (hours) return `${hours}h ${minutes}m`;
+  if (minutes) return `${minutes}m`;
+  return 'a few seconds';
+}

@@ -54,7 +54,7 @@ export const allBatches = {
   2015: '2015 Batch',
   others: 'Others',
 };
-            
+
 
 export const isAnswered = (ans) => {
   if (!ans) return false;
