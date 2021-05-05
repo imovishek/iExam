@@ -1,11 +1,12 @@
 import CheckAuthentication from '../../CheckAuthentication/CheckAuthentication'
 import NavBar from '../../NavBar/NavBar'
 import { connect } from 'react-redux'
-import { BodyWrapper, Container, Col, ButtonStyled, CenterText } from '../../../utitlities/styles'
+import { BodyWrapper, Container, Col, ButtonStyled, CenterText, Center } from '../../../utitlities/styles'
 import React, { useEffect, useState } from 'react'
 import api from '../../../utitlities/api'
 import styled from 'styled-components'
-import { message, Menu, Dropdown, Button } from 'antd'
+import _ from 'underscore'
+import { message, Menu, Dropdown, Button, Tabs } from 'antd'
 import {
   DownOutlined,
   UserOutlined,
@@ -35,9 +36,12 @@ import ImportQuestionsModal from './ImportQuestionModal'
 import NewAnnouncementModal from './NewAnnouncementModal'
 import ShowAnnouncementModal from './ShowAnnouncementModla'
 import ShowExamStatusTitle from '../Common/ShowExamStatusTitle'
+import Clarifications from './components/Clarifications'
+const { TabPane } = Tabs;
 
 const StyledDropdown = styled(Dropdown)`
-  width: 130px;
+  display: flex;
+  align-items: center;
 `
 
 const FontAwesomeIconWrapper = styled.div`
@@ -45,6 +49,17 @@ const FontAwesomeIconWrapper = styled.div`
   display: inline-block;
   cursor: pointer;
 `
+const QuestionsBodyRow = styled(BodyRow)`
+  box-shadow: none;
+  border-radius: 0px;
+`;
+
+const StyledRow = styled(Row)`
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+`;
+
 const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const { id } = useParams()
   if (!id) dispatch(goBack())
@@ -55,6 +70,25 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [showImportQuestions, setShowImportQuestions] = useState(false);
   const [showNewAnnouncementModal, setShowNewAnnouncementModal] = useState(false);
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+  const [clarifications, setClarifications] = useState([]);
+  useEffect(async () => {
+    if (!exam._id) return;
+    try {
+      const { payload: claries } = await api.getClarifications({ examID: exam._id });
+      const userIDsObj = {};
+      _.forEach(claries, clarie => {
+        if (clarie.userID) userIDsObj[clarie.userID] = true;
+      })
+      const { payload: newUsers } = await api.getUsers({ userType: 'student', _id: { $in: Object.keys(userIDsObj) } });
+      _.forEach(newUsers, user => (userIDsObj[user._id] = user));
+      _.forEach(claries, clarie => {
+        clarie.user = userIDsObj[clarie.userID];
+      })
+      setClarifications(claries);
+    } catch (e) {
+
+    }
+  }, [exam]);
 
   useEffect(async () => {
     try {
@@ -101,11 +135,19 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   }
 
   const StyledBodyRow = (props) => (
-    <BodyRow>
-      <Col rows="32px minmax(300px, calc(100vh - 320px))">
+    <QuestionsBodyRow style={{paddingLeft: '0px'}}>
+      <Col rows="32px minmax(300px, 100vh)" style={{paddingTop: '23px'}}>
         {props.children}
       </Col>
-    </BodyRow>
+    </QuestionsBodyRow>
+  );
+
+  const QuestionsWrapper = (props) => (
+    <QuestionsBodyRow style={{borderRight: '1px solid #bbbbbb'}}>
+      <Col rows="32px minmax(300px, 100vh)">
+        {props.children}
+      </Col>
+    </QuestionsBodyRow>
   );
 
   const handleMenuClick = (e) => {
@@ -205,7 +247,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       />
       <BodyWrapper>
         <NavBar />
-        <Container rows="80px 60px 1fr" gridGap="20px">
+        <Container rows="80px 30px 1fr" gridGap="20px">
           <TileHeaderWrapper columns="1fr 1fr 1fr">
             <div>
               {hasBack &&
@@ -222,52 +264,64 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               </ButtonStyled>
             </RightButtonWrapper>
           </TileHeaderWrapper>
-          <Row columns="137px 216px 168px">
+          <Row columns="216px 216px 216px">
             <StyledDropdown overlay={gotoMenu} trigger={['click']}>
               <Button>
               Goto <DownOutlined />
               </Button>
             </StyledDropdown>
 
-            <ButtonStyled type="primary" onClick={() => setShowNewAnnouncementModal(true)}>
+            <ButtonStyled style={{marginLeft: "0px"}} type="primary" onClick={() => setShowNewAnnouncementModal(true)}>
               Create new announcement
             </ButtonStyled>
           
             <Button onClick={() => setShowAnnouncementModal(true)}> View Announcements</Button>
           </Row>
-          <Row columns="3fr 2fr">
-            <StyledBodyRow>
-              <TileHeaderWrapper columns="1fr 1fr">
-                <SecondHeader>Questions ({(exam.questions || []).length})</SecondHeader>
-                <RightButtonWrapper>
-                  <CenterText style={{marginRight: '10px'}}>Total Marks: {exam.totalMarks} </CenterText>
-                  <StyledDropdown overlay={questionActionMenu} trigger={['click']}>
-                    <Button>
-                      Select Action <DownOutlined />
-                    </Button>
-                  </StyledDropdown>
-                </RightButtonWrapper>
-              </TileHeaderWrapper>              
-              <Questions
-                onUpdateExamUI={updateExamParticipantOnUI}
-                teachersObj={teachersObj}
-                exam={exam}
-                questions={exam.questions}
-              />
-            </StyledBodyRow>
-            <StyledBodyRow>
-              <Students
-                participants={exam.participants}
-                bannedParticipants={exam.bannedParticipants}
-                exam={exam}
-                updateExamOnUI={updateExamParticipantOnUI}
-              />
-            </StyledBodyRow>
-            {/* <StyledBodyRow>
-              <TileHeaderWrapper><LabelWrapper>Banned Participants</LabelWrapper></TileHeaderWrapper>
-              <BannedParticipants students={exam.bannedParticipants} exam = {exam} updateExamParticipantOnUI = {updateExamParticipantOnUI}/>
-            </StyledBodyRow> */}
-          </Row>
+          <StyledRow columns="3fr 2fr">
+            <Tabs onChange={() => {}} type="card">
+              <TabPane tab="Questions" key="1">
+                <QuestionsWrapper>
+                  <TileHeaderWrapper columns="1fr 1fr">
+                    <SecondHeader>Questions ({(exam.questions || []).length})</SecondHeader>
+                    <RightButtonWrapper>
+                      <CenterText style={{marginRight: '10px'}}>Total Marks: {exam.totalMarks} </CenterText>
+                      <Center>
+                        <StyledDropdown overlay={questionActionMenu} trigger={['click']}>
+                          <Button>
+                            Select Action <DownOutlined />
+                          </Button>
+                        </StyledDropdown>
+                      </Center>
+                      
+                    </RightButtonWrapper>
+                  </TileHeaderWrapper>              
+                  <Questions
+                    onUpdateExamUI={updateExamParticipantOnUI}
+                    teachersObj={teachersObj}
+                    exam={exam}
+                    questions={exam.questions}
+                  />
+                </QuestionsWrapper>
+              </TabPane>
+              <TabPane tab="Clarifications" key="2">
+                <QuestionsWrapper>
+                  <Clarifications exam={exam} clarifications={clarifications} />
+                </QuestionsWrapper>
+              </TabPane>
+            </Tabs>
+            <Col rows="20px 1fr">
+              <div></div>
+              <StyledBodyRow>
+                <Students
+                  participants={exam.participants}
+                  bannedParticipants={exam.bannedParticipants}
+                  exam={exam}
+                  updateExamOnUI={updateExamParticipantOnUI}
+                />
+              </StyledBodyRow>
+            </Col>
+            
+          </StyledRow>
         </Container>
       </BodyWrapper>
     </div>

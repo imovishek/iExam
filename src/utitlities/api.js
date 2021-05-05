@@ -118,7 +118,10 @@ export const updateDeptAdminByID = async (_id, body) =>
 export const getUserByID = (id) =>
   requestApiAndGetResponse(`${apiUrl}/user/${id}`, 'get')
     .then(res => res.data)
-
+export const getUsers = (query) =>
+  requestApiAndGetResponse(`${apiUrl}/users`, 'get', {}, query)
+    .then(res => res.data)
+  
 export const updateUserByID = async (_id, body) =>
   requestApiAndGetResponse(`${apiUrl}/user/${_id}`, 'put', {
     update: body
@@ -195,6 +198,23 @@ export const uploadCoursesFile = (file) => {
   });
 };
 
+export const getClarifications = (query) =>
+  requestApiAndGetResponse(`${apiUrl}/clarifications`, 'get', {}, query)
+    .then(res => res.data)
+
+export const createClarification = async (clarification) =>
+  requestApiAndGetResponse(`${apiUrl}/clarifications`, 'post', {
+    clarification
+  })
+    .then(res => res.data)
+export const updateClarification = async (clarification, update) =>
+  requestApiAndGetResponse(`${apiUrl}/clarification/${clarification._id}`, 'put', {
+    query: {
+      _id: clarification._id
+    },
+    update: update || clarification
+  })
+    .then(res => res.data)
 const api = {
   apiLogin,
   getCourses,
@@ -231,6 +251,10 @@ const api = {
   getExamUsingFilterByID,
   uploadCoursesFile,
   COURSE_UPLOAD_URL,
+  getClarifications,
+  createClarification,
+  updateClarification,
+  getUsers,
 }
 
 export default api

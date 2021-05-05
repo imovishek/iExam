@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import _ from 'underscore'
 import { smartLabel, getName } from '../../../../utitlities/common.functions'
-import { AwesomeIcon } from '../../../../utitlities/styles'
+import { AwesomeIcon, Box } from '../../../../utitlities/styles'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Popconfirm } from 'antd'
@@ -37,7 +37,7 @@ const Row = styled.div`
 `
 const Body = styled.div`
   overflow: auto;
-  height: calc(100% - 42px);
+  /*height: calc(100% - 42px);*/
   ::-webkit-scrollbar {
     width: 0px;
   }
@@ -93,6 +93,7 @@ const Questions = ({
     </Row>
     <Body>
       {_.map(questions, (question, index) => <Card teachersObj={teachersObj} exam={exam} dispatch={dispatch} key={`question_${index}`} question={question} onUpdateExamUI={onUpdateExamUI}/>)}
+      <Box height="800px"/>
     </Body>
   </Container>
 )

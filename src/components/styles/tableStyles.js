@@ -42,7 +42,7 @@ export const SpinWrapper = styled.div`
 `;
 
 export const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
-  cursor: pointer;
+  ${p => !p.notPointer ? 'cursor: pointer;' : ''}
   margin: auto;
   margin-left: 15px;
   margin-right: 15px;
@@ -89,6 +89,15 @@ export const TableRowStyled = styled(Row)`
     `grid-gap: ${props.gridGap}` : ''}
   ${props => props.isSelected ?
     `font-size: 18px;` : ''}
+  ${props => props.isSelected ?
+    `
+      background: #455858;
+      color: white;
+      :hover {
+        font-size: 14px;
+      }
+    ` : ''}
+    
 `;
 
 export const TableWrapper = styled.div`
