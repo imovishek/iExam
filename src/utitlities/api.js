@@ -184,6 +184,20 @@ export const getExamUsingFilterByID = (id, filter) =>
   requestApiAndGetResponse(`${apiUrl}/exam/${id}/filter`, 'post', filter)
     .then(res => res.data)
 
+const COURSE_UPLOAD_URL = `${apiUrl}/courses/upload`;
+
+export const uploadCoursesFile = (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const token = localStorage.getItem('token');
+  return axios.post(COURSE_UPLOAD_URL, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`, 
+    }
+  });
+};
+
 export const getClarifications = (query) =>
   requestApiAndGetResponse(`${apiUrl}/clarifications`, 'get', {}, query)
     .then(res => res.data)
@@ -235,6 +249,8 @@ const api = {
   updateExamPaperForStudent,
   updateExamPaperForTeacher,
   getExamUsingFilterByID,
+  uploadCoursesFile,
+  COURSE_UPLOAD_URL,
   getClarifications,
   createClarification,
   updateClarification,

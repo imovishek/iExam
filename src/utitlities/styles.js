@@ -83,3 +83,5 @@ export const AwesomeIcon = (props) => (
     onClick={props.onClick ? props.onClick : () => {}}
   />
 );
+
+export const LinkStyled = styled.a``;
