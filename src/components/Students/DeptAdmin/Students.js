@@ -11,8 +11,14 @@ import { Button, message } from 'antd'
 import CreateEditStudentModal from './CreateEditStudentModal'
 import { setUserAction } from '../../Login/actions'
 import { PageHeader } from '../../styles/pageStyles'
+import ImportStudentsModal from './ImportStudentsModal'
 
 const StudentTableWrapper = styled.div`
+`
+
+const ButtonStyled = styled(Button)`
+  height: 30px;
+  margin-right: 10px;
 `
 
 const Students = ({ students, user, dispatch }) => {
@@ -20,11 +26,12 @@ const Students = ({ students, user, dispatch }) => {
   const [isLoading, setLoading] = useState(true)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showCreateEditModal, setShowCreateEditModal] = useState(false)
+  const [showImportStudentsModal, setShowImportStudentsModal] = useState(false);
 
   useEffect(() => {
     if (isStudentsChanged) {
       const { studentIDs = [] } = user
-      api.getStudents({ _id: { $in: studentIDs } })
+      api.getStudents({ 'department.departmentCode': user.department.departmentCode })
         .then(({ payload }) => {
           dispatch(onUpdateStudents(payload))
           setStudentChanged(false)
@@ -62,12 +69,21 @@ const Students = ({ students, user, dispatch }) => {
 
   return (
     <div>
+      <ImportStudentsModal 
+        visible={showImportStudentsModal}
+        setVisibility={setShowImportStudentsModal}
+        setStudentChanged={setStudentChanged}
+        user={user}
+      />
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
         <Container rows="80px 1fr">
-          <Row columns="1fr 170px">
+          <Row columns="1fr 150px 170px">
             <PageHeader>Students</PageHeader>
+            <ButtonStyled type="primary" onClick={() => setShowImportStudentsModal(true)}>
+              Import Students
+            </ButtonStyled>
             <Button
               onClick={() => {
                 setShowCreateEditModal(true)
