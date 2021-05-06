@@ -12,8 +12,14 @@ import { Button, message } from 'antd'
 import CreateEditTeacherModal from './CreateEditTeacherModal'
 import { setUserAction } from '../../Login/actions'
 import { PageHeader, Row } from '../../styles/pageStyles'
+import ImportTeachersModal from './ImportTeachersModal'
 
 const TeacherTableWrapper = styled.div`
+`
+
+const ButtonStyled = styled(Button)`
+  height: 30px;
+  margin-right: 10px;
 `
 
 const Teachers = ({ teachers, user, dispatch }) => {
@@ -21,11 +27,12 @@ const Teachers = ({ teachers, user, dispatch }) => {
   const [isLoading, setLoading] = useState(true)
   const [selectedTeacher, setSelectedTeacher] = useState(null)
   const [showCreateEditModal, setShowCreateEditModal] = useState(false)
+  const [showImportTeachersModal, setShowImportTeachersModal] = useState(false);
 
   useEffect(() => {
     if (isTeachersChanged) {
       const { teacherIDs = [] } = user
-      api.getTeachers({ _id: { $in: teacherIDs } })
+      api.getTeachers({ 'department.departmentCode': user.department.departmentCode })
         .then(({ payload }) => {
           dispatch(onUpdateTeachers(payload))
           setTeacherChanged(false)
@@ -63,12 +70,21 @@ const Teachers = ({ teachers, user, dispatch }) => {
 
   return (
     <div>
+      <ImportTeachersModal 
+        visible={showImportTeachersModal}
+        setVisibility={setShowImportTeachersModal}
+        setTeacherChanged={setTeacherChanged}
+        user={user}
+      />
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
         <Container rows="80px 1fr">
-          <Row columns="1fr 180px">
+          <Row columns="1fr 150px 170px">
             <PageHeader>Teachers</PageHeader>
+            <ButtonStyled type="primary" onClick={() => setShowImportTeachersModal(true)}>
+              Import Teachers
+            </ButtonStyled>
             <Button
               onClick={() => {
                 setShowCreateEditModal(true)
