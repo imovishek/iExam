@@ -75,3 +75,23 @@ exports.mapCsvToCourse = (courses = [], user) =>
       department: user.department
     };
   });
+
+  exports.mapCsvToTeacher = (teachers = [], user) =>
+  teachers.map(teacher => {
+    const requiredHeaders = requiredCsvHeaders.TEACHER;
+    if (_.any(requiredHeaders, header => !_.contains(Object.keys(teacher), header)))
+      throw new Error('Some fields are missing');
+    return {
+      firstName: teacher['First Name'],
+      lastName: teacher['Last Name'],
+      shortName: teacher['Short Name'],
+      designation: teacher['Designation'],
+      credential: {
+        email: teacher["Email"],
+        password: "$2a$10$mub9.N4UeLgLmwbr727hW.v1rZ0VTigz9LW/dPIGprM1Xi182wmom",
+        userType: "teacher"
+      },
+      phoneNumber: teacher['Phone Number'],
+      department: user.department
+    };
+  });

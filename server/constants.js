@@ -46,5 +46,13 @@ exports.requiredCsvHeaders = {
     "Registration Number",
     "Phone Number",
     "Email"
+  ],
+  TEACHER: [
+    "First Name",
+    "Last Name",
+    "Short Name",
+    "Designation",
+    "Phone Number",
+    "Email"
   ]
 }

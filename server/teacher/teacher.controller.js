@@ -1,5 +1,8 @@
 const teacherHelper = require('./teacher.helper');
 const { httpStatuses } = require('../constants');
+const fs = require('fs');
+const Papa = require('papaparse');
+const { readCSV, mapCsvToTeacher, removeFile } = require('../common.functions');
 
 // GET TEACHER
 
@@ -98,3 +101,25 @@ exports.deleteTeacherByID = async (req, res) => {
     .send({ error: true, message: err.message });
   }
 };
+
+exports.teachersFileUpload = async (req, res) => {
+  const { filename, destination } = req.file;
+  const { user } = req;
+  const filePath = destination + filename;
+  try {
+    const teachers = await readCSV(filePath);
+    teachers.splice(-1, 1);
+    if (!teachers.length) throw new Error('Please select a valid file!');
+    const mappedTeachers = mapCsvToTeacher(teachers, user);
+    let createdTeachers = await teacherHelper.createOrUpdateTeacher(mappedTeachers, user);
+    createdTeachers = createdTeachers.filter(teacher => teacher);
+    const teacherIDs = createdTeachers.map(teacher => teacher._id);
+    res.status(httpStatuses.OK).send({ payload: { teacherIDs } });
+  } catch (err) {
+    console.log(err.message);
+    res
+    .status(httpStatuses.INTERNAL_SERVER_ERROR)
+    .send({ error: true, message: err.message });
+  }
+  removeFile(filePath);
+}
