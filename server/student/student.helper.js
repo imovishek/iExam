@@ -17,8 +17,8 @@ exports.createStudent = async (student) => {
 exports.getStudentByID = (_id) =>
   Student.findOne({ _id });
 
-exports.getStudents = (query) =>
-  Student.find(query);
+exports.getStudents = (query, sort = { createdAt: -1 }) =>
+  Student.find(query).sort(sort);
 
 
 // UPDATE
@@ -51,4 +51,15 @@ exports.deleteStudentByID = async _id => {
 exports.deleteStudents = query => {
   if (_.isEmpty(query)) return null;
   return Student.remove(query);
+}
+
+exports.createOrUpdateStudent = (students = [], user) => {
+  return Promise.all(students.map(async student => {
+    const oldStudentCount = await Student.find({
+      'credential.email': student.credential.email
+    }).countDocuments();
+    if (oldStudentCount) return null;
+    await Credential.create(student.credential);
+    return new Student(student).save();
+  }));
 }

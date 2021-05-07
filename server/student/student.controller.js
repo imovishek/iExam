@@ -1,5 +1,8 @@
 const studentHelper = require('./student.helper');
 const { httpStatuses } = require('../constants');
+const { readCSV, mapCsvToStudent, removeFile } = require('../common.functions');
+const fs = require('fs');
+const Papa = require('papaparse');
 
 // GET STUDENT
 
@@ -111,3 +114,25 @@ exports.deleteStudentByID = async (req, res) => {
     .send({ error: true, message: err.message });
   }
 };
+
+exports.studentsFileUpload = async (req, res) => {
+  const { filename, destination } = req.file;
+  const { user } = req;
+  const filePath = destination + filename;
+  try {
+    const students = await readCSV(filePath);
+    students.splice(-1, 1);
+    if (!students.length) throw new Error('Please select a valid file!');
+    const mappedStudents = mapCsvToStudent(students, user);
+    let createdStudents = await studentHelper.createOrUpdateStudent(mappedStudents, user);
+    createdStudents = createdStudents.filter(student => student);
+    const studentIDs = createdStudents.map(student => student._id);
+    res.status(httpStatuses.OK).send({ payload: { studentIDs } });
+  } catch (err) {
+    console.log(err.message);
+    res
+    .status(httpStatuses.INTERNAL_SERVER_ERROR)
+    .send({ error: true, message: err.message });
+  }
+  removeFile(filePath);
+}

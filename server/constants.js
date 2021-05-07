@@ -39,5 +39,20 @@ exports.requiredCsvHeaders = {
     "Batch",
     "Start Date",
     "Status"
+  ],
+  STUDENT: [
+    "First Name",
+    "Last Name",
+    "Registration Number",
+    "Phone Number",
+    "Email"
+  ],
+  TEACHER: [
+    "First Name",
+    "Last Name",
+    "Short Name",
+    "Designation",
+    "Phone Number",
+    "Email"
   ]
 }

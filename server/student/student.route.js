@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const expressJWT = require('express-jwt');
+const multer = require('multer');
 
 const config = require('../../config/config');
 const studentController = require('./student.controller');
+const upload = multer({ dest: './public/data/uploads/' });
 
 router
   .route('/students')
@@ -39,7 +41,13 @@ router
   .get(
     expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
     studentController.getStudentsByBatch
+  );
+  router
+  .route('/students/upload')
+  .post(
+    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    upload.single('file'),
+    studentController.studentsFileUpload
   )
-
 
 module.exports = router;
