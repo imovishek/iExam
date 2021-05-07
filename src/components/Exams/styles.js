@@ -26,8 +26,6 @@ export const TimeDiffWrapper = styled.div`
 export const ExamTitleWrapper = styled(CenterText)`
   font-size: 20px;
   font-weight: 400;
-  color: rgb(9, 151, 255);
-  -webkit-text-stroke: 1px #000000;
   letter-spacing: 2px;
   align-items: flex-start;
   overflow: hidden;
