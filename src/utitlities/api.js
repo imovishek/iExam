@@ -198,6 +198,34 @@ export const uploadCoursesFile = (file) => {
   });
 };
 
+const STUDENT_UPLOAD_URL = `${apiUrl}/students/upload`;
+
+export const uploadStudentsFile = (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const token = localStorage.getItem('token');
+  return axios.post(STUDENT_UPLOAD_URL, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`, 
+    }
+  });
+};
+
+const TEACHER_UPLOAD_URL = `${apiUrl}/teachers/upload`;
+
+export const uploadTeachersFile = (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const token = localStorage.getItem('token');
+  return axios.post(TEACHER_UPLOAD_URL, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`, 
+    }
+  });
+};
+
 export const getClarifications = (query) =>
   requestApiAndGetResponse(`${apiUrl}/clarifications`, 'get', {}, query)
     .then(res => res.data)
@@ -250,7 +278,8 @@ const api = {
   updateExamPaperForTeacher,
   getExamUsingFilterByID,
   uploadCoursesFile,
-  COURSE_UPLOAD_URL,
+  uploadStudentsFile,
+  uploadTeachersFile,
   getClarifications,
   createClarification,
   updateClarification,
