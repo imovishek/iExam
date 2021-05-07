@@ -4,7 +4,7 @@ import moment from "moment";
 import CheckAuthentication from "../components/CheckAuthentication/CheckAuthentication";
 import { BodyWrapper } from "./styles";
 import NavBar from "../components/NavBar/NavBar";
-import { ignoreKeys, timeFormat } from "./constants";
+import { ENDED, ignoreKeys, timeFormat, UPCOMING } from "./constants";
 import { CenterNoData } from "../components/styles/tableStyles";
 
 export const joiObjectParser = (object, validator) => {
@@ -182,6 +182,30 @@ const getStartEndDate = (exam) => {
     startDate: startDateWithTime,
     endDate,
   };
+};
+export const getRemainingTimePercentage = (timeDifference, duration) => {
+  const { status, timeString } = timeDifference;
+  if(!timeString)
+    return 0;
+  if(status === ENDED){
+    return 100;
+  }
+  else if(status === UPCOMING){
+    return 0;
+  }
+  const hh = Number(timeString.split(":")[0]);
+  const mm = Number(timeString.split(":")[1]);
+  const ss = Number(timeString.split(":")[2]);
+
+  const remainingTime = (hh*3600) + (mm*60) + ss;
+
+  const dh = Number(duration.split(":")[0]);
+  const dm = Number(duration.split(":")[1]);
+
+  const durationTime = (dh*3600) + (dm*60);
+
+  const percentage = ((durationTime-remainingTime)/(durationTime || 1))*100;
+  return percentage;
 };
 export const getExamTimeDiffInFormat = (exam) => {
   const { startDate, endDate } = getStartEndDate(exam);

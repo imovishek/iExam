@@ -241,7 +241,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       <CheckAuthentication />
       <BodyWrapper>
         <NavBar />
-        <Container rows="80px 1fr" gridGap="20px">
+        <Container rows="100px 1fr" gridGap="20px">
           <TileHeaderWrapper columns="1fr 1fr 1fr">
             <div>
               {hasBack && (

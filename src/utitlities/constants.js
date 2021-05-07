@@ -1,6 +1,8 @@
 import _ from "underscore";
 
 export const RUNNING = "running";
+export const ENDED = "ended";
+export const UPCOMING = "upcoming";
 export const BROAD = "broad";
 export const MCQ = "mcq";
 export const FILLINTHEBLANK = "fillInTheBlank";

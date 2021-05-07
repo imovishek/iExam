@@ -1,5 +1,7 @@
+import { Progress } from "antd";
+import 'antd/dist/antd.css';
 import { useEffect, useState } from "react";
-import { getExamTimeDiffInFormat } from "../../../utitlities/common.functions";
+import { getExamTimeDiffInFormat, getRemainingTimePercentage } from "../../../utitlities/common.functions";
 import { CenterText, Col, Row } from "../../../utitlities/styles";
 import { ExamTitleWrapper, TimeDiffWrapper } from "../styles";
 
@@ -21,7 +23,7 @@ const ShowExamStatusTitle = ({ exam }) => {
   }, [exam]);
   let examTitle = exam.title || '';
   if (examTitle.length > 25) examTitle = `${examTitle.slice(0, 22)  }...`;
-  return <Col rows="1fr 1fr" gridGap="3px">
+  return <Col rows="1fr 1fr 1fr" gridGap="3px">
     <ExamTitleWrapper>{examTitle}</ExamTitleWrapper>
     <div style={{ display: "flex", justifyContent: "center" }}>
       <Row columns="1fr 1fr" gridGap="3px">
@@ -31,6 +33,7 @@ const ShowExamStatusTitle = ({ exam }) => {
         </CenterText>
       </Row>
     </div>
+    <Progress percent={getRemainingTimePercentage(timeDifference, exam.duration)} showInfo={false}/>
   </Col>
 }
 
