@@ -76,13 +76,13 @@ const TextWrapper = styled.p`
 `;
 const SpinWrapper = styled.div`
   text-align: center;
-  height: 100%;
-  width: 100%;
+  width: 40vw;
+  height:100%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: fixed;
-  left: 0px;
+  right: 0px;
   top: 0px;
   z-index: 1000;
   background: rgba(225, 223, 223, 0.53);
