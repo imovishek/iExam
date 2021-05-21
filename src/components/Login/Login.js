@@ -33,9 +33,9 @@ const FormColumn = styled.div`
 `;
 
 const SubWrapper = styled.div`
-  width: 360px;
+  width: 365px;
   height: 300px;
-  padding: 30px 30px;
+  padding: 30px 20px;
   border-radius: 14px;
   --antd-wave-shadow-color: none;
   .ant-input:hover {
@@ -68,16 +68,17 @@ const ButtonWrapper = styled(Button)`
   width: 50%;
   height: 44px;
   border-radius: 8px;
+  margin-right: 14px;
+  margin-bottom: 10px;
   background-color: ${fontColor};
 `;
 const TextWrapper = styled.p`
-  display: inline;
-  margin-left: 14px;
+  display: inline-block;
 `;
 const SpinWrapper = styled.div`
   text-align: center;
   width: 40vw;
-  height:100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,6 +145,7 @@ const Login = ({ setUser, dispatch }) => {
           Exam Management System
         </h1>
       </TitleColumn>
+
       <FormColumn>
         <SubWrapper>
           <SignInText>Sign In</SignInText>
@@ -171,9 +173,9 @@ const Login = ({ setUser, dispatch }) => {
             </ButtonWrapper>
             <TextWrapper>
               {" "}
-              <a href="/" style={{ color: fontColor}}>
+              <a href="/" style={{ color: fontColor }}>
                 {" "}
-                Forgotten Password?
+                Forgotten Password
               </a>{" "}
             </TextWrapper>
           </div>
