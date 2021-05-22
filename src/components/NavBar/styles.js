@@ -10,15 +10,17 @@ export const BodyWrapper = styled.div`
   background: #1c3131;
   box-shadow: 4px 0px 5px 0px rgba(0,0,0,0.36);
   min-height: 300px;
+  width: ${props => props.isCollapsed ? '70px' : '200px'};
   `
 
 export const SubWrapper = styled.div`
-  padding: 30px 10px;
-  margin-left: 20px;
-  margin-right: 20px;
+  padding: ${({ isCollapsed }) => isCollapsed ? '10px' : '30px'} 10px;
+  margin-left: ${({ isCollapsed }) => isCollapsed ? '0px' : '20px'};
+  margin-right: ${({ isCollapsed }) => isCollapsed ? '0px' : '20px'};
   min-height: 300px;
   position: relative;
   height: 100%;
+  transition-duration: 200ms;
 `
 
 export const NavWrapper = styled.div`
@@ -30,7 +32,8 @@ export const NavWrapper = styled.div`
   justify-content: center;
   user-select: none;
   display: grid;
-  grid-template-columns: 30px 1fr;
+  grid-template-columns: ${props => props.isCollapsed ? "30px" : "30px 1fr"};
+  transition-duration: 200ms;
 `
 
 export const LinkWrapper = styled.div`
@@ -39,7 +42,7 @@ export const LinkWrapper = styled.div`
   }
   color: ${(props) => props.selected ? '#40a9ff' : '#ffffff'};
   margin-bottom: 10px;
-  width: 175px;
+  width: ${props => props.isCollapsed ? '50px' : '175px'};
   padding: 5px 10px;
   box-shadow: 3px 3px 10px #000f0f;
   border-radius: 5px;
@@ -57,11 +60,12 @@ export const FontAwesomeIconWrapper = styled(FontAwesomeIcon)`
   margin-top: auto;
   margin-bottom: auto;
   width: 30px;
+  ${({ isCollapsed }) => isCollapsed && `height: 50px;`};
 `
 
 export const FooterIconWraper = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${({ isCollapsed }) => isCollapsed ? 'column' : 'row'};
   justify-content: center;
 `
 

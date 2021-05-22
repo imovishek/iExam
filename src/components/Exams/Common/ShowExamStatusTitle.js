@@ -1,7 +1,7 @@
 import { Progress } from "antd";
 import 'antd/dist/antd.css';
 import { useEffect, useState } from "react";
-import { getExamTimeDiffInFormat, getRemainingTimePercentage } from "../../../utitlities/common.functions";
+import { getExamStatus, getExamTimeDiffInFormat, getRemainingTimePercentage } from "../../../utitlities/common.functions";
 import { CenterText, Col, Row } from "../../../utitlities/styles";
 import { ExamTitleWrapper, TimeDiffWrapper } from "../styles";
 
@@ -34,7 +34,7 @@ const ShowExamStatusTitle = ({ exam }) => {
         </CenterText>
       </Row>
     </div>
-    <Progress percent={getRemainingTimePercentage(timeDifference, exam.duration)} showInfo={false}/>
+    <Progress percent={getRemainingTimePercentage(getExamStatus(exam), timeDifference, exam.duration)} showInfo={false}/>
   </Col>
 }
 

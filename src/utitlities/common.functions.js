@@ -183,8 +183,8 @@ const getStartEndDate = (exam) => {
     endDate,
   };
 };
-export const getRemainingTimePercentage = (timeDifference, duration) => {
-  const { status, timeString } = timeDifference;
+export const getRemainingTimePercentage = (status, timeDifference, duration) => {
+  const { timeString } = timeDifference;
   if(!timeString)
     return 0;
   if(status === ENDED){

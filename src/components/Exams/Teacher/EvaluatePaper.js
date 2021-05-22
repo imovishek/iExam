@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PageHeader, TileHeaderWrapper, RightButtonWrapper } from '../../styles/pageStyles'
 import QuestionPaper from './components/QuestionPaper'
 import Loading from '../../Common/Loading'
-import Students from './components/Students'
+import EvaluatePaperNav from './components/EvaluatePaperNav'
 
 const ButtonStyled = styled(Button)`
   height: 30px;
@@ -47,8 +47,9 @@ const FontAwesomeIconStyled = styled(FontAwesomeIcon)`
 `
 
 const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
-  const { examID, studentID } = useParams()
-  if (!studentID || !examID) dispatch(goBack())
+  const { examID, studentID, questionID } = useParams()
+  if (!examID) return dispatch(goBack());
+  if (!examID || (!studentID && !questionID)) return dispatch(goBack());
   const [isLoading, setIsLoading] = useState(true)
   const [exam, setExam] = useState({})
   const [paper, setPaper] = useState({})
@@ -62,8 +63,16 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
       setExam(payload)
       return
     }
-    const { payload = {} } = await api.getExamByIDWithPaper(examID, studentID)
-    const { exam, paper } = payload;
+    let exam, paper;
+    if (questionID) { // fetch papers with questionID
+      const { payload = {} } = await api.getExamPaperWithQuestionID(examID, questionID);
+      exam = payload.exam;
+      paper = payload.paper;
+    } else {
+      const { payload = {} } = await api.getExamByIDWithPaper(examID, studentID)
+      exam = payload.exam;
+      paper = payload.paper;
+    }
     const questionsObj = {};
     _.forEach(exam.questions, q => {
       questionsObj[q._id] = q;
@@ -86,7 +95,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
     } finally {
       setIsLoading(false)
     }
-  }, [examID, studentID])
+  }, [examID, studentID, questionID])
 
   const submitPaperEvaluationHandler = async () => {
     setIsLoading(true)
@@ -173,11 +182,11 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
             </RightButtonWrapper>
           </TileHeaderWrapper>
           <TileBodyWrapper>
-            <Students
+            <EvaluatePaperNav
               participants={exam.participants}
               exam={exam}
-              showingStudentType="participants"
               updateExamOnUI={updateExamOnUI}
+              questionID={questionID}
             />
             <QuestionPaper
               isLoading={isLoading}
@@ -186,6 +195,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
               disabled={getExamStatus(exam) === 'ended'}
               exam={exam}
               paper={paper}
+              isQuestionSelectedNav={!!questionID}
               questions={exam.questions}
             />
           </TileBodyWrapper>

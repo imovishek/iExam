@@ -94,6 +94,19 @@ const BroadAnswer = styled.pre`
   padding: 10px;
   font-size: 14px;
 `;
+
+const AnsweredBy = styled.div`
+  margin-left: 10px;
+  box-shadow: 0px 1px 5px #bbbbbb;
+  border-radius: 8px;
+  width: fit-content;
+  font-size: 16px;
+  padding: 10px;
+  margin-bottom: 10px;
+  color: white;
+  background: #455858;
+`;
+
 const defaultQuestion = {
   matchingOptions: {
     leftSide: [],
@@ -112,6 +125,8 @@ const SingleQuestion = ({
   isShowingEditButton,
   dispatch,
   isLoadingAutoEvaluation = false,
+  isQuestionSelectedNav = false,
+  studentName = ''
 }) => {
   const status = getExamStatus(exam);
   const isEditing = status === RUNNING;
@@ -207,6 +222,7 @@ const SingleQuestion = ({
         />
       )}
 
+      {isQuestionSelectedNav && <AnsweredBy>Answered By {studentName}</AnsweredBy>}
       {!noMarks && (
         <InlineBlock>
           <Input
@@ -263,6 +279,7 @@ const QuestionPaper = ({
   viewQuestions = false,
   dispatch,
   isLoadingAutoEvaluation,
+  isQuestionSelectedNav = false,
 }) => {
   const [answers, setAnswers] = useState(paper.answers);
   const [questionsObj, setQuestionsObj] = useState({});
@@ -316,7 +333,6 @@ const QuestionPaper = ({
         ))}
       </Container>
     );
-
   return (
     <Container>
       {isLoading && <Loading isLoading={isLoading} />}
@@ -331,6 +347,8 @@ const QuestionPaper = ({
           givenMarks={answer.marks}
           dispatch={dispatch}
           isLoadingAutoEvaluation={isLoadingAutoEvaluation}
+          isQuestionSelectedNav={isQuestionSelectedNav}
+          studentName={answer.studentName}
         />
       ))}
     </Container>

@@ -1,6 +1,7 @@
 import { faBookOpen, faChalkboardTeacher, faChartLine, faPencilRuler, faQuestion, faScroll, faUsers } from "@fortawesome/free-solid-svg-icons";
 
-export const SET_NAVIGATION_TAB = 'SET_NAVIGATION_TAB'
+export const SET_NAVIGATION_TAB = 'navbar/SET_NAVIGATION_TAB'
+export const SET_IS_COLLAPSED = 'navbar/SET_IS_COLLAPSED'
 
 export const navLinks = [
   {
