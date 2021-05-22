@@ -9,6 +9,7 @@ const paperSchema = new Schema({
 		answer: String,
 		marks: Number,
 	}],
+	examID: { type: Schema.Types.ObjectId, ref: 'Exam', required: true },
 	totalMarks: Number,
 },
 {
