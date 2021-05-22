@@ -5,7 +5,7 @@ import { Input, Select, Button } from "antd";
 import React, { useState, useEffect } from "react";
 import MCQBody from "./MCQBody";
 import { sortArrayByMap } from "../../../../utitlities/constants";
-import { LabelWrapper } from "../../../styles/pageStyles";
+import { StickyElement } from "../../../../utitlities/styles";
 import QuestionBody from "./QuestionBody";
 const { Option } = Select;
 const Container = styled.div`
@@ -65,6 +65,7 @@ const SelectStyled = styled(Select)`
   margin-bottom: 20px;
   width: 250px;
   margin-right: 10px;
+  background: white;
 `;
 
 const SingleQuestion = ({
@@ -170,6 +171,7 @@ const QuestionPaper = ({ disabled, exam, paper, setPaper, questions }) => {
       >
         Sort
       </Button>
+      
       <Container>
         {_.map(answers, (answer, index) => (
           <SingleQuestion

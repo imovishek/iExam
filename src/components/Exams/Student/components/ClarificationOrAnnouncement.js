@@ -16,7 +16,6 @@ const ContainerStyled = styled(Container)`
   border-radius: 8px;
   min-height: 260px;
   height: calc(100vh - 160px);
-  min-width: 400px;
   padding: 20px;
   box-shadow: 3px 3px 15px #bbbbbb;
 `;

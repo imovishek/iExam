@@ -33,7 +33,7 @@ const AnnouncementWrapper = styled.div`
   font-size: 14px;
   color: #608794;
   margin-bottom: 10px;
-  background: #ffd030;
+  background: #ffef30;
   padding: 10px;
   border-radius: 5px;
 `

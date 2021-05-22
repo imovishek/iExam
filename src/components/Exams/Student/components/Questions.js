@@ -20,7 +20,6 @@ const Container = styled.div`
   box-shadow: 3px 3px 15px #bbbbbb;
   height: calc(100vh - 160px);
   min-height: 260px;
-  min-width: 500px;
 `;
 
 const Body = styled.div`

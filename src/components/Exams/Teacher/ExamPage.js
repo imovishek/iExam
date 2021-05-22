@@ -218,12 +218,14 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     <div>
       <CheckAuthentication />
       {isLoading && <Loading isLoading={isLoading}/>}
-      <EditExamModal
-        visible={showEditExam}
-        setVisibility={setShowEditExam}
-        selectedExam={exam}
-        updateExam={onExamUpdateHandler}
-      />
+      {showEditExam && (
+        <EditExamModal
+          visible={showEditExam}
+          setVisibility={setShowEditExam}
+          selectedExam={exam}
+          updateExam={onExamUpdateHandler}
+        />
+      )}
       <ImportQuestionsModal
         user={user}
         visible={showImportQuestions}
@@ -247,7 +249,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       />
       <BodyWrapper>
         <NavBar />
-        <Container rows="80px 30px 1fr" gridGap="20px">
+        <Container rows="100px 30px 1fr" gridGap="20px">
           <TileHeaderWrapper columns="1fr 1fr 1fr">
             <div>
               {hasBack &&
@@ -309,7 +311,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                 </QuestionsWrapper>
               </TabPane>
             </Tabs>
-            <Col rows="20px 1fr">
+            <Col rows="10px 1fr">
               <div></div>
               <StyledBodyRow>
                 <Students

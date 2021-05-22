@@ -77,6 +77,7 @@ const App = ({ user, dispatch }) => {
       { userType === 'teacher' && <Route path="/exam/:examID/question/view/:questionID" component={QuestionViewPageForTeacher} /> }
       { userType === 'teacher' && <Route path="/exam/:examID/question/:questionID" component={QuestionPageForTeacher} /> }
       { userType === 'teacher' && <Route path="/courses" component={CoursesForTeacher} /> }
+      { userType === 'teacher' && <Route path="/exam/:examID/paper/question/:questionID" component={EvaluatePaper} /> }
       { userType === 'teacher' && <Route path="/exam/:examID/paper/:studentID" component={EvaluatePaper} /> }
       { userType === 'teacher' && <Route path="/course/:id" component={CoursePageForTeacher} /> }
       { userType === 'teacher' && <Route path="/exam/:examID/result" component={ExamResult} /> }

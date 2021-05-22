@@ -173,6 +173,10 @@ export const getExamByIDWithPaper = (id, studentID) =>
   requestApiAndGetResponse(`${apiUrl}/exam/${id}/paper${studentID ? `?student=${studentID}` : ''}`, 'get')
     .then(res => res.data)
 
+export const getExamPaperWithQuestionID = (id, questionID) =>
+  requestApiAndGetResponse(`${apiUrl}/exam/${id}/paper${questionID ? `?question=${questionID}` : ''}`, 'get')
+    .then(res => res.data)
+  
 export const updateExamPaperForStudent = (id, paper) =>
   requestApiAndGetResponse(`${apiUrl}/exam/${id}/paper`, 'put', { paper })
     .then(res => res.data)
@@ -274,6 +278,7 @@ const api = {
   updateQuestion,
   deleteQuestion,
   getExamByIDWithPaper,
+  getExamPaperWithQuestionID,
   updateExamPaperForStudent,
   updateExamPaperForTeacher,
   getExamUsingFilterByID,

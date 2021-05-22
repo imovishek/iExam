@@ -1,61 +1,113 @@
 import { faSignOutAlt, faCog } from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux'
-import { setNavigaitonTabAction } from './actions'
+import { onSetNavbarCollapsed, setNavigaitonTabAction } from './actions'
 import { push } from 'connected-react-router'
 import { hasPageAccess, mapDesignations } from '../../utitlities/constants'
-import React, { useState } from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import UserInfo from '../UserSettings/User/UserInfo'
 import { Tooltip } from 'antd'
 import { BodyWrapper, DesignationWraper, FontAwesomeIconWrapper, FooterIconWraper, FooterWraper, LabelHeader, LinkWrapper, LogoWrapper, NavWrapper, SubWrapper } from './styles'
 import { navLinks } from './constants'
+import confirm from 'antd/lib/modal/confirm'
+import { useEffect } from 'react/cjs/react.development'
 
-const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
+function useWindowSize() {
+  const [size, setSize] = useState([0, 0]);
+  useLayoutEffect(() => {
+    function updateSize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+  return size;
+}
+
+const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch, isCollapsed }) => {
   const redirectTo = path => {
     setNavigationTab(path)
     dispatch(push(`/${path}`))
   }
+  const [width, height] = useWindowSize();
   const { userType } = user
   const [showUserInfoModal, setShowUserInfoModal] = useState(false);
+  useEffect(() => {
+    let state = false;
+    if (Number(width) === 0) return;
+    console.log(width);
+    if (width < 1000) {
+      state = true;
+    }
+    dispatch(onSetNavbarCollapsed(state))
+  }, [width])
+  const TooltipWrapper = ({ isCollapsed, navLink }) => {
+    const FontAwesome = <FontAwesomeIconWrapper icon={navLink.icon} size='md' width="30px" />;
+    if (isCollapsed) return (
+      <Tooltip title={navLink.body}>
+        {FontAwesome}
+      </Tooltip>
+    );
+    return FontAwesome;
+  }
   return (
-    <BodyWrapper>
-      <SubWrapper>
+    <BodyWrapper isCollapsed={isCollapsed}>
+      <SubWrapper isCollapsed={isCollapsed}>
         <LogoWrapper>
-          <img src="https://www.sust.edu/images/logo.png" height="80px"/>
+          <img src="https://www.sust.edu/images/logo.png" height={isCollapsed ? "50px" : "80px"} style={{transitionDuration: "200ms;"}}/>
         </LogoWrapper>
-        
+
         {navLinks.map(navLink => {
           if (!hasPageAccess[userType] || !hasPageAccess[userType][navLink.body]) return null;
           return  (
-            <LinkWrapper key={navLink.link} onClick={() => redirectTo(navLink.link)} selected={tabKey === navLink.link}>
-              <NavWrapper>
-                <FontAwesomeIconWrapper icon={navLink.icon} size='md' width="30px" />
-                {navLink.body}
+            <LinkWrapper isCollapsed={isCollapsed} key={navLink.link} onClick={() => redirectTo(navLink.link)} selected={tabKey === navLink.link}>
+              <NavWrapper isCollapsed={isCollapsed}>
+                <TooltipWrapper navLink={navLink} isCollapsed={isCollapsed}/>
+                {!isCollapsed && navLink.body}
               </NavWrapper>
             </LinkWrapper>
           );
         })}
 
-        <FooterWraper>
-          <FooterIconWraper>
-            <LabelHeader >{user.firstName} {user.lastName}</LabelHeader>
+        <FooterWraper isCollapsed={isCollapsed}>
+          <FooterIconWraper isCollapsed={isCollapsed}>
+            <LabelHeader >{isCollapsed ? user.firstName[0] : user.firstName}{isCollapsed ? '' : ' '}{isCollapsed ? user.lastName[0] : user.lastName}</LabelHeader>
           </FooterIconWraper>
-          <DesignationWraper>
-            {user.userType === 'teacher' && mapDesignations[user.designation]}
-          </DesignationWraper>
-          <FooterIconWraper>
-            <div>
-              <Tooltip title = "Profile">
-                <FontAwesomeIconWrapper
-                  style={{ marginRight: '20px' }}
-                  onClick={() => {
-                    setShowUserInfoModal(true)
-                  }}
-                  color = "white" icon={faCog} size="lg"/>
-              </Tooltip>
-              <Tooltip title = "Logout">
-                <FontAwesomeIconWrapper onClick={() => redirectTo('logout')} color = "white" icon={faSignOutAlt} size="lg" />
-              </Tooltip>
-            </div>
+          {!isCollapsed && (
+            <DesignationWraper>
+              {user.userType === 'teacher' && mapDesignations[user.designation]}
+            </DesignationWraper>
+          )}
+          <FooterIconWraper isCollapsed={isCollapsed}>
+            <Tooltip title = "Profile">
+              <FontAwesomeIconWrapper
+                isCollapsed={isCollapsed}
+                style={{ marginRight: '20px' }}
+                onClick={() => {
+                  setShowUserInfoModal(true)
+                }}
+                color = "white" icon={faCog} size="lg"/>
+            </Tooltip>
+            <Tooltip title = "Logout">
+              <FontAwesomeIconWrapper
+                isCollapsed={isCollapsed}
+                onClick={() => confirm({
+                  title: "Do you want to logout?",
+                  okText: 'Logout',
+                  onOk() {
+                    redirectTo('logout');
+                  },
+                  onCancel () {
+
+                  },
+                  maskClosable: true,
+                  keyboard: true,
+                })}
+                color = "white"
+                icon={faSignOutAlt}
+                size="lg"
+              />
+            </Tooltip>
           </FooterIconWraper>
         </FooterWraper>
 
@@ -70,7 +122,8 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch }) => {
 }
 const mapStateToProps = (state) => ({
   tabKey: state.navBar.tabKey,
-  user: state.login.user
+  user: state.login.user,
+  isCollapsed: state.navBar.isCollapsed,
 })
 const mapDispatchToProps = (dispatch) => ({
   setNavigationTab: (key) => {

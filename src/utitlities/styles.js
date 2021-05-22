@@ -5,7 +5,7 @@ import { FontAwesomeIconWrapper } from "../components/styles/tableStyles";
 
 export const BodyWrapper = styled.div`
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: auto 1fr;
   height: 100vh;
   align-items: space-around;
 `;
@@ -19,16 +19,20 @@ export const Container = styled.div`
   height: 100%;
   overflow: auto;
   flex-grow: 100;
-  ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
-  }
 `;
 
 export const Text = styled.div`
   font-weight: 800;
   font-family: arial;
   color: #505250;
+`;
+
+export const StickyElement = styled.div`
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1000;
 `;
 
 export const Box = styled.div`

@@ -212,7 +212,6 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     dispatch(setUserAction(newUser));
     setSwitchLoading(false);
   };
-
   useEffect(() => {
     if (user.autoSubmitPaper) {
       // console.log('Starting new one...........');
@@ -285,7 +284,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
           </TileHeaderWrapper>
           <TileBodyWrapper>
             {showingPaper && (
-              <div style={{ height: "calc(100vh - 170px)" }}>
+              <div style={{ height: "100%" }}>
                 <QuestionPaper
                   disabled={isDisabled}
                   exam={exam}
@@ -296,7 +295,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               </div>
             )}
             {!showingPaper && (
-              <Row columns=".7fr .3fr">
+              <Row columns="7fr 4fr">
                 <Questions
                   paper={paper}
                   exam={exam}
