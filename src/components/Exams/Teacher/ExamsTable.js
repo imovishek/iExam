@@ -14,8 +14,6 @@ const ExamCard = ({ dispatch, exam }) => (
     <TableRowChild> { exam.title } </TableRowChild>
     <TableRowChild> { exam.course.title } </TableRowChild>
     <TableRowChild> { exam.course.courseCode } </TableRowChild>
-    <TableRowChild> { exam.course.assignedTeacher ? getName(exam.course.assignedTeacher) : 'Unassigned'} </TableRowChild>
-    <TableRowChild> { exam.department.departmentCode } </TableRowChild>
     <TableRowChild> { formatDateAndTime(exam.startDate, exam.startTime) } </TableRowChild>
     <TableRowChild> { `${exam.duration.split(':')[0] ? `${exam.duration.split(':')[0]  }h ` : ''}${exam.duration.split(':')[1]}m` } </TableRowChild>
     <TableRowChild>
@@ -57,9 +55,7 @@ const ExamTable = ({
       <TableHeader>
         <TableHeaderChild> </TableHeaderChild>
         <TableHeaderChild> Course </TableHeaderChild>
-        <TableHeaderChild> Course Code </TableHeaderChild>
-        <TableHeaderChild> Course Teacher </TableHeaderChild>
-        <TableHeaderChild> Department </TableHeaderChild>
+        <TableHeaderChild> Code </TableHeaderChild>
         <TableHeaderChild> Start Time </TableHeaderChild>
         <TableHeaderChild> Duration </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>

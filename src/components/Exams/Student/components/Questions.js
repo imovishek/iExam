@@ -69,12 +69,12 @@ const Card = ({ question, isAnswered, dispatch, examID }) => (
   </TableRowStyled>
 );
 
-const Questions = ({ exam, questions = [], onShowingPaper, paper, dispatch }) => {
+const Questions = ({ exam, questions = [], onShowingPaper, paper, dispatch, isLoading }) => {
   const answersObj = {};
   (paper.answers || []).map(answer => (answersObj[answer.questionID] = answer.answer));
   const status = getExamStatus(exam);
   const shouldRevealQuestions = (status || '').toLowerCase() === 'ended' || (status || '').toLowerCase() === 'running'
-  if (!shouldRevealQuestions) {
+  if (!shouldRevealQuestions && !isLoading) {
     return(
       <Container rows="70px 70px 1fr 15px">
         <CenterTextWrapper>Exam will start soon</CenterTextWrapper>

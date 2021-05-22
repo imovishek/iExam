@@ -65,13 +65,12 @@ const CourseCard = ({
   }
 
   return (
-    <TableRowStyled columns="repeat(6, 1fr) 240px">
+    <TableRowStyled columns="repeat(5, 1fr) 110px">
       <TableRowChild> { course.title } </TableRowChild>
       <TableRowChild> { course.courseCode } </TableRowChild>
       <TableRowChild> { course.assignedTeacher ? getName(course.assignedTeacher) : 'Unassigned'} </TableRowChild>
       <TableRowChild> { course.department.departmentCode } </TableRowChild>
       <TableRowChild> { course.batchCode || 'Others' } </TableRowChild>
-      <TableRowChild> { smartLabel(course.status) } </TableRowChild>
       <TableRowChild>
         <OperationWrapper>
           <ButtonSyled
@@ -141,13 +140,12 @@ const CourseTable = ({
           onChange={(e) => handleSearch(e.target.value)}
         />
       </RightButtonWrapper>
-      <Row columns="repeat(6, 1fr) 240px">
-        <TableHeaderChild> Course Title </TableHeaderChild>
-        <TableHeaderChild> Course Code </TableHeaderChild>
-        <TableHeaderChild> Assigned Teacher </TableHeaderChild>
+      <Row columns="repeat(5, 1fr) 240px">
+        <TableHeaderChild> Title </TableHeaderChild>
+        <TableHeaderChild> Code </TableHeaderChild>
+        <TableHeaderChild> Teacher </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild> Batch </TableHeaderChild>
-        <TableHeaderChild> Status </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
       </Row>
       {(isNoData && !isLoading) && <NoDataComponent title="No Courses Found" />}
