@@ -8,7 +8,6 @@ const departmentSchema = new Schema({
         type: String,
         default: uniqid('dept'),
         required: true,
-        unique: true,
     },
     departmentCode: {
         type: String,

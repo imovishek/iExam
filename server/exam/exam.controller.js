@@ -82,6 +82,7 @@ exports.getExamByIDWithUserPaper = async (req, res) => {
         student: studentID,
         answers: [],
         totalMarks: 0,
+        examID: id,
       });
       await examHelper.updateExamByID(id, {
         $push: {
