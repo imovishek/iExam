@@ -14,10 +14,15 @@ const { Option } = Select;
 
 const ContainerStyled = styled(Container)`
   border-radius: 8px;
-  min-height: 260px;
+  min-height: 460px;
   height: calc(100vh - 160px);
   padding: 20px;
   box-shadow: 3px 3px 15px #bbbbbb;
+  min-width: 445px;
+  flex: 1;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  overflow: hidden;
 `;
 
 const StyledSelect = styled(Select)`

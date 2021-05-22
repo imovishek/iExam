@@ -15,7 +15,7 @@ import { PageHeader } from "../../styles/pageStyles";
 import { onUpdateCurrentTab } from "../actions";
 const { TabPane } = Tabs;
 
-const ExamsForStudent = ({ courses = [], user, dispatch, currentTab }) => {
+const ExamsForStudent = ({ courses = [], user, dispatch, currentTab, isCollapsed }) => {
   const [isLoading, setLoading] = useState(false);
   const [isExamsChanged, setExamsChanged] = useState(true);
   const [examsObj, setExamsObj] = useState({});
@@ -55,7 +55,11 @@ const ExamsForStudent = ({ courses = [], user, dispatch, currentTab }) => {
         <NavBar />
         <Container rows="80px 1fr">
           <PageHeader>Exams</PageHeader>
-          <Tabs activeKey={currentTab} onChange={(activeKey => dispatch(onUpdateCurrentTab(activeKey)))} tabPosition="left">
+          <Tabs
+            activeKey={currentTab}
+            onChange={(activeKey => dispatch(onUpdateCurrentTab(activeKey)))}
+            tabPosition={isCollapsed ? "top" : "left"}
+          >
             {_.map(["upcoming", "running", "ended"], (v, i) => (
               <TabPane tab={<h3>{smartLabel(v)}</h3>} key={v}>
                 <ExamsTable
@@ -75,6 +79,7 @@ const mapStateToProps = (state) => ({
   user: state.login.user,
   courses: state.courseData.courses,
   currentTab: state.examData.currentTab,
+  isCollapsed: state.navBar.isCollapsed,
 });
 
 const mapDispatchToProps = (dispatch) => ({

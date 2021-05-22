@@ -13,6 +13,7 @@ const Container = styled.div`
   flex-direction: column;
   overflow: auto;
   height: calc(100% - 40px);
+  margin-bottom: 50px;
 `;
 
 const BodyWrapper = styled.div`

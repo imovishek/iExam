@@ -19,7 +19,11 @@ const Container = styled.div`
   padding: 20px;
   box-shadow: 3px 3px 15px #bbbbbb;
   height: calc(100vh - 160px);
-  min-height: 260px;
+  min-height: 460px;
+  min-width: 436px;
+  flex: 1;
+  margin-right: 20px;
+  margin-bottom: 20px;
 `;
 
 const Body = styled.div`
