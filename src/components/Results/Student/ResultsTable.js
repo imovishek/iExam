@@ -53,7 +53,7 @@ const ResultsTable = ({
       <TableHeader>
         <TableHeaderChild> Exam Title </TableHeaderChild>
         <TableHeaderChild> Course </TableHeaderChild>
-        <TableHeaderChild> Course Teacher </TableHeaderChild>
+        <TableHeaderChild> Teacher </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild> Answered Questions </TableHeaderChild>
         <TableHeaderChild> Result </TableHeaderChild>

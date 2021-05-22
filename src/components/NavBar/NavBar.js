@@ -53,22 +53,23 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch, isColl
   return (
     <BodyWrapper isCollapsed={isCollapsed}>
       <SubWrapper isCollapsed={isCollapsed}>
-        <LogoWrapper>
-          <img src="https://www.sust.edu/images/logo.png" height={isCollapsed ? "50px" : "80px"} style={{transitionDuration: "200ms;"}}/>
-        </LogoWrapper>
+        <div>
+          <LogoWrapper isCollapsed={isCollapsed}>
+            <img src="https://www.sust.edu/images/logo.png" height={isCollapsed ? "50px" : "80px"} style={{transitionDuration: "200ms;"}}/>
+          </LogoWrapper>
 
-        {navLinks.map(navLink => {
-          if (!hasPageAccess[userType] || !hasPageAccess[userType][navLink.body]) return null;
-          return  (
-            <LinkWrapper isCollapsed={isCollapsed} key={navLink.link} onClick={() => redirectTo(navLink.link)} selected={tabKey === navLink.link}>
-              <NavWrapper isCollapsed={isCollapsed}>
-                <TooltipWrapper navLink={navLink} isCollapsed={isCollapsed}/>
-                {!isCollapsed && navLink.body}
-              </NavWrapper>
-            </LinkWrapper>
-          );
-        })}
-
+          {navLinks.map(navLink => {
+            if (!hasPageAccess[userType] || !hasPageAccess[userType][navLink.body]) return null;
+            return  (
+              <LinkWrapper isCollapsed={isCollapsed} key={navLink.link} onClick={() => redirectTo(navLink.link)} selected={tabKey === navLink.link}>
+                <NavWrapper isCollapsed={isCollapsed}>
+                  <TooltipWrapper navLink={navLink} isCollapsed={isCollapsed}/>
+                  {!isCollapsed && navLink.body}
+                </NavWrapper>
+              </LinkWrapper>
+            );
+          })}
+        </div>
         <FooterWraper isCollapsed={isCollapsed}>
           <FooterIconWraper isCollapsed={isCollapsed}>
             <LabelHeader >{isCollapsed ? user.firstName[0] : user.firstName}{isCollapsed ? '' : ' '}{isCollapsed ? user.lastName[0] : user.lastName}</LabelHeader>

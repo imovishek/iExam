@@ -99,9 +99,13 @@ const AnswerWrapper = styled.div`
 
 const Body = styled.div`
   overflow: auto;
-  height: 100vh;
+  height: 100%;
   ::-webkit-scrollbar {
-    width: 0px;
+    width: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #bbbbbb;
+    border-radius: 3px;
   }
 `
 

@@ -18,9 +18,11 @@ export const SubWrapper = styled.div`
   margin-left: ${({ isCollapsed }) => isCollapsed ? '0px' : '20px'};
   margin-right: ${({ isCollapsed }) => isCollapsed ? '0px' : '20px'};
   min-height: 300px;
-  position: relative;
   height: 100%;
   transition-duration: 200ms;
+  display: grid;
+  width: ${props => props.isCollapsed ? '70px' : '200px'};
+  grid-template-rows: 1fr ${({ isCollapsed }) => isCollapsed ? '140px' : '55px'};
 `
 
 export const NavWrapper = styled.div`
@@ -51,7 +53,7 @@ export const LinkWrapper = styled.div`
 `;
 export const LogoWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: ${props => props.isCollapsed ? 'left' : 'center'};
   margin-bottom: 20px;
 `;
 
@@ -83,8 +85,6 @@ export const FooterWraper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  position: absolute;
-  bottom: 50px;
   width: 140px;
 `
 

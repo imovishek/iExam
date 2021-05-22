@@ -87,5 +87,8 @@ export const AwesomeIcon = (props) => (
     onClick={props.onClick ? props.onClick : () => {}}
   />
 );
-
+export const FlexWrapAround = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
 export const LinkStyled = styled.a``;

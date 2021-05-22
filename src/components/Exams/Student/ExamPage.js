@@ -6,6 +6,7 @@ import {
   BodyWrapper,
   Container,
   Col,
+  FlexWrapAround,
 } from "../../../utitlities/styles";
 import React, { useEffect, useState } from "react";
 import api from "../../../utitlities/api";
@@ -295,7 +296,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               </div>
             )}
             {!showingPaper && (
-              <Row columns="7fr 4fr">
+              <FlexWrapAround>
                 <Questions
                   paper={paper}
                   exam={exam}
@@ -310,7 +311,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                   clarifications={clarifications}
                   setClarificationsUpdated={setClarificationsUpdated}
                 />
-              </Row>
+              </FlexWrapAround>
             )}
           </TileBodyWrapper>
         </Container>
