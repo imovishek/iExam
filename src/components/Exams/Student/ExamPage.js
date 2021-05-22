@@ -303,6 +303,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                     dispatch(push(`/exam/${exam._id}/answer`))
                   }
                   questions={exam.questions}
+                  isLoading={isLoading}
                 />
                 <ClarificationOrAnnouncement
                   exam={exam}

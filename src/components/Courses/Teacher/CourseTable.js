@@ -75,9 +75,9 @@ const CourseTable = ({
         />
       </RightButtonWrapper>
       <TableHeader>
-        <TableHeaderChild> Course Title </TableHeaderChild>
-        <TableHeaderChild> Course Code </TableHeaderChild>
-        <TableHeaderChild> Assigned Teacher </TableHeaderChild>
+        <TableHeaderChild> Title </TableHeaderChild>
+        <TableHeaderChild> Code </TableHeaderChild>
+        <TableHeaderChild> Teacher </TableHeaderChild>
         <TableHeaderChild> Department </TableHeaderChild>
         <TableHeaderChild> Batch </TableHeaderChild>
         <TableHeaderChild> Status </TableHeaderChild>
