@@ -46,15 +46,35 @@ exports.getExamByID = async (req, res) => {
 
 exports.getExamByIDWithUserPaper = async (req, res) => {
   const { id } = req.params;
-  const { student } = req.query;
-  const isRequestFromStudent = student ? false : true;
+  const { student, question } = req.query;
+  const isRequestFromStudent = (student || question) ? false : true;
   const studentID = student ? student : req.user._id;
   let paper = null;
   try {
     const result = await getExamByIDWithParticipants(id);
     const papers = _.filter(result.papers, paper => String(paper.student) === studentID);
-    if (papers.length === 1) {
+    if (question) {
+      paper = {
+        student: null,
+        answers: [],
+      };
+      await Promise.all(_.map(result.papers, async resPaper => {
+        const answers = _.filter(resPaper.answers, answer => String(answer.questionID) === question)
+        const studentObj = await studentHelper.getStudentByID(resPaper.student);
+        if (!studentObj) return {};
+        const mapStudentIDs = answers.map(answer => ({
+          ...answer,
+          student: resPaper.student,
+          studentName: studentObj.firstName + ' ' + studentObj.lastName,
+          paperID: resPaper._id,
+        }));
+        paper.answers = paper.answers.concat(mapStudentIDs);
+      }));
+    } else if (papers.length === 1) {
       paper = papers[0];
+      paper.answers.forEach(answer => {
+        answer.paperID = paper._id;
+      })
     } else if (papers.length > 1){
       throw new Error('Too many papers for one student!');
     } else if (isRequestFromStudent) {
@@ -139,15 +159,24 @@ exports.updateExamPaperForTeacher = async (req, res) => {
   const { paper } = req.body;
   if (req.user.userType !== 'teacher') throw new Error('User requested is not authorized!');
   try {
-    await Promise.all(_.map(paper.answers, async answer =>
-        paperHelper.updatePapers({
-            _id: paper._id,
-            'answers.questionID': answer.questionID
-          }, {
-            'answers.$.marks': answer.marks
+    const exam = await examHelper.getExamByID(id);
+    const questionsObj = {};
+    _.forEach(exam.questions, question => questionsObj[String(question._id)] = true);
+    const groupedAnswers = _.groupBy(paper.answers, answer => answer.paperID);
+    await Promise.all(_.map(groupedAnswers, async (answers, paperID) => {
+        const actualPaper = await paperHelper.getPaperByID(paperID);
+        answers.forEach(answer => {
+          if (!questionsObj[answer.questionID]) return;
+          const oldAnswer = actualPaper.answers.filter(oldAnswer => String(oldAnswer.questionID) === String(answer.questionID))[0];
+          oldAnswer.marks = answer.marks;
         })
+        actualPaper.totalMarks = _.reduce(actualPaper.answers, (sum, answer) => {
+          if (!questionsObj[answer.questionID]) return sum;
+          return sum + Number(answer.marks);
+        }, 0);
+        await actualPaper.save();
+      }
     ));
-    await paperHelper.updatePaperByID(paper._id, { totalMarks: paper.totalMarks });
     res.status(httpStatuses.OK).send({ payload: {} });
   } catch (err) {
     console.log(err);
