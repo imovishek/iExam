@@ -22,9 +22,10 @@ const ShowExamStatusTitle = ({ exam }) => {
     }
   }, [exam]);
   let examTitle = exam.title || '';
-  if (examTitle.length > 25) examTitle = `${examTitle.slice(0, 22)  }...`;
+  const courseCode = exam.course?.courseCode || '';
+  if (examTitle.length > 21) examTitle = `${examTitle.slice(0, 18)  }...`;
   return <Col rows="1fr 1fr 1fr" gridGap="3px">
-    <ExamTitleWrapper>{examTitle}</ExamTitleWrapper>
+    <ExamTitleWrapper>{examTitle}<span style={{paddingLeft: "10px", fontSize: "20px"}}>{courseCode && `(${courseCode})`}</span></ExamTitleWrapper>
     <div style={{ display: "flex", justifyContent: "center" }}>
       <Row columns="1fr 1fr" gridGap="3px">
         <CenterText>{timeDifference.status}</CenterText>

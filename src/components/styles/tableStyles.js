@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Row } from "./pageStyles";
+import Search from "antd/lib/input/Search";
 
 export const TableHeader = styled.div`
   display: flex;
@@ -103,3 +104,9 @@ export const TableRowStyled = styled(Row)`
 export const TableWrapper = styled.div`
   padding: 20px;
 `;
+
+export const SearchStyled = styled(Search)`
+  margin-bottom: 10px;
+  width: 270px;
+  height: 40px;
+`
