@@ -16,6 +16,8 @@ import { PageHeader, TileHeaderWrapper, RightButtonWrapper } from '../../styles/
 import QuestionPaper from './components/QuestionPaper'
 import Loading from '../../Common/Loading'
 import EvaluatePaperNav from './components/EvaluatePaperNav'
+import { BROAD, MCQ } from '../../../utitlities/constants'
+import BroadAutoEvaluateModal from './BroadAutoEvaluateModal'
 
 const ButtonStyled = styled(Button)`
   height: 30px;
@@ -53,7 +55,9 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [exam, setExam] = useState({})
   const [paper, setPaper] = useState({})
+  const [selectedQuestion, setSelectedQuestion] = useState({});
   const [isLoadingAutoEvaluation, setIsLoadingAutoEvaluation] = useState(false);
+  const [showBroadAutoEvaluateModal, setBroadAutoEvaluateModal] = useState(false);
 
   const updateExamOnUI = async () => {
     if (studentID === 'arena') {
@@ -77,6 +81,8 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
     _.forEach(exam.questions, q => {
       questionsObj[q._id] = q;
     });
+    if (questionID) setSelectedQuestion(questionsObj[questionID]);
+    else setSelectedQuestion({});
     paper.answers = _.filter(paper.answers, answer => questionsObj[answer.questionID]);
     paper.answers = _.sortBy(
       paper.answers,
@@ -151,6 +157,20 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
     <div>
       <CheckAuthentication />
       { isLoading && <Loading isLoading={isLoading} /> }
+      <BroadAutoEvaluateModal
+        visible={showBroadAutoEvaluateModal}
+        setVisibility={setBroadAutoEvaluateModal}
+        question={selectedQuestion}
+        paper={paper}
+        setPaper={setPaper}
+        submitPaperEvaluation={submitPaperEvaluationHandler}
+        setQuestionValue={(key, value) => {
+          setSelectedQuestion({
+            ...selectedQuestion,
+            [key]: value,
+          })
+        }}
+      />
       <BodyWrapper>
         <NavBar />
         <Container rows="80px 1fr">
@@ -168,12 +188,23 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
             </div>
             <RightButtonWrapper>
               {(paper.answers && paper.answers.length !== 0) && <CenterText style={{ height: "30px" }}>Total Marks: {paper.totalMarks || 0} </CenterText>}
-              <ButtonStyled
-                disabled={isLoadingAutoEvaluation}
-                onClick={autoEvaluationHandler}
-              >
-                Auto Evaluate <FontAwesomeIconStyled loading={isLoadingAutoEvaluation} icon={faSync}></FontAwesomeIconStyled>
-              </ButtonStyled>
+              {(!selectedQuestion.type || selectedQuestion.type === MCQ) && (
+                <ButtonStyled
+                  disabled={isLoadingAutoEvaluation}
+                  onClick={autoEvaluationHandler}
+                >
+                  Auto Evaluate <FontAwesomeIconStyled loading={isLoadingAutoEvaluation} icon={faSync}></FontAwesomeIconStyled>
+                </ButtonStyled>
+              )}
+              {selectedQuestion.type === BROAD && (
+                <ButtonStyled
+                  disabled={isLoadingAutoEvaluation}
+                  onClick={() => setBroadAutoEvaluateModal(true)}
+                >
+                  Auto Evaluate <FontAwesomeIconStyled loading={isLoadingAutoEvaluation} icon={faSync}></FontAwesomeIconStyled>
+                </ButtonStyled>
+              )}
+              
               <ButtonStyled
                 disabled={!(paper.answers && paper.answers.length !== 0)}
                 type="primary" onClick={submitPaperEvaluationHandler}>

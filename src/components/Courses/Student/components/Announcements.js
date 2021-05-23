@@ -29,7 +29,6 @@ const Row = styled.div`
   background: #538850;
   color: white;
   margin-top: 10px;
-  user-select: none;
 `
 
 const Card = ({ announcement }) => (

@@ -247,6 +247,21 @@ export const updateClarification = async (clarification, update) =>
     update: update || clarification
   })
     .then(res => res.data)
+
+export const evaluateBroadQuestion = async (code, lang, answer, marks) => {
+  const { output, msg } = await requestApiAndGetResponse(`${apiUrl}/compiler/runEvaluation`, 'post', {
+    code,
+    lang,
+    answer,
+    marks,
+  }).then(res => res.data);
+  const array = output.split('\n');
+  const lastLine = array[array.length-1] ? array[array.length-1] : (array[array.length-2] || '');
+  return {
+    stdout: output,
+    value: msg === "error" ? 0 : Number(lastLine.replace(/\D/g,'') || "0"),
+  };
+}
 const api = {
   apiLogin,
   getCourses,
@@ -289,6 +304,7 @@ const api = {
   createClarification,
   updateClarification,
   getUsers,
+  evaluateBroadQuestion,
 }
 
 export default api

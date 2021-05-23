@@ -54,7 +54,7 @@ const HeaderRow = styled.div`
   grid-gap: 20px;
   grid-template-columns: ${(props) => props.columns || "auto"};
   border-radius: 8px;
-  user-select: none;
+  
 `;
 
 const CenterTextWrapper = styled.h1`

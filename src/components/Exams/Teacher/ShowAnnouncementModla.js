@@ -47,7 +47,7 @@ const DeleteButton = styled.div`
   width: 30px;
   color: red;
   cursor: pointer;
-  user-select: none;
+  
   :hover {
     border: 1px solid black;
   }

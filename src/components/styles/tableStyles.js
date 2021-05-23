@@ -19,7 +19,7 @@ export const TableHeaderChild = styled.h2`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  user-select: none;
+  
 `;
 
 export const TableRowChild = styled.div`
@@ -30,7 +30,7 @@ export const TableRowChild = styled.div`
   line-height: 40px;
   overflow: hidden;
   text-overflow: ellipsis;
-  user-select: none;
+  
   color: ${props => props.color || 'inherit'};
 `;
 

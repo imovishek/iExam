@@ -5,12 +5,14 @@ import { LabelWrapper } from "../../../styles/pageStyles";
 import { BroadBodyWrapper } from "../../styles";
 const { TextArea } = Input;
 
-const BroadAnswer = styled.pre`
-  border: 1px solid #888888;
-  box-shadow: 0 1px 1px 0px;
+const BroadAnswer = styled.div`
+  border: 2px solid #000000;
+  max-height: 500px;
+  overflow: auto;
   margin: 3px;
   padding: 10px;
-  font-size: 14px;
+  font-size: 16px;
+  width: fit-content;
 `;
 
 export const AddPadding = styled.div`
@@ -36,7 +38,7 @@ const BroadBody = ({ question, isEditing = false, answer, setAnswerValue }) => (
             rows={4}
           />
         )}
-        {!isEditing && <BroadAnswer>{answer}</BroadAnswer>}
+        {!isEditing && <BroadAnswer>{(answer || "").split('\n').map((line, index) => <div key={index}>{line}</div>)}</BroadAnswer>}
       </AddPadding>
     </Col>
   </div>
