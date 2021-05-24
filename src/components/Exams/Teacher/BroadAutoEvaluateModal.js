@@ -156,7 +156,6 @@ const BroadAutoEvaluateModal = ({
     })
     setCheckObj({ ...checkObj });
   }
-  console.log(checkObj);
   const checkMe = (e, index) => {
     const isChecked = e.target.checked;
     checkObj[index] = isChecked;
