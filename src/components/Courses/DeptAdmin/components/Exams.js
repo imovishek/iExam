@@ -23,7 +23,7 @@ const Row = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${props => props.columns || 'auto'};
-  user-select: none;
+  
 `;
 
 const Body = styled.div`

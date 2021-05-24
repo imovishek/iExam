@@ -87,12 +87,14 @@ const FontAwesomeIconStyled = styled(FontAwesomeIcon)`
     }
   }
 `;
-const BroadAnswer = styled.pre`
-  border: 1px solid #888888;
-  box-shadow: 0px 0px 3px 0px;
+const BroadAnswer = styled.div`
+  border: 2px solid #000000;
+  max-height: 500px;
+  overflow: auto;
   margin: 3px;
   padding: 10px;
-  font-size: 14px;
+  font-size: 16px;
+  width: fit-content;
 `;
 
 const AnsweredBy = styled.div`
@@ -205,7 +207,7 @@ const SingleQuestion = ({
         <BodyWrapper>
           <AddPadding>
             <LabelWrapper>Answer:</LabelWrapper>
-            <BroadAnswer> {answer} </BroadAnswer>
+            <BroadAnswer> {(answer || "").split('\n').map((line, index) => <div key={index}>{line}</div>)} </BroadAnswer>
           </AddPadding>
         </BodyWrapper>
       )}

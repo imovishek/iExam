@@ -75,7 +75,13 @@ const QuestionCard = ({
 }) => {
   const { questionID } = useParams();
   return (
-    <TableRowStyled style={{padding: '3px', borderRadius: '3px'}} gridGap="10px" isSelected={questionID === question._id} onClick={() => dispatch(push(`/exam/${exam._id}/paper/question/${question._id}`))} columns="repeat(2, 1fr) 80px 20px">
+    <TableRowStyled
+      style={{padding: '10px', borderRadius: '3px'}}
+      gridGap="10px"
+      isSelected={questionID === question._id}
+      onClick={() => dispatch(push(`/exam/${exam._id}/paper/question/${question._id}`))}
+      columns="1fr 120px 44px"
+    >
       <Wrapper>{question.title}</Wrapper>
       <Wrapper>{smartLabel(question.type)}</Wrapper>
       <Wrapper>{question.marks}</Wrapper>
@@ -243,7 +249,7 @@ const EvaluatePaperNav = ({
     );
     return (
       <TableWrapper>
-        <Row columns="repeat(2, 1fr) 80px">
+        <Row columns="1fr 120px 44px">
           <HeaderLabel>Title</HeaderLabel>
           <HeaderLabel>Type</HeaderLabel>
           <HeaderLabel>Marks</HeaderLabel>

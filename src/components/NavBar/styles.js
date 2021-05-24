@@ -32,7 +32,7 @@ export const NavWrapper = styled.div`
   width: 100%;
   padding: 10px 5px;
   justify-content: center;
-  user-select: none;
+  
   display: grid;
   grid-template-columns: ${props => props.isCollapsed ? "30px" : "30px 1fr"};
   transition-duration: 200ms;

@@ -18,13 +18,13 @@ export const BodyRow = styled.div`
 export const LabelWrapper = styled.div`
   color: grey;
   margin-bottom: 10px;
-  user-select: none;
+  
 `;
 
 export const TileHeaderWrapper = styled.div`
   display: grid;
   grid-template-columns: ${(props) => props.columns || "auto"};
-  user-select: none;
+  
 `;
 export const RightButtonWrapper = styled.div`
   display: flex;
@@ -33,10 +33,10 @@ export const RightButtonWrapper = styled.div`
 
 export const PageHeader = styled.h1`
   display: inline;
-  user-select: none;
+  
 `;
 
 export const SecondHeader = styled.h2`
   display: inline;
-  user-select: none;
+  
 `;

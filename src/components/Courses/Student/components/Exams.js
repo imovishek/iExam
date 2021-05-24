@@ -44,7 +44,7 @@ const Row = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: ${(props) => props.columns || "auto"};
-  user-select: none;
+  
   :hover {
     background: #d2e3e8;
   }
@@ -56,7 +56,7 @@ const HeaderRow = styled.div`
   grid-gap: 10px;
   grid-template-columns: ${(props) => props.columns || "auto"};
   border-radius: 8px;
-  user-select: none;
+  
 `;
 const Card = ({ exam, onClick }) => {
   const [detailDuration, setDetailDuration] = useState("");

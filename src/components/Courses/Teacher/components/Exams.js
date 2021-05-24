@@ -26,7 +26,7 @@ const Row = styled.div`
   display: grid;
   grid-gap: 20px;
   grid-template-columns: ${props => props.columns || 'auto'};
-  user-select: none;
+  
   border-radius: 5px;
   :hover {
     background: ${p => p.header ? 'none' : '#e4e4e4'};
