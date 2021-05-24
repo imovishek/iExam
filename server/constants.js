@@ -18,6 +18,9 @@ exports.allStatuses = {
   running: 'Running',
   ended: 'Ended',
 }
+exports.TEACHER = 'teacher';
+exports.STUDENT = 'student';
+exports.DEPTADMIN = 'deptAdmin';
 
 exports.inputDateFormats = [
   'DD/MM/YY',

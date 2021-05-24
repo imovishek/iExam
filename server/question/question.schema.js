@@ -43,6 +43,14 @@ const questionSchema = new Schema(
     },
     body: String,
     defaultCode: String,
+    evaluationCode: String,
+    evaluationLang: {
+      type: String,
+      enum: {
+        values: ["cpp", "py"],
+        message: 'Invalid language'
+      }
+    },
     securityType: { type: String, default: "public", required: true },
     teacherAccess: [Schema.Types.ObjectId],
     department: {

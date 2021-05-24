@@ -12,5 +12,11 @@ router
     compilerController.simpleRun
   )
 
+router
+  .route('/compiler/runEvaluation')
+  .post(
+    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    compilerController.runEvaluation
+  )
 
 module.exports = router;
