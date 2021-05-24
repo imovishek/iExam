@@ -151,7 +151,6 @@ const BroadAutoEvaluateModal = ({
 
   const checkAll = (e) => {
     const isChecked = e.target.checked;
-    console.log(isChecked);
     evaluations.forEach((evaluation, index) => {
       checkObj[index] = isChecked;
     })
@@ -160,8 +159,6 @@ const BroadAutoEvaluateModal = ({
   console.log(checkObj);
   const checkMe = (e, index) => {
     const isChecked = e.target.checked;
-
-    console.log(isChecked, index);
     checkObj[index] = isChecked;
     setCheckObj({ ...checkObj });
   }
