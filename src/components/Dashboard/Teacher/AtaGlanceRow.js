@@ -8,7 +8,6 @@ import { useState } from "react/cjs/react.development";
 const MainRow = styled.div`
   margin-left: 25px;
   display: flex;
-  width: 64vw;
 `;
 
 const BoxWrapper = styled.div`
