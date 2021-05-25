@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import CreateExamModal from "./CreateExamModal";
 import { useState } from "react/cjs/react.development";
-
+import { onUpdateCurrentTab } from "../../Exams/actions";
+import { push } from "connected-react-router";
+import { setNavigaitonTabAction } from "../../NavBar/actions";
 const MainRow = styled.div`
   margin-left: 25px;
   display: flex;
@@ -35,7 +37,7 @@ const BoxWrapper = styled.div`
 //   {courseCode:"WWW w03D",id:122},
 // ]
 
-const AtAGlanceWrapper = ({ dispatch,courses, examsTaken }) => {
+const AtAGlanceWrapper = ({ dispatch, courses, examsTaken }) => {
   const [modalVisibility, setModalVisibility] = useState(false);
 
   return (
@@ -68,8 +70,13 @@ const AtAGlanceWrapper = ({ dispatch,courses, examsTaken }) => {
             />
           </BoxWrapper>
         </a>
-        <Link
-          to="/exams/ended"
+        <a
+          onClick={(e) => {
+            e.preventDefault();
+            dispatch(setNavigaitonTabAction("exams"));
+            dispatch(onUpdateCurrentTab("ended"));
+            dispatch(push("/exams"));
+          }}
           style={{ width: "33%", marginRight: "10px", marginLeft: "10px" }}
         >
           <BoxWrapper>
@@ -87,8 +94,16 @@ const AtAGlanceWrapper = ({ dispatch,courses, examsTaken }) => {
               {examsTaken}
             </h1>
           </BoxWrapper>
-        </Link>
-        <Link to="/courses" style={{ width: "33%", marginLeft: "10px" }}>
+        </a>
+        <a
+          onClick={(e) => {
+            e.preventDefault();
+            dispatch(setNavigaitonTabAction("courses"));
+            dispatch(onUpdateCurrentTab("courses"));
+            dispatch(push("/courses"));
+          }}
+          style={{ width: "33%", marginLeft: "10px" }}
+        >
           <BoxWrapper>
             <h2>My Courses</h2>
             <h1
@@ -104,7 +119,7 @@ const AtAGlanceWrapper = ({ dispatch,courses, examsTaken }) => {
               {courses.length}
             </h1>
           </BoxWrapper>
-        </Link>
+        </a>
       </MainRow>
     </div>
   );

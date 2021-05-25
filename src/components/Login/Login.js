@@ -23,6 +23,7 @@ const TitleColumn = styled.div`
   background-position: center;
   padding-left: 6vw;
   padding-top: 25vh;
+  width:60vw;
 `;
 
 const FormColumn = styled.div`
@@ -181,7 +182,7 @@ const Login = ({ setUser, dispatch }) => {
           </div>
           {isLoading?
             <SpinWrapper>
-              <Loading isLoading={true} style={{left: '20vw', top: '10vh'}}/>
+              <Loading isLoading={true} style={{left: '20vw'}}/>
             </SpinWrapper>
             : null
           }

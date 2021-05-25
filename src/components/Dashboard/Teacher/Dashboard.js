@@ -52,6 +52,7 @@ const Dashboard = ({ dispatch, user }) => {
         if (stat === "running" || stat === "upcoming") futureExams.push(exam);
       });
       futureExams.sort((a, b) => a.startDate.localeCompare(b.startDate));
+      futureExams.splice(5);
       mycourses.sort((a, b) => a.courseCode.localeCompare(b.courseCode));
 
       setData({

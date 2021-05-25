@@ -11,7 +11,7 @@ import {
 } from "../../../utitlities/common.functions";
 import api from "../../../utitlities/api";
 import { push } from "connected-react-router";
-import { connect } from "react-redux";
+import { setNavigaitonTabAction } from "../../NavBar/actions";
 
 const { Option } = Select;
 
@@ -80,6 +80,7 @@ const CreateExamModal = ({ visible, setVisibility, courses, dispatch }) => {
 
     setLoading(false);
     closeModal();
+    dispatch(setNavigaitonTabAction("exams"));
     dispatch(push(`exam/${newExam.id}`));
   };
 
