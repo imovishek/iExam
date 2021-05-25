@@ -52,6 +52,8 @@ const Dashboard = ({ dispatch, user }) => {
         if (stat === "running" || stat === "upcoming") futureExams.push(exam);
       });
       futureExams.sort((a, b) => a.startDate.localeCompare(b.startDate));
+      mycourses.sort((a, b) => a.courseCode.localeCompare(b.courseCode));
+
       setData({
         exams: futureExams,
         examsTaken: exams.length - futureExams.length,
@@ -85,6 +87,7 @@ const Dashboard = ({ dispatch, user }) => {
                 ></NextExamCard>
               )}
               <AtAGlanceWrapper
+                dispatch={dispatch}
                 courses={data.courses}
                 examsTaken={data.examsTaken}
               ></AtAGlanceWrapper>
