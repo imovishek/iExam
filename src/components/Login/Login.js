@@ -21,7 +21,6 @@ const TitleColumn = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  width: 60vw;
   padding-left: 6vw;
   padding-top: 25vh;
 `;

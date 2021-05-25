@@ -9,7 +9,6 @@ const ItemWrapper = styled.div`
   padding: 10px 20px;
   border-radius: 14px;
   background-color: #ffffff;
-  width: 60vw;
 `;
 
 const DateTimeBlock = styled.button`

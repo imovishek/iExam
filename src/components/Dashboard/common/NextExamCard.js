@@ -12,7 +12,6 @@ const NextExamWrapper = styled.div`
     rgba(17, 38, 77, 0.82) 0%,
     rgba(73, 0, 107, 0.82) 100%
   );
-  width: 65vw;
   min-height: 20vh;
   padding: 40px;
   border-radius: 20px;
