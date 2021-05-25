@@ -1,4 +1,4 @@
-import './App.css'
+import './App.less'
 import { Route, Switch } from 'react-router'
 import Login from './components/Login/Login'
 import Dashboard from './components/Dashboard/Dashboard'
