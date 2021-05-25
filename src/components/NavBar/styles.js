@@ -7,22 +7,20 @@ export const BodyWrapper = styled.div`
   justify-content: center;
   align-items: center;
   height: 100%;
-  background: #1c3131;
+  background: #ffffff;
   box-shadow: 4px 0px 5px 0px rgba(0,0,0,0.36);
   min-height: 300px;
-  width: ${props => props.isCollapsed ? '70px' : '200px'};
+  width: ${props => props.isCollapsed ? '70px' : '250px'};
   `
 
 export const SubWrapper = styled.div`
-  padding: ${({ isCollapsed }) => isCollapsed ? '10px' : '30px'} 10px;
-  margin-left: ${({ isCollapsed }) => isCollapsed ? '0px' : '20px'};
-  margin-right: ${({ isCollapsed }) => isCollapsed ? '0px' : '20px'};
+  padding: ${({ isCollapsed }) => isCollapsed ? '10px 0px' : '30px 0px'};
   min-height: 300px;
   height: 100%;
   transition-duration: 200ms;
   display: grid;
-  width: ${props => props.isCollapsed ? '70px' : '200px'};
-  grid-template-rows: 1fr ${({ isCollapsed }) => isCollapsed ? '140px' : '55px'};
+  width: ${props => props.isCollapsed ? '70px' : '250px'};
+  grid-template-rows: 1fr ${({ isCollapsed }) => isCollapsed ? '140px' : '70px'};
 `
 
 export const NavWrapper = styled.div`
@@ -32,23 +30,23 @@ export const NavWrapper = styled.div`
   width: 100%;
   padding: 10px 5px;
   justify-content: center;
-  user-select: none;
+  
   display: grid;
-  grid-template-columns: ${props => props.isCollapsed ? "30px" : "30px 1fr"};
+  grid-template-columns: ${props => props.isCollapsed ? "30px" : "40px 30px 1fr"};
   transition-duration: 200ms;
 `
 
 export const LinkWrapper = styled.div`
   :hover{
-    color: ${(props) => props.selected ? '#40a9ff' : '#ffffff'};
+    color: ${(props) => props.selected ? '#000000' : '#000000'};
   }
-  color: ${(props) => props.selected ? '#40a9ff' : '#ffffff'};
+  color: ${(props) => props.selected ? '#000000' : '#000000'};
   margin-bottom: 10px;
-  width: ${props => props.isCollapsed ? '50px' : '175px'};
-  padding: 5px 10px;
-  box-shadow: 3px 3px 10px #000f0f;
-  border-radius: 5px;
-  background: #1c3131;
+  width: ${props => props.isCollapsed ? '50px' : '230px'};
+  padding: 0px 10px;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+  background: ${(props) => props.selected ? '#d5b3e5' : '#ffffff'};
   transition-duration: 200ms;
 `;
 export const LogoWrapper = styled.div`
@@ -75,7 +73,7 @@ export const DesignationWraper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  color: #ced4d4;
+  color: #484848;
   font-size: 11px;
   font-style: italic;
   margin-bottom: 10px;
@@ -85,19 +83,27 @@ export const FooterWraper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  width: 140px;
+  width: 100%;
+  ${props => props.isCollapsed ? 'margin-left: 15px;' : ''}
 `
 
 export const LabelHeader = styled.label`
-  color: white;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 18px;
-  color: #ffffff;
 `;
 
 export const ColorBar = styled.div`
   ${props => (props.selected ? 'background: #40a9ff;' : '')}
   border-radius: 0px;
 `;
+
+export const AppTitle = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: -15px;
+  margin-bottom: 30px;
+  font-size: 16px;
+  color: #6c1894;
+`; 

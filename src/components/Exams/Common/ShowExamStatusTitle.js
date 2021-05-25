@@ -1,5 +1,4 @@
 import { Progress } from "antd";
-import 'antd/dist/antd.css';
 import { useEffect, useState } from "react";
 import { getExamStatus, getExamTimeDiffInFormat, getRemainingTimePercentage } from "../../../utitlities/common.functions";
 import { CenterText, Col, Row } from "../../../utitlities/styles";

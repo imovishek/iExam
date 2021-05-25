@@ -6,7 +6,7 @@ import { hasPageAccess, mapDesignations } from '../../utitlities/constants'
 import React, { useState, useLayoutEffect } from 'react'
 import UserInfo from '../UserSettings/User/UserInfo'
 import { Tooltip } from 'antd'
-import { BodyWrapper, DesignationWraper, FontAwesomeIconWrapper, FooterIconWraper, FooterWraper, LabelHeader, LinkWrapper, LogoWrapper, NavWrapper, SubWrapper } from './styles'
+import { AppTitle, BodyWrapper, DesignationWraper, FontAwesomeIconWrapper, FooterIconWraper, FooterWraper, LabelHeader, LinkWrapper, LogoWrapper, NavWrapper, SubWrapper } from './styles'
 import { navLinks } from './constants'
 import confirm from 'antd/lib/modal/confirm'
 import { useEffect } from 'react/cjs/react.development'
@@ -57,12 +57,13 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch, isColl
           <LogoWrapper isCollapsed={isCollapsed}>
             <img src="https://www.sust.edu/images/logo.png" height={isCollapsed ? "50px" : "80px"} style={{transitionDuration: "200ms;"}}/>
           </LogoWrapper>
-
+          {!isCollapsed && <AppTitle>Online Examination System</AppTitle>}
           {navLinks.map(navLink => {
             if (!hasPageAccess[userType] || !hasPageAccess[userType][navLink.body]) return null;
             return  (
               <LinkWrapper isCollapsed={isCollapsed} key={navLink.link} onClick={() => redirectTo(navLink.link)} selected={tabKey === navLink.link}>
                 <NavWrapper isCollapsed={isCollapsed}>
+                  <div></div>
                   <TooltipWrapper navLink={navLink} isCollapsed={isCollapsed}/>
                   {!isCollapsed && navLink.body}
                 </NavWrapper>
@@ -87,7 +88,9 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch, isColl
                 onClick={() => {
                   setShowUserInfoModal(true)
                 }}
-                color = "white" icon={faCog} size="lg"/>
+                icon={faCog}
+                size="lg"
+              />
             </Tooltip>
             <Tooltip title = "Logout">
               <FontAwesomeIconWrapper
@@ -104,7 +107,6 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch, isColl
                   maskClosable: true,
                   keyboard: true,
                 })}
-                color = "white"
                 icon={faSignOutAlt}
                 size="lg"
               />

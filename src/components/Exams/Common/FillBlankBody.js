@@ -18,7 +18,7 @@ const BodyWithInputs = ({ isEditing, body: questionBody, answer, setAnswerValue 
   const array = getQuestionSplitFBlank(questionBody);
   let parsedAnswer = [];
   try {
-    parsedAnswer = JSON.parse(answer);
+    parsedAnswer = JSON.parse(answer) || [];
   } catch (e) {}
   return _.map(array, (ele, index) => {
     if (index === array.length - 1) return <TextWrapper key={index}>{ele.text}</TextWrapper>;
