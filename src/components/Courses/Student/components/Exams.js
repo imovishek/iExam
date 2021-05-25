@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
 import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import { TableRowStyled } from "../../../styles/tableStyles";
+import Loading from "../../../Common/Loading";
 
 const Container = styled.div`
   border-radius: 8px;
@@ -83,7 +84,7 @@ const Card = ({ exam, onClick }) => {
   );
 };
 
-const Exams = ({ exams, dispatch }) => {
+const Exams = ({ exams, dispatch, isLoading }) => {
   const isNoData = !exams || exams.length === 0;
   return (
     <Container rows="55px 1fr">
@@ -95,7 +96,8 @@ const Exams = ({ exams, dispatch }) => {
         <HeaderLabel></HeaderLabel>
       </HeaderRow>
       <Body>
-        {isNoData && (
+        <Loading isLoading={isLoading} style={{left: '57vw', top: '35vh'}}/>
+        {!isLoading && isNoData && (
           <NoDataComponent title="No exams created for this course" />
         )}
         {!isNoData &&

@@ -1,14 +1,15 @@
 
 import styled from 'styled-components'
 import _ from 'underscore'
-import { Spin, Button } from 'antd'
+import {  Button } from 'antd'
 import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { push } from 'connected-react-router'
 import moment from 'moment';
 import { connect } from 'react-redux'
 import { formatDateAndTime, NoDataComponent } from '../../../utitlities/common.functions'
-import { TableRowFlex, TableRowChild, OperationWrapper, TableHeader, TableHeaderChild, SpinWrapper, TableWrapper } from '../../styles/tableStyles'
+import { TableRowFlex, TableRowChild, OperationWrapper, TableHeader, TableHeaderChild, TableWrapper } from '../../styles/tableStyles'
+import Loading from '../../Common/Loading'
 
 const TableBodyWrapper = styled.div`
   overflow: auto;
@@ -98,11 +99,8 @@ const ExamTable = ({
           }}
         />
       }
-      { isLoading &&
-        <SpinWrapper>
-          <Spin size="large" />
-        </SpinWrapper>
-      }
+      <Loading isLoading={isLoading} style={{top: '28vh', left: '63vw'}} />
+
     </TableWrapper>
   )
 }

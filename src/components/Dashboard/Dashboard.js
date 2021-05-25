@@ -5,18 +5,19 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { PageHeader } from '../styles/pageStyles'
+import {primaryColor} from '../../utitlities/global.config';
 
-const LinkWrapper = styled.div`
-  border: 1px solid green;
-  background: #12a512;
-  font-weight: 600;
+const LinkWrapper = styled.button`
+  border: none;
+  background: ${primaryColor};
+  font-weight: 400;
   color: white;
-  padding: 3px;
+  padding: 0 10px;
   :hover{
     color: white;
   }
   cursor: pointer;
-  width: 60px;
+  width: fit-content;
 `
 const Dashboard = ({ dispatch }) => {
   const redirectTo = path => {

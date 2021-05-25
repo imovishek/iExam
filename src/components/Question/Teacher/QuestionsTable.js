@@ -1,15 +1,16 @@
 
 import _ from 'underscore';
-import { Spin, Popconfirm } from 'antd';
+import { Popconfirm } from 'antd';
 import Pagination from '../../Common/Pagination';
 import React, { useState, useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
-import { TableRowChild, TableHeaderChild, SpinWrapper, TableRowStyled, TableWrapper } from '../../styles/tableStyles';
+import { TableRowChild, TableHeaderChild, TableRowStyled, TableWrapper } from '../../styles/tableStyles';
 import api from '../../../utitlities/api';
 import { AwesomeIcon } from '../../../utitlities/styles';
 import { RightButtonWrapper, Row } from '../../styles/pageStyles';
 import { NoDataComponent } from '../../../utitlities/common.functions';
+import Loading from '../../Common/Loading';
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
@@ -102,11 +103,7 @@ const QuestionTable = ({
           }}
         />
       }
-      { isLoading &&
-        <SpinWrapper>
-          <Spin size="large" />
-        </SpinWrapper>
-      }
+      <Loading isLoading={isLoading} style={{top: '25vh', left: '58vw'}}/>
     </TableWrapper>
   )
 }

@@ -1,15 +1,16 @@
 
 import styled from 'styled-components'
 import _ from 'underscore'
-import { Spin, Button, message } from 'antd'
+import { Button, message } from 'antd'
 import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import api, { deleteCourse } from '../../../utitlities/api'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
 import { NoDataComponent, smartLabel } from '../../../utitlities/common.functions'
-import { TableRowChild, OperationWrapper, TableHeaderChild, SpinWrapper, TableRowStyled, TableWrapper, SearchStyled } from '../../styles/tableStyles'
+import { TableRowChild, OperationWrapper, TableHeaderChild, TableRowStyled, TableWrapper, SearchStyled } from '../../styles/tableStyles'
 import { RightButtonWrapper, Row } from '../../styles/pageStyles'
+import Loading from '../../Common/Loading'
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 const ButtonSyled = styled(Button)`
@@ -171,11 +172,7 @@ const CourseTable = ({
           }}
         />
       }
-      { isLoading &&
-        <SpinWrapper>
-          <Spin size="large" />
-        </SpinWrapper>
-      }
+      <Loading isLoading={isLoading} style={{left: '58vw', top: '35vh'}}/>
     </TableWrapper>
   )
 }

@@ -1,13 +1,13 @@
 
 import _ from 'underscore';
-import { Spin } from 'antd';
 import Pagination from '../../Common/Pagination';
 import React, { useState, useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 import { NoDataComponent, smartLabel, getStatusColor } from '../../../utitlities/common.functions';
-import { TableRowChild, TableHeader, TableHeaderChild, SpinWrapper, TableRowFlex, TableWrapper, SearchStyled } from '../../styles/tableStyles';
+import { TableRowChild, TableHeader, TableHeaderChild, TableRowFlex, TableWrapper, SearchStyled } from '../../styles/tableStyles';
 import { RightButtonWrapper } from '../../styles/pageStyles';
+import Loading from '../../Common/Loading';
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
@@ -104,11 +104,7 @@ const CourseTable = ({
           }}
         />
       }
-      { isLoading &&
-        <SpinWrapper>
-          <Spin size="large" />
-        </SpinWrapper>
-      }
+      <Loading isLoading={isLoading} style={{top: '35vh', left: '58vw'}}/>
     </TableWrapper>
   )
 }
