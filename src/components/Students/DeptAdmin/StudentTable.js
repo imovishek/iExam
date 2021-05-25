@@ -1,12 +1,13 @@
 
 import _ from 'underscore'
-import { Spin, Button, Popconfirm } from 'antd'
+import { Button, Popconfirm } from 'antd'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { TableRowFlex, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper, TableWrapper } from '../../styles/tableStyles'
+import { TableRowFlex, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, TableWrapper } from '../../styles/tableStyles'
 import { NoDataComponent } from '../../../utitlities/common.functions'
+import Loading from '../../Common/Loading'
 
 const StudentCard = ({ dispatch, student, setStudentToEdit, showCreateEditModal, deleteStudent }) => (
   <TableRowFlex>
@@ -87,11 +88,7 @@ const StudentTable = ({
           }}
         />
       }
-      { isLoading &&
-        <SpinWrapper>
-          <Spin size="large" />
-        </SpinWrapper>
-      }
+      <Loading isLoading={isLoading} style={{left: '58vw', top: '30vh'}}/>
     </TableWrapper>
   )
 }

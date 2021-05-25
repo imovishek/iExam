@@ -1,13 +1,14 @@
 import _ from 'underscore';
-import { Spin, Button, Popconfirm } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Pagination from '../../Common/Pagination';
 import React, { useState, useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 import { NoDataComponent, smartLabel } from '../../../utitlities/common.functions';
-import { TableWrapper, TableRowFlex, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SpinWrapper, SearchStyled } from '../../styles/tableStyles'
+import { TableWrapper, TableRowFlex, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, SearchStyled } from '../../styles/tableStyles'
 import { RightButtonWrapper } from '../../styles/pageStyles';
+import Loading from '../../Common/Loading';
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
@@ -135,11 +136,7 @@ const CourseTable = ({
           }}
         />
       }
-      { isLoading &&
-        <SpinWrapper>
-          <Spin size="large" />
-        </SpinWrapper>
-      }
+      <Loading isLoading={isLoading} style={{top: '35vh', left: '58vw'}}/>
     </TableWrapper>
   )
 }

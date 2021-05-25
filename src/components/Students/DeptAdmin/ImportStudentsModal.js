@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React, { useState } from 'react';
-import { Modal, Button, message, Spin } from 'antd';
+import { Modal, Button, message } from 'antd';
 import Dropzone from '../../Common/Dropzone';
 import api from '../../../utitlities/api';
 import { CenterText, LinkStyled } from '../../../utitlities/styles';
