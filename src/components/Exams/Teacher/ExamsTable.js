@@ -1,11 +1,12 @@
 import _ from 'underscore'
-import { Spin, Button } from 'antd'
+import { Button } from 'antd'
 import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
-import { TableRowFlex, TableRowChild, OperationWrapper, TableHeader, TableHeaderChild, SpinWrapper, TableWrapper } from '../../styles/tableStyles'
+import { TableRowFlex, TableRowChild, OperationWrapper, TableHeader, TableHeaderChild, TableWrapper } from '../../styles/tableStyles'
 import { NoDataComponent, formatDateAndTime } from '../../../utitlities/common.functions'
+import Loading from '../../Common/Loading'
 
 const getName = obj => `${obj.firstName} ${obj.lastName}`
 
@@ -82,11 +83,7 @@ const ExamTable = ({
           }}
         />
       }
-      { isLoading &&
-        <SpinWrapper>
-          <Spin size="large" />
-        </SpinWrapper>
-      }
+      <Loading isLoading={isLoading} style={{top: '29vh', left: '63vw'}}/>
     </TableWrapper>
   )
 }

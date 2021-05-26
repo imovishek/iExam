@@ -1,4 +1,4 @@
-import { Input, Button, message, Spin } from "antd";
+import { Input, Button, message } from "antd";
 import React, { useState } from "react";
 import jwt from "jsonwebtoken";
 import styled from "styled-components";
@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { setUserAction } from "./actions";
 import { push } from "connected-react-router";
 import backgroundImage from "../../images/loginBackground.svg";
+import Loading from "../Common/Loading";
 
 const fontColor = "#49006b";
 
@@ -20,9 +21,9 @@ const TitleColumn = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  width: 60vw;
   padding-left: 6vw;
   padding-top: 25vh;
+  width:60vw;
 `;
 
 const FormColumn = styled.div`
@@ -179,11 +180,12 @@ const Login = ({ setUser, dispatch }) => {
               </a>{" "}
             </TextWrapper>
           </div>
-          {isLoading && (
+          {isLoading?
             <SpinWrapper>
-              <Spin stylesize="large" />
+              <Loading isLoading={true} style={{left: '20vw'}}/>
             </SpinWrapper>
-          )}
+            : null
+          }
         </SubWrapper>
       </FormColumn>
     </BodyWrapper>

@@ -1,7 +1,7 @@
 import './App.less'
 import { Route, Switch } from 'react-router'
 import Login from './components/Login/Login'
-import Dashboard from './components/Dashboard/Dashboard'
+import DashboardForTeacher from './components/Dashboard/Teacher/Dashboard'
 import DashboardPageForStudent from './components/Dashboard/Student/Dashboard'
 import Logout from './components/Logout/Logout'
 import CoursesForAdmin from './components/Courses/DeptAdmin/Courses'
@@ -85,9 +85,9 @@ const App = ({ user, dispatch }) => {
       { userType === 'teacher' && <Route path="/exams" component={ExamsForTeacher} /> }
       <Route path="/login" component={Login} />
       <Route path="/logout" component={Logout} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard" component={DashboardForTeacher} />
       <Route path="/404" component={NotFound} />
-      <Route path="/" component={Dashboard} />
+      <Route path="/" component={DashboardForTeacher} />
     </Switch>
   )
 }

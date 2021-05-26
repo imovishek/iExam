@@ -23,14 +23,16 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
   const { id } = useParams()
   if (!id) dispatch(goBack())
   const [course, setCourse] = useState({})
+  const [isLoading, setLoading] = useState(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     try {
       const { payload = {} } = await api.getCourseByID(id)
-      setCourse(payload)
+      setCourse(payload);
     } catch (err) {
       console.log(err)
     }
+    setLoading(false);
   }, [id])
 
   return (
@@ -53,10 +55,9 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
           <Row columns="1fr">
             <div>
               <SecondHeader>Exams</SecondHeader>
-              <Exams exams={course.exams}/>
+              <Exams isLoading={isLoading} exams={course.exams}/>
             </div>
           </Row>
-
         </Container>
       </BodyWrapper>
     </div>

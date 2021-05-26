@@ -11,6 +11,7 @@ import { Spin } from "antd";
 import styled from "styled-components";
 import UpcommingExamTable from "../common/UpcommingExamTable";
 import NextExamCard from "../common/NextExamCard";
+import AtAGlanceWrapper from "./AtaGlanceRow";
 
 const SpinWrapper = styled.div`
   text-align: center;
@@ -27,14 +28,15 @@ const Dashboard = ({ dispatch, user }) => {
     dispatch(push(`/${path}`));
   };
 
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const [isExamsChanged, setExamsChanged] = useState(true);
-  const [exams, setExams] = useState([]);
+  const [data, setData] = useState({});
+
   useEffect(async () => {
     try {
       setLoading(true);
-      const { payload: mycourses } = await api.getCourses({
-        enrolledStudents: user._id,
+      const { payload: mycourses = [] } = await api.getCourses({
+        assignedTeacher: user._id,
       });
       let exams = [];
       _.each(mycourses, (course) => {
@@ -44,15 +46,20 @@ const Dashboard = ({ dispatch, user }) => {
       const { payload: loadExams } = await api.getExams({
         _id: { $in: examIDs },
       });
-
       const futureExams = [];
       loadExams.forEach((exam) => {
         const stat = getExamStatus(exam).toLowerCase();
         if (stat === "running" || stat === "upcoming") futureExams.push(exam);
       });
       futureExams.sort((a, b) => a.startDate.localeCompare(b.startDate));
-      futureExams.splice(10);
-      setExams(futureExams);
+      futureExams.splice(5);
+      mycourses.sort((a, b) => a.courseCode.localeCompare(b.courseCode));
+
+      setData({
+        exams: futureExams,
+        examsTaken: exams.length - futureExams.length,
+        courses: mycourses,
+      });
     } catch (err) {
       console.log(err);
     } finally {
@@ -72,17 +79,27 @@ const Dashboard = ({ dispatch, user }) => {
               <Spin stylesize="large" tip="Loading.." />
             </SpinWrapper>
           )}
-          {!isLoading && exams.length !== 0 && (
+          {!isLoading && (
             <div>
-              <NextExamCard exam={exams[0]} dispatch={dispatch}></NextExamCard>
-              <UpcommingExamTable
-                exams={exams}
+              {data.exams.length !== 0 && (
+                <NextExamCard
+                  exam={data.exams[0]}
+                  dispatch={dispatch}
+                ></NextExamCard>
+              )}
+              <AtAGlanceWrapper
                 dispatch={dispatch}
-              ></UpcommingExamTable>
+                courses={data.courses}
+                examsTaken={data.examsTaken}
+              ></AtAGlanceWrapper>
+
+              {data.exams.length !== 0 && (
+                <UpcommingExamTable
+                  exams={data.exams}
+                  dispatch={dispatch}
+                ></UpcommingExamTable>
+              )}
             </div>
-          )}
-          {!isLoading && exams.length === 0 && (
-            <SpinWrapper>No exams for you!</SpinWrapper>
           )}
         </Container>
       </BodyWrapper>

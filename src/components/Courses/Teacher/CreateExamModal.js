@@ -43,6 +43,7 @@ const CreateExamModal = ({
   updateExam
 }) => {
   const isEditing = !(!selectedExam)
+
   const title = isEditing ? 'Edit Exam' : 'Create Exam'
   const defaultExam = {
     title: '',
