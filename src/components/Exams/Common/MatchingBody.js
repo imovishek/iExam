@@ -30,7 +30,6 @@ const MatchingBody = ({
   isTeacherViewing,
   answer,
 }) => {
-  console.log(answer);
   const [matchingOptions, setMatchingOptions] = useState({});
   const [matchingIndexes, setMatchingIndexes] = useState({});
 
@@ -39,7 +38,6 @@ const MatchingBody = ({
       answer,
       question.matchingOptions
     );
-    console.log(answer, newMatchingOptions);
     setMatchingOptions(newMatchingOptions);
     const { leftSide, rightSide } = newMatchingOptions;
     const newIndexes = {};
@@ -61,7 +59,6 @@ const MatchingBody = ({
     const newLeftSide = [];
     const newRightSide = [];
     const { leftSide, rightSide } = matchingOptions;
-    console.log("hhhheeee", answer, parsedAnswer, leftSide, rightSide);
     _.forEach(parsedAnswer, (ara) => {
       const left = _.find(leftSide, (v) => v.id === ara[0]);
       const right = _.find(rightSide, (v) => v.id === ara[1]);

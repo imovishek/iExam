@@ -4,6 +4,10 @@ import { stFormatDate, splitDuration, splitStartTime, getExamStatus, smartLabel,
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
 import { TableRowStyled } from '../../../styles/tableStyles'
+import { RightButtonWrapper } from '../../../styles/pageStyles'
+import { Popconfirm } from 'antd'
+import api from '../../../../utitlities/api'
+import { AwesomeIcon } from '../../../../utitlities/styles'
 
 const Container = styled.div`
 `
@@ -41,23 +45,48 @@ const Body = styled.div`
   }
 `
 
-const Card = ({ exam, dispatch }) => (
-  <TableRowStyled columns="repeat(5, 1fr)" onClick={() => dispatch(push(`/exam/${exam._id}`))}>
+const Card = ({ exam, dispatch, updateCourseOnUi }) => (
+  <TableRowStyled columns="repeat(5, 1fr) 30px" onClick={() => dispatch(push(`/exam/${exam._id}`))}>
     <Wrapper>{exam.title}</Wrapper>
     <Wrapper>{stFormatDate(exam.startDate)}</Wrapper>
     <Wrapper>{splitStartTime(exam.startTime)}</Wrapper>
     <Wrapper>{splitDuration(exam.duration)}</Wrapper>
     <Wrapper color={getStatusColor(getExamStatus(exam))}>{smartLabel(getExamStatus(exam))}</Wrapper>
+    <RightButtonWrapper style={{ height: '100%' }}>
+      <Popconfirm
+        title="Are you sure？"
+        okText="Yes"
+        cancelText="No"
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+        }}
+        onConfirm={async (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          await api.deleteExam(exam)
+          await updateCourseOnUi()
+        }}
+        onCancel={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+        }}
+      >
+        <AwesomeIcon type="delete" />
+      </Popconfirm>
+    </RightButtonWrapper>
   </TableRowStyled>
 )
 
 const Exams = ({
-  exams, dispatch
+  exams,
+  dispatch,
+  updateCourseOnUi,
 }) => {
   const isNoData = !exams || exams.length === 0
   return (
     <Container>
-      <Row header columns="repeat(5, 1fr)">
+      <Row header columns="repeat(5, 1fr) 30px">
         <HeaderLabel>Title</HeaderLabel>
         <HeaderLabel>Date</HeaderLabel>
         <HeaderLabel>Start Time</HeaderLabel>
@@ -66,7 +95,7 @@ const Exams = ({
       </Row>
       <Body>
         { isNoData && <NoDataComponent title="No exams created for this course" />}
-        { !isNoData && _.map(exams, (exam, index) => <Card dispatch={dispatch} key={`exam_${index}`} exam={exam} />)}
+        { !isNoData && _.map(exams, (exam, index) => <Card dispatch={dispatch} key={`exam_${index}`} exam={exam} updateCourseOnUi={updateCourseOnUi}/>)}
       </Body>
       
     </Container>

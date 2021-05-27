@@ -40,3 +40,9 @@ export const navLinks = [
     icon: faQuestion,
   },
 ];
+
+export const navKeys = {
+  DASHBOARD: 'dashboard',
+  EXAMS: 'exams',
+  COURSES: 'courses',
+};

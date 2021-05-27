@@ -23,6 +23,7 @@ const headerTextStyleObject = { padding: "0", margin: "0", color: "white" };
 const StyledButton = styled.div`
   padding: 10px 15px 10px 15px;
   min-height: 30px;
+  height: fit-content;
   margin: 10px 0px 10px 25px;
   font-size: large;
   background: #49006b;

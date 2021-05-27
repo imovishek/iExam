@@ -108,7 +108,9 @@ export const createExam = async (exam) =>
     exam
   })
     .then(res => res.data)
-
+export const deleteExam = async (exam) =>
+  requestApiAndGetResponse(`${apiUrl}/exam/${exam._id}`, 'delete')
+    .then(res => res.data)
 export const updateDeptAdminByID = async (_id, body) =>
   requestApiAndGetResponse(`${apiUrl}/deptAdmin/${_id}`, 'put', {
     update: body
@@ -305,6 +307,7 @@ const api = {
   updateClarification,
   getUsers,
   evaluateBroadQuestion,
+  deleteExam,
 }
 
 export default api

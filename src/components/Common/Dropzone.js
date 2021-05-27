@@ -5,6 +5,7 @@ import React, {useCallback} from 'react'
 import {useDropzone} from 'react-dropzone'
 import styled from 'styled-components';
 import { CenterText } from '../../utitlities/styles';
+import { primaryColor } from '../../utitlities/global.config';
 
 const FontAwesomeIconWrapper = styled.div`
   display: flex;
@@ -45,7 +46,7 @@ const Dropzone = ({ onSubmit }) => {
       <Dropper {...getRootProps()}>
         <input {...getInputProps()} />
         <FontAwesomeIconWrapper>
-          <FontAwesomeIcon icon={faCloudUploadAlt} size="7x" color="#40A9FF" />
+          <FontAwesomeIcon icon={faCloudUploadAlt} size="7x" color={primaryColor} />
         </FontAwesomeIconWrapper>
       </Dropper>
       <CenterText>Drag {'&'} drop the csv file here, or click to select file</CenterText>

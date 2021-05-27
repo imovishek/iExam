@@ -111,17 +111,22 @@ const setLocalStorage = (user, token) => {
 };
 const Login = ({ setUser, dispatch }) => {
   const tryToLogin = async (email, password) => {
-    const { data: res } = await apiLogin(email, password);
-    setIsLoading(false);
-    if (res.error) return message.error(res.message);
-    localStorage.clear();
-    const user = await jwt.decode(res.token);
-    setUser(user);
-    if (!user)
-      return message.error("Something went wrong please try again later!");
+    try {
+      const { data: res } = await apiLogin(email, password);
+      setIsLoading(false);
+      if (res.error) return message.error(res.message);
+      localStorage.clear();
+      const user = await jwt.decode(res.token);
+      setUser(user);
+      if (!user)
+        return message.error("Something went wrong please try again later!");
 
-    setLocalStorage(user, res.token);
-    dispatch(push("/"));
+      setLocalStorage(user, res.token);
+      dispatch(push("/"));
+    } catch (e) {
+      console.log(e);
+      message.error("Something went wrong please try again later!");
+    }
   };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

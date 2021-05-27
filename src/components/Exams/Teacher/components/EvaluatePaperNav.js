@@ -269,7 +269,6 @@ const EvaluatePaperNav = ({
       </TableWrapper>
     );
   }
-  console.log(showingStudentType);
   return (
     <Container rows="32px 1fr">
       <Row columns="1fr 1fr">
