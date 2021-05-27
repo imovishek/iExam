@@ -29,8 +29,7 @@ const DateTimeBlock = styled.button`
 
 const UpcommingExamTable = ({ exams = [], dispatch }) => (
   <div style={{ margin: "20px", paddingBottom: "20px" }}>
-    <h3>Upcomming Exams</h3>
-    {console.log(exams)}
+    <h3 style={{ marginLeft: "25px", marginBottom: "-5px" }}>Upcomming Exams</h3>
     {exams.map((ex) => (
       <ItemWrapper
         key={ex._id}

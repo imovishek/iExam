@@ -1,7 +1,7 @@
 import "./SpinerColorFix.css";
 import styled from "styled-components";
 import React, { useState } from "react";
-import examValidator from "../../Exams/exam.validation";
+import { dashBoardCreateExamValidator } from "../../Exams/exam.validation";
 import { Spin, Modal, Input, Select, DatePicker, TimePicker } from "antd";
 import moment from "moment";
 import _ from "underscore";
@@ -105,7 +105,7 @@ const CreateExamModal = ({ visible, setVisibility, courses, dispatch }) => {
 
   const onSubmit = () => {
     if (isLoading) return;
-    const errors = joiObjectParser(exam, examValidator);
+    const errors = joiObjectParser(exam, dashBoardCreateExamValidator);
     setErrors(errors);
     if (_.isEmpty(errors)) createExam(exam, selectedCourse);
   };

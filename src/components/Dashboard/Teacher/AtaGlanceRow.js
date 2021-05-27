@@ -42,7 +42,7 @@ const AtAGlanceWrapper = ({ dispatch, courses, examsTaken }) => {
 
   return (
     <div>
-      <h3 style={{ marginLeft: "2vw", marginBottom: "-5px" }}>At a glance</h3>
+      <h3 style={{ marginLeft: "35px", marginBottom: "-5px" }}>At a glance</h3>
       <MainRow>
         <CreateExamModal
           dispatch={dispatch}

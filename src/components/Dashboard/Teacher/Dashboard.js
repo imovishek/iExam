@@ -12,6 +12,8 @@ import styled from "styled-components";
 import UpcommingExamTable from "../common/UpcommingExamTable";
 import NextExamCard from "../common/NextExamCard";
 import AtAGlanceWrapper from "./AtaGlanceRow";
+import { navKeys } from "../../NavBar/constants";
+import { setNavigaitonTabAction } from "../../NavBar/actions";
 
 const SpinWrapper = styled.div`
   text-align: center;
@@ -34,6 +36,7 @@ const Dashboard = ({ dispatch, user }) => {
 
   useEffect(async () => {
     try {
+      dispatch(setNavigaitonTabAction(navKeys.DASHBOARD))
       setLoading(true);
       const { payload: mycourses = [] } = await api.getCourses({
         assignedTeacher: user._id,
@@ -51,13 +54,14 @@ const Dashboard = ({ dispatch, user }) => {
         const stat = getExamStatus(exam).toLowerCase();
         if (stat === "running" || stat === "upcoming") futureExams.push(exam);
       });
+      const futureExamsLength = futureExams.length;
       futureExams.sort((a, b) => a.startDate.localeCompare(b.startDate));
       futureExams.splice(5);
       mycourses.sort((a, b) => a.courseCode.localeCompare(b.courseCode));
 
       setData({
         exams: futureExams,
-        examsTaken: exams.length - futureExams.length,
+        examsTaken: exams.length - futureExamsLength,
         courses: mycourses,
       });
     } catch (err) {

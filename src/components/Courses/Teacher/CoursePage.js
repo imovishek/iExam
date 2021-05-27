@@ -14,7 +14,7 @@ import Loading from '../../Common/Loading';
 import { goBack } from 'connected-react-router';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, LabelWrapper, BodyRow, SecondHeader } from '../../styles/pageStyles';
+import { Row, PageHeader, TileHeaderWrapper, RightButtonWrapper, BodyRow, SecondHeader } from '../../styles/pageStyles';
 import ImportStudentsModal from './ImportStudentsModal';
 import CreateExamModal from './CreateExamModal';
 const { Option } = Select
@@ -113,7 +113,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
                   </ButtonStyled>
                 </RightButtonWrapper>
               </Row>
-              <Exams exams={course.exams} />
+              <Exams exams={course.exams} updateCourseOnUi={updateCourseOnUi}/>
             </StyledBodyRow>
             <StyledBodyRow>
               <Row columns="1fr 70px">

@@ -8,7 +8,11 @@ const schema = Joi.object({
   duration: Joi.string().required().label('Duration is required'),
   totalMarks: Joi.number().required().label('Total Marks is required'),
   startDate: Joi.date().format('DD/MM/YYYY').required().label('Start Date is required'),
-  course:Joi.string().required().label('Please create a course first')
 })
+
+export const dashBoardCreateExamValidator = {
+  ...schema,
+  course: Joi.string().required().label('Course is required')
+}
 
 export default schema

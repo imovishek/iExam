@@ -11,6 +11,8 @@ import { Spin } from "antd";
 import styled from "styled-components";
 import UpcommingExamTable from "../common/UpcommingExamTable";
 import NextExamCard from "../common/NextExamCard";
+import { setNavigaitonTabAction } from "../../NavBar/actions";
+import { navKeys } from "../../NavBar/constants";
 
 const SpinWrapper = styled.div`
   text-align: center;
@@ -32,6 +34,7 @@ const Dashboard = ({ dispatch, user }) => {
   const [exams, setExams] = useState([]);
   useEffect(async () => {
     try {
+      dispatch(setNavigaitonTabAction(navKeys.DASHBOARD))
       setLoading(true);
       const { payload: mycourses } = await api.getCourses({
         enrolledStudents: user._id,

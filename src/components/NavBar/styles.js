@@ -8,7 +8,7 @@ export const BodyWrapper = styled.div`
   align-items: center;
   height: 100%;
   background: #ffffff;
-  box-shadow: 4px 0px 5px 0px rgba(0,0,0,0.36);
+  box-shadow: -3px 6px 15px 0px rgb(0 0 0 / 36%);
   min-height: 300px;
   width: ${props => props.isCollapsed ? '70px' : '250px'};
   `
@@ -52,6 +52,7 @@ export const LinkWrapper = styled.div`
 export const LogoWrapper = styled.div`
   display: flex;
   justify-content: ${props => props.isCollapsed ? 'left' : 'center'};
+  padding-left: ${props => props.isCollapsed ? '10px' : '0px'};
   margin-bottom: 20px;
 `;
 
@@ -77,6 +78,18 @@ export const DesignationWraper = styled.div`
   font-size: 11px;
   font-style: italic;
   margin-bottom: 10px;
+`
+export const FooterNameWrapper = styled.div`
+  display: flex;
+  flex-direction: ${({ isCollapsed }) => isCollapsed ? 'column' : 'row'};
+  ${({ isCollapsed }) => isCollapsed && `
+    border-radius: 25px;
+    padding: 10px;
+    border: 1px solid #bbbbbb;
+    width: fit-content;
+    margin-left: -10px;
+  `};
+  justify-content: center;
 `
 
 export const FooterWraper = styled.div`
