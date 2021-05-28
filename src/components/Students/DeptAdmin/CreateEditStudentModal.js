@@ -82,6 +82,9 @@ const CreateEditStudentModal = ({
     if (key === 'email') {
       newStudent.credential.email = value
     }
+    if (key === 'registrationNo') {
+      newStudent.credential.password = value
+    }
     const newErrors = {
       ...errors
     }
