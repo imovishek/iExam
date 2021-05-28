@@ -16,7 +16,7 @@ import { PageHeader, TileHeaderWrapper, RightButtonWrapper } from '../../styles/
 import QuestionPaper from './components/QuestionPaper'
 import Loading from '../../Common/Loading'
 import EvaluatePaperNav from './components/EvaluatePaperNav'
-import { BROAD, MATCHING, MCQ } from '../../../utitlities/constants'
+import { BROAD, FILLINTHEBLANK, MATCHING, MCQ } from '../../../utitlities/constants'
 import BroadAutoEvaluateModal from './BroadAutoEvaluateModal'
 
 const ButtonStyled = styled(Button)`
@@ -220,7 +220,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
                   Auto Evaluate <FontAwesomeIconStyled loading={isLoadingAutoEvaluation} icon={faSync}></FontAwesomeIconStyled>
                 </ButtonStyled>
               )}
-              {selectedQuestion.type === BROAD && (
+              {(selectedQuestion.type === BROAD || selectedQuestion.type === FILLINTHEBLANK) && (
                 <ButtonStyled
                   disabled={isLoadingAutoEvaluation}
                   onClick={() => setBroadAutoEvaluateModal(true)}
