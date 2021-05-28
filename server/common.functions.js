@@ -1,6 +1,7 @@
 const fs = require('fs');
 const moment = require('moment');
 const Papa = require('papaparse');
+const bcrypt = require('bcryptjs');
 const _ = require('underscore');
 const { requiredCsvHeaders, inputDateFormats } = require('./constants');
 
@@ -57,26 +58,28 @@ exports.mapCsvToCourse = (courses = [], user) =>
     };
   });
 
-  exports.mapCsvToStudent = (students = [], user) =>
-  students.map(student => {
+exports.mapCsvToStudent = async (students = [], user) =>
+  Promise.all(students.map(async student => {
     const requiredHeaders = requiredCsvHeaders.STUDENT;
     if (_.any(requiredHeaders, header => !_.contains(Object.keys(student), header)))
       throw new Error('Some fields are missing');
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(student['Registration Number'], salt);
     return {
       firstName: student['First Name'],
       lastName: student['Last Name'],
       registrationNo: student['Registration Number'],
       credential: {
         email: student["Email"],
-        password: "$2a$10$mub9.N4UeLgLmwbr727hW.v1rZ0VTigz9LW/dPIGprM1Xi182wmom",
+        password,
         userType: "student"
       },
       phoneNumber: student['Phone Number'],
       department: user.department
     };
-  });
+  }));
 
-  exports.mapCsvToTeacher = (teachers = [], user) =>
+exports.mapCsvToTeacher = (teachers = [], user) =>
   teachers.map(teacher => {
     const requiredHeaders = requiredCsvHeaders.TEACHER;
     if (_.any(requiredHeaders, header => !_.contains(Object.keys(teacher), header)))

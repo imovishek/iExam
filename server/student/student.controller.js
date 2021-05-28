@@ -123,7 +123,7 @@ exports.studentsFileUpload = async (req, res) => {
     const students = await readCSV(filePath);
     students.splice(-1, 1);
     if (!students.length) throw new Error('Please select a valid file!');
-    const mappedStudents = mapCsvToStudent(students, user);
+    const mappedStudents = await mapCsvToStudent(students, user);
     let createdStudents = await studentHelper.createOrUpdateStudent(mappedStudents, user);
     createdStudents = createdStudents.filter(student => student);
     const studentIDs = createdStudents.map(student => student._id);
