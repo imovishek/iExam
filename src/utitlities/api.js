@@ -241,6 +241,14 @@ export const createClarification = async (clarification) =>
     clarification
   })
     .then(res => res.data)
+
+export const resetPassword = async (user, password) =>
+  requestApiAndGetResponse(`${apiUrl}/user/resetPassword`, 'post', {
+    user,
+    password,
+  })
+    .then(res => res.data)
+
 export const updateClarification = async (clarification, update) =>
   requestApiAndGetResponse(`${apiUrl}/clarification/${clarification._id}`, 'put', {
     query: {
@@ -308,6 +316,7 @@ const api = {
   getUsers,
   evaluateBroadQuestion,
   deleteExam,
+  resetPassword,
 }
 
 export default api

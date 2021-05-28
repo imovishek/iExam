@@ -5,12 +5,19 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import Pagination from '../../Common/Pagination'
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { TableRowFlex, TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeader, TableHeaderChild, TableWrapper } from '../../styles/tableStyles'
+import styled from 'styled-components';
+import { TableRowChild, OperationWrapper, FontAwesomeIconWrapper, TableHeaderChild, TableWrapper, TableRowStyled } from '../../styles/tableStyles'
 import { NoDataComponent } from '../../../utitlities/common.functions'
 import Loading from '../../Common/Loading'
+import ResetPasswordModal from '../ResetPasswordModal';
+import { Row } from '../../../utitlities/styles'
 
-const StudentCard = ({ dispatch, student, setStudentToEdit, showCreateEditModal, deleteStudent }) => (
-  <TableRowFlex>
+const StyledButton = styled(Button)`
+  margin-right: 10px;
+`;
+
+const StudentCard = ({ student, setStudentToEdit, showCreateEditModal, deleteStudent, onResetPassword }) => (
+  <TableRowStyled columns="repeat(4, 1fr) 80px 270px">
     <TableRowChild> { `${student.firstName} ${student.lastName}` } </TableRowChild>
     <TableRowChild> { student.registrationNo } </TableRowChild>
     <TableRowChild> { student.phoneNumber } </TableRowChild>
@@ -18,7 +25,9 @@ const StudentCard = ({ dispatch, student, setStudentToEdit, showCreateEditModal,
     <TableRowChild> { student.department.departmentCode } </TableRowChild>
     <TableRowChild>
       <OperationWrapper>
+        <StyledButton onClick={() => onResetPassword(student)}>Reset Password</StyledButton>
         <Button
+          type="primary"
           onClick={() => {
             setStudentToEdit(_.create('', student))
             showCreateEditModal(true)
@@ -36,7 +45,7 @@ const StudentCard = ({ dispatch, student, setStudentToEdit, showCreateEditModal,
         </Popconfirm>
       </OperationWrapper>
     </TableRowChild>
-  </TableRowFlex>
+  </TableRowStyled>
 )
 
 const StudentTable = ({
@@ -50,22 +59,30 @@ const StudentTable = ({
   const [current, setCurrent] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(1)
+  const [selectedStudent, setSelectedStudent] = useState({});
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
 
   useEffect(() => {
     setTotal(students.length)
   }, [students])
+
+  const onResetPassword = (student) => {
+    setSelectedStudent(student);
+    setShowResetPasswordModal(true);
+  }
+
   const paginatedStudents = students.slice((current - 1) * pageSize, current * pageSize)
   const isNoData = students.length === 0
   return (
     <TableWrapper>
-      <TableHeader>
+      <Row columns="repeat(4, 1fr) 80px 270px">
         <TableHeaderChild> Name </TableHeaderChild>
         <TableHeaderChild> Registration No </TableHeaderChild>
         <TableHeaderChild> Phone No </TableHeaderChild>
         <TableHeaderChild> Email ID </TableHeaderChild>
-        <TableHeaderChild> Department </TableHeaderChild>
+        <TableHeaderChild> Dept </TableHeaderChild>
         <TableHeaderChild></TableHeaderChild>
-      </TableHeader>
+      </Row>
       {(isNoData && !isLoading) && <NoDataComponent title="No Students Added" />}
       { !isLoading && _.map(paginatedStudents, (student, index) => (
         <StudentCard
@@ -75,6 +92,7 @@ const StudentTable = ({
           showCreateEditModal={showCreateEditModal}
           deleteStudent={deleteStudent}
           dispatch={dispatch}
+          onResetPassword={onResetPassword}
         />
       ))}
       { !isLoading && !isNoData &&
@@ -89,6 +107,11 @@ const StudentTable = ({
         />
       }
       <Loading isLoading={isLoading} style={{left: '58vw', top: '30vh'}}/>
+      <ResetPasswordModal
+        visible={showResetPasswordModal}
+        setVisibility={setShowResetPasswordModal}
+        selectedUser={selectedStudent}
+      />
     </TableWrapper>
   )
 }

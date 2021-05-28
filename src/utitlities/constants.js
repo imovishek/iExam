@@ -162,7 +162,9 @@ export const sortArrayByMap = {
 
 export const PUBLIC = 'public';
 export const PRIVATE = 'private';
-
+export const STUDENT = 'student';
+export const TEACHER = 'teacher';
+export const DEPTADMIN = 'deptAdmin';
 export const allSupportedLanguage = {
   cpp: "C++",
   py: "Python",
