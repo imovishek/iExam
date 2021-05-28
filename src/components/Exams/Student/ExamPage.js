@@ -213,6 +213,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     dispatch(setUserAction(newUser));
     setSwitchLoading(false);
   };
+  const AUTO_SAVE_TIME_INTERVAL = 60000;
   useEffect(() => {
     if (user.autoSubmitPaper) {
       // console.log('Starting new one...........');
@@ -227,7 +228,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
         }
         setSavedText("Saving...");
         await submitSilentPaperHandler();
-      }, 5000);
+      }, AUTO_SAVE_TIME_INTERVAL);
       return () => {
         // console.log('Killing prev one........');
         clearInterval(interval);

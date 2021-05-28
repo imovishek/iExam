@@ -36,7 +36,7 @@ const Dropzone = ({ onSubmit }) => {
   }, [])
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: 'text/csv',
+    accept: "",
     maxFiles: 1,
     maxSize: 10485760, // 10 mb
   })

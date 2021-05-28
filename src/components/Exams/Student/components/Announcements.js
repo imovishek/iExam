@@ -78,29 +78,29 @@ const Announcements = ({ exam, user }) => {
     virtualState.announcements = filteredAnnouncements;
   }, [exam.announcements]);
 
-  useEffect(() => {
-    if (exam && exam._id) {
-      const interval = setInterval(async () => {
-        let { payload: { announcements: newOnes } } = await api.getExamUsingFilterByID(exam._id, { announcements: 1 });
-        if (!newOnes) newOnes = [];
-        newOnes = newOnes.filter(
-          announcement => announcement.securityType === PUBLIC ||
-          _.contains(announcement.access, user._id)
-        );
-        if (!virtualState.announcements) virtualState.announcements = [];
-        virtualState.announcements.sort(comp);
-        newOnes.sort(comp);
-        if (!checkEqualObj(virtualState.announcements, newOnes)) {
-          // message.info('New announcement created!')
-          virtualState.announcements = newOnes;
-          setAnnouncements(newOnes);
-        }
-      }, 5000);
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [exam]);
+  // useEffect(() => {
+  //   if (exam && exam._id) {
+  //     const interval = setInterval(async () => {
+  //       let { payload: { announcements: newOnes } } = await api.getExamUsingFilterByID(exam._id, { announcements: 1 });
+  //       if (!newOnes) newOnes = [];
+  //       newOnes = newOnes.filter(
+  //         announcement => announcement.securityType === PUBLIC ||
+  //         _.contains(announcement.access, user._id)
+  //       );
+  //       if (!virtualState.announcements) virtualState.announcements = [];
+  //       virtualState.announcements.sort(comp);
+  //       newOnes.sort(comp);
+  //       if (!checkEqualObj(virtualState.announcements, newOnes)) {
+  //         // message.info('New announcement created!')
+  //         virtualState.announcements = newOnes;
+  //         setAnnouncements(newOnes);
+  //       }
+  //     }, 5000);
+  //     return () => {
+  //       clearInterval(interval);
+  //     };
+  //   }
+  // }, [exam]);
 
 
   return (
