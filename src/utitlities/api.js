@@ -267,9 +267,13 @@ export const evaluateBroadQuestion = async (code, lang, answer, marks) => {
   }).then(res => res.data);
   const array = output.split('\n');
   const lastLine = array[array.length-1] ? array[array.length-1] : (array[array.length-2] || '');
+  const evaluation = Number(
+    Number(lastLine.replace(/[^0-9.]+/g,'') || "0")
+      .toFixed(2)
+  );
   return {
     stdout: output,
-    value: msg === "error" ? 0 : Number(lastLine.replace(/\D/g,'') || "0"),
+    value: msg === "error" ? 0 : evaluation,
   };
 }
 const api = {
