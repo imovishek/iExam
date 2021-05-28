@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import _ from 'underscore'
-import { smartLabel, getName } from '../../../../utitlities/common.functions'
+import { smartLabel, getShortName } from '../../../../utitlities/common.functions'
 import { AwesomeIcon, Box } from '../../../../utitlities/styles'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
@@ -44,10 +44,10 @@ const Body = styled.div`
 `
 
 const Card = ({ onUpdateExamUI, teachersObj = {}, question, dispatch, exam }) => (
-  <TableRowStyled columns="repeat(4, 1fr) 30px" onClick={() => dispatch(push(`/exam/${exam._id}/question/${question._id}`))}>
+  <TableRowStyled gridGap="10px" columns="2fr 1fr 60px 60px 30px" onClick={() => dispatch(push(`/exam/${exam._id}/question/${question._id}`))}>
     <Wrapper>{question.title}</Wrapper>
-    <Wrapper>{getName(teachersObj[question.authorID])}</Wrapper>
     <Wrapper>{smartLabel(question.type)}</Wrapper>
+    <Wrapper>{getShortName(teachersObj[question.authorID])}</Wrapper>
     <Wrapper>{question.marks}</Wrapper>
     <Wrapper>
       <Popconfirm
@@ -85,10 +85,10 @@ const Questions = ({
   onUpdateExamUI
 }) => (
   <Container>
-    <Row header columns="repeat(4, 1fr) 30px">
+    <Row header gridGap="10px" columns="2fr 1fr 60px 60px 30px">
       <HeaderLabel>Title</HeaderLabel>
-      <HeaderLabel>Author</HeaderLabel>
       <HeaderLabel>Type</HeaderLabel>
+      <HeaderLabel>Author</HeaderLabel>
       <HeaderLabel>Marks</HeaderLabel>
     </Row>
     <Body>
