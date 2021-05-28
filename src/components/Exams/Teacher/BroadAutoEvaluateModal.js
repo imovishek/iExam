@@ -95,6 +95,9 @@ const BroadAutoEvaluateModal = ({
   const [currentTab, setCurrentTab] = useState('code-editor');
   const [checkObj, setCheckObj] = useState({});
   const closeModal = () => {
+    setEvaluations([]);
+    setCurrentTab('code-editor');
+    setCheckObj({});
     setVisibility(false)
   }
 
@@ -146,7 +149,7 @@ const BroadAutoEvaluateModal = ({
     } finally {
       setIsLoadingSubmit(false);
     }
-    setVisibility(false);
+    closeModal();
   }
 
   const checkAll = (e) => {

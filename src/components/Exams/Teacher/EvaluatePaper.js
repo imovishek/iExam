@@ -102,7 +102,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
       setIsLoading(false)
     }
   }, [examID, studentID, questionID])
-
+  const totalMarks = _.reduce(paper.answers, (sum, answer) => sum + Number(answer.marks || '0'), 0)
   const submitPaperEvaluationHandler = async () => {
     setIsLoading(true)
     const totalMarks = _.reduce(paper.answers, (sum, answer) => sum + Number(answer.marks || '0'), 0)
@@ -211,7 +211,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
               <PageHeader>Exam</PageHeader>
             </div>
             <RightButtonWrapper>
-              {(paper.answers && paper.answers.length !== 0) && <CenterText style={{ height: "30px" }}>Total Marks: {paper.totalMarks || 0} </CenterText>}
+              {(paper.answers && paper.answers.length !== 0) && <CenterText style={{ height: "30px" }}>Total Marks: {totalMarks || 0} </CenterText>}
               {(!selectedQuestion.type || selectedQuestion.type === MCQ || selectedQuestion.type === MATCHING) && (
                 <ButtonStyled
                   disabled={isLoadingAutoEvaluation}
