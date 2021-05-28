@@ -3,6 +3,7 @@ const { spawnSync, spawn } = require("child_process");
 const fs = require("fs");
 
 const url = "./server/compiler/files/";
+const PYTHON_CLI = process.env.PYTHON_CLI || 'python';
 // GET CREDENTIAL
 
 exports.simpleRun = async (req, res) => {
@@ -15,7 +16,7 @@ exports.simpleRun = async (req, res) => {
 
     fs.writeFile(url+fileName, code, () => {
         const cppRunCommand = `g++ -std=c++11 ${url}${fileName} -o ${url}${fileBaseName} && timeout 4s ./${url}${fileBaseName}`;
-        const pythonRunCommand = `python3 ${url}${fileName}`;
+        const pythonRunCommand = `${PYTHON_CLI} ${url}${fileName}`;
         let runCommand = "";
         switch (lang) {
           case "cpp":
@@ -91,7 +92,7 @@ exports.runEvaluation = async (req, res) => {
     const url = "./server/compiler/files/";
     fs.writeFile(url+fileName, code, () => {
         const cppRunCommand = `g++ -std=c++11 ${url}${fileName} -o ${url}${fileBaseName} && timeout 4s ./${url}${fileBaseName} "${answer}" "${marks}"`;
-        const pythonRunCommand = `python3 ${url}${fileName} "${answer}" "${marks}"`;
+        const pythonRunCommand = `${PYTHON_CLI} ${url}${fileName} "${answer}" "${marks}"`;
         let runCommand = "";
         switch (lang) {
           case "cpp":
