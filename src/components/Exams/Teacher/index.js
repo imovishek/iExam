@@ -10,6 +10,7 @@ import ExamsTable from './ExamsTable'
 import { smartLabel, getExamStatus } from '../../../utitlities/common.functions'
 import { PageHeader } from '../../styles/pageStyles'
 import { onUpdateCurrentTab } from '../actions'
+import { StyledTabPane, StyledTabs } from '../styles'
 const { TabPane } = Tabs
 
 const ExamsForStudent = ({ courses = [], user, dispatch, currentTab, isCollapsed }) => {
@@ -50,17 +51,17 @@ const ExamsForStudent = ({ courses = [], user, dispatch, currentTab, isCollapsed
         <NavBar />
         <Container rows="80px 1fr">
           <PageHeader>Exams</PageHeader>
-          <Tabs
+          <StyledTabs
             activeKey={currentTab}
             onChange={(activeKey => dispatch(onUpdateCurrentTab(activeKey)))}
             tabPosition={isCollapsed ? "top" : "left"}
           >
             {_.map(['upcoming', 'running', 'ended'], (v, i) => (
-              <TabPane tab={<h3>{smartLabel(v)}</h3>} key={v}>
+              <StyledTabPane tab={<h3>{smartLabel(v)}</h3>} key={v}>
                 <ExamsTable exams={examsObj[v]} isLoading={isLoading} />
-              </TabPane>
+              </StyledTabPane>
             ))}
-          </Tabs>
+          </StyledTabs>
         </Container>
       </BodyWrapper>
 

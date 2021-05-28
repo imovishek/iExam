@@ -1,3 +1,4 @@
+import { Tabs } from "antd";
 import styled from "styled-components";
 import { CenterText } from "../../utitlities/styles";
 
@@ -31,4 +32,12 @@ export const ExamTitleWrapper = styled(CenterText)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+`;
+
+export const StyledTabs = styled(Tabs)``;
+
+const { TabPane } = Tabs;
+export const StyledTabPane = styled(TabPane)`
+  height: calc(100vh - 160px);
+  overflow: auto;
 `;
