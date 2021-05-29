@@ -13,8 +13,6 @@ import UpcommingExamTable from "../common/UpcommingExamTable";
 import NextExamCard from "../common/NextExamCard";
 import { setNavigaitonTabAction } from "../../NavBar/actions";
 import { navKeys } from "../../NavBar/constants";
-import { examSorter } from "../Teacher/Dashboard";
-import { RUNNING, UPCOMING } from "../../../utitlities/constants";
 
 const SpinWrapper = styled.div`
   text-align: center;
@@ -32,14 +30,11 @@ const Dashboard = ({ dispatch, user }) => {
   };
 
   const [isLoading, setLoading] = useState(false);
-  const [runningExam, setRunningExam] = useState({});
+  const [isExamsChanged, setExamsChanged] = useState(true);
   const [exams, setExams] = useState([]);
-  const [haveSingleRunningExam, setSingleRunningExam] = useState(true);
-  const [showMoreUpcomingExam, setShowMoreUpcomingExam] = useState(false);
-
   useEffect(async () => {
     try {
-      dispatch(setNavigaitonTabAction(navKeys.DASHBOARD));
+      dispatch(setNavigaitonTabAction(navKeys.DASHBOARD))
       setLoading(true);
       const { payload: mycourses } = await api.getCourses({
         enrolledStudents: user._id,
@@ -54,26 +49,20 @@ const Dashboard = ({ dispatch, user }) => {
       });
 
       const futureExams = [];
-      let runningExamCount = 0;
       loadExams.forEach((exam) => {
         const stat = getExamStatus(exam).toLowerCase();
-        if (stat === RUNNING) runningExamCount++;
-        if (stat === RUNNING && runningExamCount === 1) {
-          setRunningExam(exam);
-        }
-        if (stat === UPCOMING) futureExams.push(exam);
+        if (stat === "running" || stat === "upcoming") futureExams.push(exam);
       });
-      futureExams.sort((a, b) => examSorter(a, b));
-      if(futureExams.length>10) setShowMoreUpcomingExam(true);
+      futureExams.sort((a, b) => a.startDate.localeCompare(b.startDate));
       futureExams.splice(10);
       setExams(futureExams);
-      if (runningExamCount > 1) setSingleRunningExam(false);
     } catch (err) {
       console.log(err);
     } finally {
+      setExamsChanged(false);
       setLoading(false);
     }
-  }, []);
+  }, [isExamsChanged]);
 
   return (
     <div>
@@ -88,15 +77,10 @@ const Dashboard = ({ dispatch, user }) => {
           )}
           {!isLoading && exams.length !== 0 && (
             <div>
-              <NextExamCard
-                exam={runningExam}
-                dispatch={dispatch}
-                haveSingleRunningExam={haveSingleRunningExam}
-              ></NextExamCard>
+              <NextExamCard exam={exams[0]} dispatch={dispatch}></NextExamCard>
               <UpcommingExamTable
                 exams={exams}
                 dispatch={dispatch}
-                showMoreUpcomingExam={showMoreUpcomingExam}
               ></UpcommingExamTable>
             </div>
           )}
