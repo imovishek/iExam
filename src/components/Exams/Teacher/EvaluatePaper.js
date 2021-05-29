@@ -16,7 +16,7 @@ import { PageHeader, TileHeaderWrapper, RightButtonWrapper } from '../../styles/
 import QuestionPaper from './components/QuestionPaper'
 import Loading from '../../Common/Loading'
 import EvaluatePaperNav from './components/EvaluatePaperNav'
-import { BROAD, MCQ } from '../../../utitlities/constants'
+import { BROAD, FILLINTHEBLANK, MATCHING, MCQ } from '../../../utitlities/constants'
 import BroadAutoEvaluateModal from './BroadAutoEvaluateModal'
 
 const ButtonStyled = styled(Button)`
@@ -102,7 +102,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
       setIsLoading(false)
     }
   }, [examID, studentID, questionID])
-
+  const totalMarks = _.reduce(paper.answers, (sum, answer) => sum + Number(answer.marks || '0'), 0)
   const submitPaperEvaluationHandler = async () => {
     setIsLoading(true)
     const totalMarks = _.reduce(paper.answers, (sum, answer) => sum + Number(answer.marks || '0'), 0)
@@ -121,6 +121,26 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
       setIsLoading(false)
     }
   }
+  const evaluateMatchingAnswer = (question, answer, newAnswer) => {
+    const tot = question.matchingOptions.leftSide.length;
+    let matched = 0;
+    const answerObj = {};
+    question.matchingOptions.leftSide.map((left, index) => {
+      answerObj[left.id] = left.matchingID;
+    })
+    let parsedAnswer = [];
+    try {
+      parsedAnswer = JSON.parse(answer) || [];
+    } catch (e) {}
+    parsedAnswer.map(arr => {
+      if (answerObj[arr[0]] === arr[1]) matched++;
+    })
+    if (tot === matched) {
+      newAnswer.marks = question.marks;
+    } else {
+      newAnswer.marks = 0;
+    }
+  }
   const autoEvaluationHandler = () => {
     setIsLoadingAutoEvaluation(true);
     setTimeout(() => {
@@ -136,11 +156,15 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
           const newAnswer = { ...answer };
           if (!question) // maybe question deleted by teacher;
             newAnswer.marks = 0;
-          else if (question.type !== "mcq"); // do nothing
-          else if (answer.answer && question.options[Number(answer.answer)].isAnswer) {
-            newAnswer.marks = question.marks;
-          } else {
-            newAnswer.marks = 0;
+          else if (question.type !== MCQ && question.type !== MATCHING); // do nothing
+          else if (question.type === MATCHING) {
+            evaluateMatchingAnswer(question, answer.answer, newAnswer);
+          } else if (question.type === MCQ) {
+            if (answer.answer && question.options[Number(answer.answer)].isAnswer) {
+              newAnswer.marks = question.marks;
+            } else {
+              newAnswer.marks = 0;
+            }
           }
           totalMarks += newAnswer.marks;
           return newAnswer;
@@ -187,8 +211,8 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
               <PageHeader>Exam</PageHeader>
             </div>
             <RightButtonWrapper>
-              {(paper.answers && paper.answers.length !== 0) && <CenterText style={{ height: "30px" }}>Total Marks: {paper.totalMarks || 0} </CenterText>}
-              {(!selectedQuestion.type || selectedQuestion.type === MCQ) && (
+              {(paper.answers && paper.answers.length !== 0) && <CenterText style={{ height: "30px" }}>Total Marks: {totalMarks || 0} </CenterText>}
+              {(!selectedQuestion.type || selectedQuestion.type === MCQ || selectedQuestion.type === MATCHING) && (
                 <ButtonStyled
                   disabled={isLoadingAutoEvaluation}
                   onClick={autoEvaluationHandler}
@@ -196,7 +220,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
                   Auto Evaluate <FontAwesomeIconStyled loading={isLoadingAutoEvaluation} icon={faSync}></FontAwesomeIconStyled>
                 </ButtonStyled>
               )}
-              {selectedQuestion.type === BROAD && (
+              {(selectedQuestion.type === BROAD || selectedQuestion.type === FILLINTHEBLANK) && (
                 <ButtonStyled
                   disabled={isLoadingAutoEvaluation}
                   onClick={() => setBroadAutoEvaluateModal(true)}

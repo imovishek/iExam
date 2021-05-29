@@ -154,6 +154,46 @@ const SingleQuestion = ({
     }
     return JSON.stringify(parsedAnswer);
   };
+  const mcqEvaluation = () => {
+    setIsSingleAutoLoading(true);
+    setTimeout(() => {
+      if (question.options[Number(answer)].isAnswer) {
+        setAnswerValue(index, "marks", question.marks);
+      } else {
+        setAnswerValue(index, "marks", 0);
+      }
+      setIsSingleAutoLoading(false);
+    }, 1000);
+  }
+
+  const matchingEvaluation = () => {
+    setIsSingleAutoLoading(true);
+    setTimeout(() => {
+      const tot = question.matchingOptions.leftSide.length;
+      let matched = 0;
+      const answerObj = {};
+      question.matchingOptions.leftSide.map((left, index) => {
+        answerObj[left.id] = left.matchingID;
+      })
+      let parsedAnswer = [];
+      try {
+        parsedAnswer = JSON.parse(answer) || [];
+      } catch (e) {}
+      parsedAnswer.map(arr => {
+        if (answerObj[arr[0]] === arr[1]) matched++;
+      })
+      if (tot === matched) {
+        setAnswerValue(index, "marks", question.marks);
+      } else {
+        setAnswerValue(index, "marks", 0);
+      }
+      setIsSingleAutoLoading(false);
+    }, 1000);
+  }
+  const autoEvaluationHandler = () => {
+    if (isMCQ) return mcqEvaluation();
+    if (isMATCHING) return matchingEvaluation();
+  }
 
   return (
     <QuestionWrapper>
@@ -233,7 +273,7 @@ const SingleQuestion = ({
             onChange={(e) => setAnswerValue(index, "marks", e.target.value)}
             placeholder="Set Marks"
           />{" "}
-          {isMCQ && (
+          {(isMCQ || isMATCHING) && (
             <Tooltip title="Evaluate">
               <FontAwesomeIconStyled
                 loading={isLoadingAutoEvaluation || isSingleAutoLoading}
@@ -245,17 +285,7 @@ const SingleQuestion = ({
                 icon={faSyncAlt}
                 size="lg"
                 color="green"
-                onClick={() => {
-                  setIsSingleAutoLoading(true);
-                  setTimeout(() => {
-                    if (question.options[Number(answer)].isAnswer) {
-                      setAnswerValue(index, "marks", question.marks);
-                    } else {
-                      setAnswerValue(index, "marks", 0);
-                    }
-                    setIsSingleAutoLoading(false);
-                  }, 1000);
-                }}
+                onClick={autoEvaluationHandler}
               />
             </Tooltip>
           )}

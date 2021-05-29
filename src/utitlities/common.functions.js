@@ -51,7 +51,10 @@ export const useNavAuthentication = (Component) => (
 );
 
 export const smartLabel = (s) => s.replace(/^./, (str) => str.toUpperCase());
-
+export const getShortName = (teacher) => {
+  if (teacher.shortName) return teacher.shortName;
+  return (teacher.firstName || "Z")[0] + (teacher.lastName || "Z")[0];
+}
 export const getObjectByAddingID = (obj = {}) => {
   const newObj = { ...obj };
   _.map(newObj, (v, k) => {

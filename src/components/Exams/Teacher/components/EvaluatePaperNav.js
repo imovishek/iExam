@@ -20,6 +20,7 @@ const SearchStyled = styled(Search)`
 const Container = styled.div`
   display: grid;
   grid-template-rows: ${props => props.rows || 'auto'};
+  border-right: 1px solid #dcdcdc;
 `
 
 const HeaderLabel = styled.h3`

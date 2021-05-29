@@ -65,6 +65,12 @@ const MatchingBody = ({
       if (left) newLeftSide.push(left);
       if (right) newRightSide.push(right);
     });
+    if (!newLeftSide.length || !newRightSide.length) {
+      return {
+        leftSide,
+        rightSide,
+      };
+    }
     return {
       leftSide: newLeftSide,
       rightSide: newRightSide,

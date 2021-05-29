@@ -241,6 +241,14 @@ export const createClarification = async (clarification) =>
     clarification
   })
     .then(res => res.data)
+
+export const resetPassword = async (user, password) =>
+  requestApiAndGetResponse(`${apiUrl}/user/resetPassword`, 'post', {
+    user,
+    password,
+  })
+    .then(res => res.data)
+
 export const updateClarification = async (clarification, update) =>
   requestApiAndGetResponse(`${apiUrl}/clarification/${clarification._id}`, 'put', {
     query: {
@@ -259,9 +267,13 @@ export const evaluateBroadQuestion = async (code, lang, answer, marks) => {
   }).then(res => res.data);
   const array = output.split('\n');
   const lastLine = array[array.length-1] ? array[array.length-1] : (array[array.length-2] || '');
+  const evaluation = Number(
+    Number(lastLine.replace(/[^0-9.]+/g,'') || "0")
+      .toFixed(2)
+  );
   return {
     stdout: output,
-    value: msg === "error" ? 0 : Number(lastLine.replace(/\D/g,'') || "0"),
+    value: msg === "error" ? 0 : evaluation,
   };
 }
 const api = {
@@ -308,6 +320,7 @@ const api = {
   getUsers,
   evaluateBroadQuestion,
   deleteExam,
+  resetPassword,
 }
 
 export default api
