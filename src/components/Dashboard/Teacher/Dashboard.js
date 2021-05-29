@@ -15,6 +15,8 @@ import AtAGlanceWrapper from "./AtaGlanceRow";
 import { navKeys } from "../../NavBar/constants";
 import { setNavigaitonTabAction } from "../../NavBar/actions";
 import moment from "moment";
+import EmptyNextExamCard from "../common/EmptyNextExamCard";
+import EmptyUpcommingExamTable from "../common/EmptyUpcomingExamTable";
 
 const SpinWrapper = styled.div`
   text-align: center;
@@ -34,8 +36,8 @@ export const examSorter = (examA, examB) => {
   const dateStringB = moment(examB.startDate).format("YYYY-MM-DD");
   const timeStringB = moment(examB.startTime, "hh:mm A").format("HH:mm:ss");
   const startDateWithTimeB = new Date(`${dateStringB} ${timeStringB}`);
-  console.log(examA, examB);
-  console.log(startDateWithTimeA.getTime(), startDateWithTimeB.getTime());
+  // console.log(examA, examB);
+  // console.log(startDateWithTimeA.getTime(), startDateWithTimeB.getTime());
   if (startDateWithTimeA < startDateWithTimeB) return -1;
   if (startDateWithTimeA > startDateWithTimeB) return 1;
   return 0;
@@ -47,7 +49,7 @@ const Dashboard = ({ dispatch, user }) => {
 
   const [isLoading, setLoading] = useState(true);
   const [exams, setExams] = useState([]);
-  const [courses, setCourses] = useState(null);
+  const [courses, setCourses] = useState([]);
   const [examTakenCount, setExamTakenCount] = useState(null);
   const [haveSingleRunningExam, setSingleRunningExam] = useState(true);
   const [showMoreUpcomingExam, setShowMoreUpcomingExam] = useState(false);
@@ -64,13 +66,14 @@ const Dashboard = ({ dispatch, user }) => {
       _.each(mycourses, (course) => {
         exams = exams.concat(course.exams);
       });
-      const examIDs = _.map(exams, (exam) => exam._id);
-      const { payload: loadExams } = await api.getExams({
-        _id: { $in: examIDs },
-      });
+      // console.log(exams);
+      // const examIDs = _.map(exams, (exam) => exam._id);
+      // const { payload: loadExams } = await api.getExams({
+      //   _id: { $in: examIDs },
+      // });
       const futureExams = [];
       let runningExamCount = 0;
-      loadExams.forEach((exam) => {
+      exams.forEach((exam) => {
         const stat = getExamStatus(exam).toLowerCase();
         if (stat === "running") runningExamCount++;
         if (stat === "running" || stat === "upcoming") futureExams.push(exam);
@@ -104,12 +107,14 @@ const Dashboard = ({ dispatch, user }) => {
           )}
           {!isLoading && (
             <div>
-              {exams.length !== 0 && (
+              {exams.length !== 0 ? (
                 <NextExamCard
                   exam={exams[0]}
                   dispatch={dispatch}
                   haveSingleRunningExam={haveSingleRunningExam}
                 ></NextExamCard>
+              ) : (
+                <EmptyNextExamCard />
               )}
               <AtAGlanceWrapper
                 dispatch={dispatch}
@@ -117,12 +122,14 @@ const Dashboard = ({ dispatch, user }) => {
                 examsTaken={examTakenCount}
               ></AtAGlanceWrapper>
 
-              {exams.length !== 0 && (
+              {exams.length !== 0 ? (
                 <UpcommingExamTable
                   exams={exams}
                   dispatch={dispatch}
                   showMoreUpcomingExam={showMoreUpcomingExam}
                 ></UpcommingExamTable>
+              ) : (
+                <EmptyUpcommingExamTable />
               )}
             </div>
           )}

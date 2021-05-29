@@ -14,6 +14,8 @@ import NextExamCard from "../common/NextExamCard";
 import { setNavigaitonTabAction } from "../../NavBar/actions";
 import { navKeys } from "../../NavBar/constants";
 import { examSorter } from "../Teacher/Dashboard";
+import EmptyNextExamCard from "../common/EmptyNextExamCard";
+import EmptyUpcommingExamTable from "../common/EmptyUpcomingExamTable";
 
 const SpinWrapper = styled.div`
   text-align: center;
@@ -46,20 +48,20 @@ const Dashboard = ({ dispatch, user }) => {
       _.each(mycourses, (course) => {
         exams = exams.concat(course.exams);
       });
-      const examIDs = _.map(exams, (exam) => exam._id);
-      const { payload: loadExams } = await api.getExams({
-        _id: { $in: examIDs },
-      });
+      // const examIDs = _.map(exams, (exam) => exam._id);
+      // const { payload: loadExams } = await api.getExams({
+      //   _id: { $in: examIDs },
+      // });
 
       const futureExams = [];
       let runningExamCount = 0;
-      loadExams.forEach((exam) => {
+      exams.forEach((exam) => {
         const stat = getExamStatus(exam).toLowerCase();
         if (stat === "running") runningExamCount++;
         if (stat === "running" || stat === "upcoming") futureExams.push(exam);
       });
       futureExams.sort((a, b) => examSorter(a, b));
-      if(futureExams.length>10)setShowMoreUpcomingExam(true);
+      if (futureExams.length > 10) setShowMoreUpcomingExam(true);
       futureExams.splice(10);
       setExams(futureExams);
       if (runningExamCount > 1) setSingleRunningExam(false);
@@ -96,7 +98,10 @@ const Dashboard = ({ dispatch, user }) => {
             </div>
           )}
           {!isLoading && exams.length === 0 && (
-            <SpinWrapper>No exams for you!</SpinWrapper>
+            <div>
+              <EmptyNextExamCard />
+              <EmptyUpcommingExamTable />
+            </div>
           )}
         </Container>
       </BodyWrapper>
