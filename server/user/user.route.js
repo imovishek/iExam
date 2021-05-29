@@ -34,5 +34,11 @@ router
     userController.deleteUserByID
   );
 
+router
+  .route('/user/resetPassword')
+  .post(
+    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    userController.resetPassword
+  )
 
 module.exports = router;

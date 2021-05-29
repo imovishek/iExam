@@ -1,8 +1,8 @@
-const { httpStatuses } = require('../constants');
+const { httpStatuses, DEPTADMIN } = require('../constants');
 const _ = require('underscore');
 const { parseQuery } = require('../common.functions');
 const { userTypeToHelperMapping } = require('../../config/const');
-
+const bcrypt = require('bcryptjs');
 const firstUpperCase = userType => userType.replace(/\b\w/g, c => c.toUpperCase());
 // GET USER
 exports.getUsers = async (req, res) => {
@@ -116,6 +116,32 @@ exports.deleteUserByID = async (req, res) => {
   const { id } = req.params;
   try {
     const result = await userHelper[`delete${UserType}ByID`](id);
+    res.status(httpStatuses.OK).send({ payload: result });
+  } catch (err) {
+    console.log(err);
+    res
+    .status(httpStatuses.INTERNAL_SERVER_ERROR)
+    .send({ error: true, message: err.message });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const { user, password } = req.body;
+  const { userType = 'deptAdmin' } = user;
+  const userHelper = userTypeToHelperMapping[userType];
+  const UserType = firstUpperCase(userType);
+  const { id } = req.params;
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(String(password), salt);
+    if (req.user.userType !== DEPTADMIN) throw new Error('You do not have access to reset password');
+    const body = {
+      credential: {
+        ...user.credential,
+        password: passwordHash,
+      }
+    };
+    const result = await userHelper[`update${UserType}ByID`](user._id, body);
     res.status(httpStatuses.OK).send({ payload: result });
   } catch (err) {
     console.log(err);
