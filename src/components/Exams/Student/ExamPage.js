@@ -99,7 +99,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
           question.type === MATCHING &&
           (!answer || getParsedAnswer(answer).length === 0)
         ) {
-          answer = getAnswerFromOptions(question.matchingOptions);
+          answer = '';
         }
       }
       return {
