@@ -11,8 +11,8 @@ import { setNavigaitonTabAction } from "../../NavBar/actions";
 import { useState } from "react/cjs/react.development";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CenterText } from "../../../utitlities/styles";
 import { onUpdateCurrentTab } from "../../Exams/actions";
+import { RUNNING } from "../../../utitlities/constants";
 
 const NextExamWrapper = styled.div`
   margin-left: 25px;
@@ -49,7 +49,7 @@ const StyledButton = styled.div`
     cursor: pointer;
   }
 `;
-const ExamRemainingTime = ({ exam }) => {
+const ExamRemainingTime = ({ exam, statusText }) => {
   const [{ timeString }, setTimeDifference] = useState(
     getExamTimeDiffInFormat(exam)
   );
@@ -66,7 +66,7 @@ const ExamRemainingTime = ({ exam }) => {
   }, []);
   return (
     <div style={{ justifyContent: "center", textAlign: "center" }}>
-      <h4 style={headerTextStyleObject}>Starts In</h4>
+      <h4 style={{...headerTextStyleObject, color: 'rgb(204 136 121)'}}>{statusText}</h4>
       <h1 style={{ ...headerTextStyleObject, color: "orange" }}>
         {timeString === "Running" ? "00 : 00 : 00" : timeString}
       </h1>
@@ -76,7 +76,8 @@ const ExamRemainingTime = ({ exam }) => {
 
 const NextExamCard = ({ exam, dispatch, haveSingleRunningExam }) => {
   let examStatText;
-  if (getExamStatus(exam).toLocaleLowerCase() === "running")
+  const isRunning = getExamStatus(exam).toLocaleLowerCase() === RUNNING;
+  if (isRunning)
     examStatText = "Running Now";
   else examStatText = "Next Exam";
 
@@ -95,7 +96,7 @@ const NextExamCard = ({ exam, dispatch, haveSingleRunningExam }) => {
             {exam.course.courseCode} {exam.title}
           </h1>
         </div>
-        <ExamRemainingTime exam={exam} />
+        <ExamRemainingTime statusText={isRunning ? 'Ends in' : 'Starts in'} exam={exam} />
         <div
           style={{
             margin: "20px",
@@ -144,7 +145,7 @@ const NextExamCard = ({ exam, dispatch, haveSingleRunningExam }) => {
           }}
         >
           <a
-            style={{ cursor: "pointer",color:"white" }}
+            style={{ cursor: "pointer",color:"white", borderRadius: '5px', padding: '10px', border: '1px solid #bbbbbb' }}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -153,7 +154,7 @@ const NextExamCard = ({ exam, dispatch, haveSingleRunningExam }) => {
               dispatch(push("exams"));
             }}
           >
-            see more{" "}
+            See more{" "}
             <FontAwesomeIcon
               icon={faArrowRight}
               style={{ marginBottom: "-2px" }}

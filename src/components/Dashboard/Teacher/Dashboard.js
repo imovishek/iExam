@@ -15,6 +15,7 @@ import AtAGlanceWrapper from "./AtaGlanceRow";
 import { navKeys } from "../../NavBar/constants";
 import { setNavigaitonTabAction } from "../../NavBar/actions";
 import moment from "moment";
+import { RUNNING, UPCOMING } from "../../../utitlities/constants";
 
 const SpinWrapper = styled.div`
   text-align: center;
@@ -46,6 +47,7 @@ const Dashboard = ({ dispatch, user }) => {
   };
 
   const [isLoading, setLoading] = useState(true);
+  const [runningExam, setRunningExam] = useState({});
   const [exams, setExams] = useState([]);
   const [courses, setCourses] = useState(null);
   const [examTakenCount, setExamTakenCount] = useState(null);
@@ -72,16 +74,19 @@ const Dashboard = ({ dispatch, user }) => {
       let runningExamCount = 0;
       loadExams.forEach((exam) => {
         const stat = getExamStatus(exam).toLowerCase();
-        if (stat === "running") runningExamCount++;
-        if (stat === "running" || stat === "upcoming") futureExams.push(exam);
+        if (stat === RUNNING) runningExamCount++;
+        if (stat === RUNNING && runningExamCount === 1) {
+          setRunningExam(exam);
+        }
+        if (stat === UPCOMING) futureExams.push(exam);
       });
 
       futureExams.sort((a, b) => examSorter(a, b));
       if (futureExams.length > 5) setShowMoreUpcomingExam(true);
+      setExamTakenCount(exams.length - futureExams.length - runningExamCount);
       futureExams.splice(5);
 
       setCourses(mycourses);
-      setExamTakenCount(exams.length - futureExams.length);
       setExams(futureExams);
       if (runningExamCount > 1) setSingleRunningExam(false);
     } catch (err) {
@@ -106,7 +111,7 @@ const Dashboard = ({ dispatch, user }) => {
             <div>
               {exams.length !== 0 && (
                 <NextExamCard
-                  exam={exams[0]}
+                  exam={runningExam}
                   dispatch={dispatch}
                   haveSingleRunningExam={haveSingleRunningExam}
                 ></NextExamCard>

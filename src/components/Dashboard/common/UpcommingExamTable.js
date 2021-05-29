@@ -10,9 +10,12 @@ import { useState } from "react/cjs/react.development";
 import moment from "moment";
 import { navKeys, navLinks } from "../../NavBar/constants";
 import { onUpdateCurrentTab } from "../../Exams/actions";
+import { RightButtonWrapper } from "../../styles/pageStyles";
+import { CenterText } from "../../../utitlities/styles";
 
-const ItemWrapper = styled.div`
-  display: flex;
+const UpcomingItemWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   box-shadow: 1px 1px 10px rgb(218, 213, 213);
   margin: 15px;
   padding: 10px 20px;
@@ -28,6 +31,7 @@ const ItemWrapper = styled.div`
 const DateTimeBlock = styled.button`
   background-color: rgb(92, 21, 143);
   color: white;
+  width: 170px;
   padding: 10px 15px;
   border-radius: 10px;
   :hover {
@@ -76,7 +80,7 @@ const ExamRemainingTime = ({ exam }) => {
   return (
     <div>
       <h3 style={{ ...headerTextStyleObject, color: "rgb(92, 21, 143)" }}>
-        {timeString}
+        {timeString} later
       </h3>
     </div>
   );
@@ -97,12 +101,12 @@ const UpcommingExamTable = ({ exams = [], dispatch, showMoreUpcomingExam }) => (
           }}
         >
           {" "}
-          (show all)
+          (Show all)
         </a>
       )}
     </h3>
     {exams.map((ex) => (
-      <ItemWrapper
+      <UpcomingItemWrapper
         key={ex._id}
         onClick={(e) => {
           e.preventDefault();
@@ -111,14 +115,19 @@ const UpcommingExamTable = ({ exams = [], dispatch, showMoreUpcomingExam }) => (
           dispatch(push(`/exam/${ex._id}`));
         }}
       >
-        <h2 style={{ width: "200px" }}>
+        <h2>
           {ex.course.courseCode} {ex.title}
         </h2>
-        <ExamRemainingTime exam={ex} />
-        <DateTimeBlock>
-          {formatDateAndTime(ex.startDate, ` ${ex.startTime}`)}
-        </DateTimeBlock>
-      </ItemWrapper>
+        <CenterText>
+          <ExamRemainingTime exam={ex} />
+        </CenterText>
+        <RightButtonWrapper>
+          <DateTimeBlock>
+            {formatDateAndTime(ex.startDate, ` ${ex.startTime}`)}
+          </DateTimeBlock>
+        </RightButtonWrapper>
+        
+      </UpcomingItemWrapper>
     ))}
   </div>
 );

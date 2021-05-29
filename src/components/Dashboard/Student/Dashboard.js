@@ -14,6 +14,7 @@ import NextExamCard from "../common/NextExamCard";
 import { setNavigaitonTabAction } from "../../NavBar/actions";
 import { navKeys } from "../../NavBar/constants";
 import { examSorter } from "../Teacher/Dashboard";
+import { RUNNING, UPCOMING } from "../../../utitlities/constants";
 
 const SpinWrapper = styled.div`
   text-align: center;
@@ -31,6 +32,7 @@ const Dashboard = ({ dispatch, user }) => {
   };
 
   const [isLoading, setLoading] = useState(false);
+  const [runningExam, setRunningExam] = useState({});
   const [exams, setExams] = useState([]);
   const [haveSingleRunningExam, setSingleRunningExam] = useState(true);
   const [showMoreUpcomingExam, setShowMoreUpcomingExam] = useState(false);
@@ -55,11 +57,14 @@ const Dashboard = ({ dispatch, user }) => {
       let runningExamCount = 0;
       loadExams.forEach((exam) => {
         const stat = getExamStatus(exam).toLowerCase();
-        if (stat === "running") runningExamCount++;
-        if (stat === "running" || stat === "upcoming") futureExams.push(exam);
+        if (stat === RUNNING) runningExamCount++;
+        if (stat === RUNNING && runningExamCount === 1) {
+          setRunningExam(exam);
+        }
+        if (stat === UPCOMING) futureExams.push(exam);
       });
       futureExams.sort((a, b) => examSorter(a, b));
-      if(futureExams.length>10)setShowMoreUpcomingExam(true);
+      if(futureExams.length>10) setShowMoreUpcomingExam(true);
       futureExams.splice(10);
       setExams(futureExams);
       if (runningExamCount > 1) setSingleRunningExam(false);
@@ -84,7 +89,7 @@ const Dashboard = ({ dispatch, user }) => {
           {!isLoading && exams.length !== 0 && (
             <div>
               <NextExamCard
-                exam={exams[0]}
+                exam={runningExam}
                 dispatch={dispatch}
                 haveSingleRunningExam={haveSingleRunningExam}
               ></NextExamCard>
