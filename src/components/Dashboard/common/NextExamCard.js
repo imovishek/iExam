@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import rightArrow from "../../../images/proceed.png";
 import styled from "styled-components";
 import {
@@ -8,7 +8,6 @@ import {
 } from "../../../utitlities/common.functions";
 import { push } from "connected-react-router";
 import { setNavigaitonTabAction } from "../../NavBar/actions";
-import { useState } from "react/cjs/react.development";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { onUpdateCurrentTab } from "../../Exams/actions";
