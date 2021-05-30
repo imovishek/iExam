@@ -6,11 +6,17 @@ import reportWebVitals from './reportWebVitals'
 import { Provider } from 'react-redux'
 import configureStore, { history } from './store'
 import { ConnectedRouter } from 'connected-react-router'
-import Loading from './components/Common/Loading'
+import NavBar from './components/NavBar/NavBar'
+import { BodyWrapper } from './utitlities/styles'
 
+const OnlyNavBar = () => (
+  <BodyWrapper>
+    <NavBar/>
+  </BodyWrapper>
+);
 ReactDOM.render(
   <Provider store={configureStore()}>
-    <Suspense fallback={<Loading isLoading={true}/>}>
+    <Suspense fallback={<OnlyNavBar/>}>
       <ConnectedRouter history={history}>
         <App/>
       </ConnectedRouter>
