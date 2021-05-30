@@ -71,7 +71,6 @@ const CreateExamModal = ({ visible, setVisibility, courses, dispatch }) => {
     setLoading(true);
 
     exam.participants = _.map(course.enrolledStudents, (enst) => enst._id);
-    console.log(exam);
     const { payload: newExam } = await api.createExam(exam);
     await api.updateCourse(
       { _id: course.id },

@@ -1,7 +1,6 @@
 import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
 import NavBar from "../../NavBar/NavBar";
 import { BodyWrapper, Container } from "../../../utitlities/styles";
-import { push } from "connected-react-router";
 import _ from "underscore";
 import { connect } from "react-redux";
 import React, { useEffect, useState } from "react";
@@ -13,6 +12,10 @@ import UpcommingExamTable from "../common/UpcommingExamTable";
 import NextExamCard from "../common/NextExamCard";
 import { setNavigaitonTabAction } from "../../NavBar/actions";
 import { navKeys } from "../../NavBar/constants";
+import { examSorter } from "../Teacher/Dashboard";
+import { RUNNING, UPCOMING } from "../../../utitlities/constants";
+import EmptyNextExamCard from "../common/EmptyNextExamCard";
+import EmptyUpcommingExamTable from "../common/EmptyUpcomingExamTable";
 
 const SpinWrapper = styled.div`
   text-align: center;
@@ -25,16 +28,15 @@ const SpinWrapper = styled.div`
 `;
 
 const Dashboard = ({ dispatch, user }) => {
-  const redirectTo = (path) => {
-    dispatch(push(`/${path}`));
-  };
-
   const [isLoading, setLoading] = useState(false);
-  const [isExamsChanged, setExamsChanged] = useState(true);
+  const [runningExam, setRunningExam] = useState({});
   const [exams, setExams] = useState([]);
+  const [haveSingleRunningExam, setSingleRunningExam] = useState(true);
+  const [showMoreUpcomingExam, setShowMoreUpcomingExam] = useState(false);
+
   useEffect(async () => {
     try {
-      dispatch(setNavigaitonTabAction(navKeys.DASHBOARD))
+      dispatch(setNavigaitonTabAction(navKeys.DASHBOARD));
       setLoading(true);
       const { payload: mycourses } = await api.getCourses({
         enrolledStudents: user._id,
@@ -43,26 +45,27 @@ const Dashboard = ({ dispatch, user }) => {
       _.each(mycourses, (course) => {
         exams = exams.concat(course.exams);
       });
-      const examIDs = _.map(exams, (exam) => exam._id);
-      const { payload: loadExams } = await api.getExams({
-        _id: { $in: examIDs },
-      });
-
       const futureExams = [];
-      loadExams.forEach((exam) => {
+      let runningExamCount = 0;
+      exams.forEach((exam) => {
         const stat = getExamStatus(exam).toLowerCase();
-        if (stat === "running" || stat === "upcoming") futureExams.push(exam);
+        if (stat === RUNNING) runningExamCount++;
+        if (stat === RUNNING && runningExamCount === 1) {
+          setRunningExam(exam);
+        }
+        if (stat === UPCOMING) futureExams.push(exam);
       });
-      futureExams.sort((a, b) => a.startDate.localeCompare(b.startDate));
+      futureExams.sort((a, b) => examSorter(a, b));
+      if (futureExams.length > 10) setShowMoreUpcomingExam(true);
       futureExams.splice(10);
       setExams(futureExams);
+      if (runningExamCount > 1) setSingleRunningExam(false);
     } catch (err) {
       console.log(err);
     } finally {
-      setExamsChanged(false);
       setLoading(false);
     }
-  }, [isExamsChanged]);
+  }, []);
 
   return (
     <div>
@@ -75,17 +78,27 @@ const Dashboard = ({ dispatch, user }) => {
               <Spin stylesize="large" tip="Loading.." />
             </SpinWrapper>
           )}
-          {!isLoading && exams.length !== 0 && (
+          {!isLoading && (
             <div>
-              <NextExamCard exam={exams[0]} dispatch={dispatch}></NextExamCard>
-              <UpcommingExamTable
-                exams={exams}
-                dispatch={dispatch}
-              ></UpcommingExamTable>
+              {exams.length !== 0 || !_.isEmpty(runningExam) ? (
+                <NextExamCard
+                  exam={_.isEmpty(runningExam) ? exams[0] : runningExam}
+                  dispatch={dispatch}
+                  haveSingleRunningExam={haveSingleRunningExam}
+                ></NextExamCard>
+              ) : (
+                <EmptyNextExamCard />
+              )}
+              {exams.length !== 0 ? (
+                <UpcommingExamTable
+                  exams={exams}
+                  dispatch={dispatch}
+                  showMoreUpcomingExam={showMoreUpcomingExam}
+                ></UpcommingExamTable>
+              ) : (
+                <EmptyUpcommingExamTable />
+              )}
             </div>
-          )}
-          {!isLoading && exams.length === 0 && (
-            <SpinWrapper>No exams for you!</SpinWrapper>
           )}
         </Container>
       </BodyWrapper>

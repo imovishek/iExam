@@ -39,7 +39,6 @@ const NextExamCard = ({ exam, dispatch }) => {
   if (getExamStatus(exam).toLocaleLowerCase() === "running")
     examStatText = "Running Now";
   else examStatText = "Next Exam";
-
   return (
     <NextExamWrapper>
       <div style={{ marginLeft: "10px" }}>
