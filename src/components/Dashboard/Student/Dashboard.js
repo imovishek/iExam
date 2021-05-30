@@ -1,7 +1,6 @@
 import CheckAuthentication from "../../CheckAuthentication/CheckAuthentication";
 import NavBar from "../../NavBar/NavBar";
 import { BodyWrapper, Container } from "../../../utitlities/styles";
-import { push } from "connected-react-router";
 import _ from "underscore";
 import { connect } from "react-redux";
 import React, { useEffect, useState } from "react";
@@ -15,6 +14,8 @@ import { setNavigaitonTabAction } from "../../NavBar/actions";
 import { navKeys } from "../../NavBar/constants";
 import { examSorter } from "../Teacher/Dashboard";
 import { RUNNING, UPCOMING } from "../../../utitlities/constants";
+import EmptyNextExamCard from "../common/EmptyNextExamCard";
+import EmptyUpcommingExamTable from "../common/EmptyUpcomingExamTable";
 
 const SpinWrapper = styled.div`
   text-align: center;
@@ -27,10 +28,6 @@ const SpinWrapper = styled.div`
 `;
 
 const Dashboard = ({ dispatch, user }) => {
-  const redirectTo = (path) => {
-    dispatch(push(`/${path}`));
-  };
-
   const [isLoading, setLoading] = useState(false);
   const [runningExam, setRunningExam] = useState({});
   const [exams, setExams] = useState([]);
@@ -48,14 +45,14 @@ const Dashboard = ({ dispatch, user }) => {
       _.each(mycourses, (course) => {
         exams = exams.concat(course.exams);
       });
-      const examIDs = _.map(exams, (exam) => exam._id);
-      const { payload: loadExams } = await api.getExams({
-        _id: { $in: examIDs },
-      });
+      // const examIDs = _.map(exams, (exam) => exam._id);
+      // const { payload: loadExams } = await api.getExams({
+      //   _id: { $in: examIDs },
+      // });
 
       const futureExams = [];
       let runningExamCount = 0;
-      loadExams.forEach((exam) => {
+      exams.forEach((exam) => {
         const stat = getExamStatus(exam).toLowerCase();
         if (stat === RUNNING) runningExamCount++;
         if (stat === RUNNING && runningExamCount === 1) {
@@ -64,7 +61,7 @@ const Dashboard = ({ dispatch, user }) => {
         if (stat === UPCOMING) futureExams.push(exam);
       });
       futureExams.sort((a, b) => examSorter(a, b));
-      if(futureExams.length>10) setShowMoreUpcomingExam(true);
+      if (futureExams.length > 10) setShowMoreUpcomingExam(true);
       futureExams.splice(10);
       setExams(futureExams);
       if (runningExamCount > 1) setSingleRunningExam(false);
@@ -101,7 +98,10 @@ const Dashboard = ({ dispatch, user }) => {
             </div>
           )}
           {!isLoading && exams.length === 0 && (
-            <SpinWrapper>No exams for you!</SpinWrapper>
+            <div>
+              <EmptyNextExamCard />
+              <EmptyUpcommingExamTable />
+            </div>
           )}
         </Container>
       </BodyWrapper>
