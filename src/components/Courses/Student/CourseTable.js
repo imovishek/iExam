@@ -141,7 +141,7 @@ const CourseTable = ({
           onChange={(e) => handleSearch(e.target.value)}
         />
       </RightButtonWrapper>
-      <Row columns="repeat(5, 1fr) 240px">
+      <Row columns="repeat(5, 1fr) 110px">
         <TableHeaderChild> Title </TableHeaderChild>
         <TableHeaderChild> Code </TableHeaderChild>
         <TableHeaderChild> Teacher </TableHeaderChild>
