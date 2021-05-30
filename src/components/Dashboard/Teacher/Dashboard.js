@@ -71,7 +71,6 @@ const Dashboard = ({ dispatch, user }) => {
         }
         if (stat === UPCOMING) futureExams.push(exam);
       });
-
       futureExams.sort((a, b) => examSorter(a, b));
       if (futureExams.length > 5) setShowMoreUpcomingExam(true);
       setExamTakenCount(exams.length - futureExams.length - runningExamCount);
@@ -100,9 +99,9 @@ const Dashboard = ({ dispatch, user }) => {
           )}
           {!isLoading && (
             <div>
-              {exams.length !== 0 ? (
+              {exams.length !== 0 || !_.isEmpty(runningExam) ? (
                 <NextExamCard
-                  exam={runningExam}
+                  exam={_.isEmpty(runningExam) ? exams[0] : runningExam}
                   dispatch={dispatch}
                   haveSingleRunningExam={haveSingleRunningExam}
                 ></NextExamCard>

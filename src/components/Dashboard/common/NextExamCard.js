@@ -80,7 +80,6 @@ const NextExamCard = ({ exam, dispatch, haveSingleRunningExam }) => {
   if (isRunning)
     examStatText = "Running Now";
   else examStatText = "Next Exam";
-
   return (
     <NextExamWrapper
       style={

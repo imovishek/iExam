@@ -45,11 +45,6 @@ const Dashboard = ({ dispatch, user }) => {
       _.each(mycourses, (course) => {
         exams = exams.concat(course.exams);
       });
-      // const examIDs = _.map(exams, (exam) => exam._id);
-      // const { payload: loadExams } = await api.getExams({
-      //   _id: { $in: examIDs },
-      // });
-
       const futureExams = [];
       let runningExamCount = 0;
       exams.forEach((exam) => {
@@ -83,24 +78,26 @@ const Dashboard = ({ dispatch, user }) => {
               <Spin stylesize="large" tip="Loading.." />
             </SpinWrapper>
           )}
-          {!isLoading && exams.length !== 0 && (
+          {!isLoading && (
             <div>
-              <NextExamCard
-                exam={runningExam}
-                dispatch={dispatch}
-                haveSingleRunningExam={haveSingleRunningExam}
-              ></NextExamCard>
-              <UpcommingExamTable
-                exams={exams}
-                dispatch={dispatch}
-                showMoreUpcomingExam={showMoreUpcomingExam}
-              ></UpcommingExamTable>
-            </div>
-          )}
-          {!isLoading && exams.length === 0 && (
-            <div>
-              <EmptyNextExamCard />
-              <EmptyUpcommingExamTable />
+              {exams.length !== 0 || !_.isEmpty(runningExam) ? (
+                <NextExamCard
+                  exam={_.isEmpty(runningExam) ? exams[0] : runningExam}
+                  dispatch={dispatch}
+                  haveSingleRunningExam={haveSingleRunningExam}
+                ></NextExamCard>
+              ) : (
+                <EmptyNextExamCard />
+              )}
+              {exams.length !== 0 ? (
+                <UpcommingExamTable
+                  exams={exams}
+                  dispatch={dispatch}
+                  showMoreUpcomingExam={showMoreUpcomingExam}
+                ></UpcommingExamTable>
+              ) : (
+                <EmptyUpcommingExamTable />
+              )}
             </div>
           )}
         </Container>
