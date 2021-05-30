@@ -24,6 +24,7 @@ function useWindowSize() {
 }
 
 const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch, isCollapsed }) => {
+  if (!user.userType) return <div></div>;
   const redirectTo = path => {
     setNavigationTab(path)
     dispatch(push(`/${path}`))
