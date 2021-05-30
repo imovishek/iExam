@@ -1,37 +1,38 @@
+import { lazy } from 'react'
 import './App.less'
-import { Route, Switch } from 'react-router'
-import Login from './components/Login/Login'
-import DashboardForTeacher from './components/Dashboard/Teacher/Dashboard'
-import Dashboard from './components/Dashboard/Dashboard'
-import DashboardPageForStudent from './components/Dashboard/Student/Dashboard'
-import Logout from './components/Logout/Logout'
-import CoursesForAdmin from './components/Courses/DeptAdmin/Courses'
-import CoursePageForTeacher from './components/Courses/Teacher/CoursePage'
-import CoursesForTeacher from './components/Courses/Teacher/Courses'
-import CoursePageForAdmin from './components/Courses/DeptAdmin/CoursePage'
-import { connect } from 'react-redux'
-import TeachersForAdmin from './components/Teachers/DeptAdmin/Teachers'
-import StudentsForAdmin from './components/Students/DeptAdmin/Students'
 import jwt from 'jsonwebtoken'
 import { setUserAction } from './components/Login/actions'
 import { setNavigaitonTabAction } from './components/NavBar/actions'
-import ExamPageForAdmin from './components/Exams/DeptAdmin/ExamPage'
-import QuestionPageForTeacher from './components/Question/Teacher/QuestionPage'
 import api from './utitlities/api'
-import Loading from './components/Common/Loading'
-import ExamsForStudent from './components/Exams/Student/index'
 import ExamsForTeacher from './components/Exams/Teacher/index'
-import QuestionViewPageForTeacher from './components/Exams/Teacher/QuestionView'
-import CoursesForStudent from './components/Courses/Student'
-import QuestionsForTeacher from './components/Question/Teacher/Questions'
-import CoursePageForStudents from './components/Courses/Student/CoursePage'
-import ExamPageForTeacher from './components/Exams/Teacher/ExamPage'
-import ExamPageForStudents from './components/Exams/Student/ExamPage'
-import ResultsForStudent from './components/Results/Student/Results'
 import { push } from 'connected-react-router'
-import EvaluatePaper from './components/Exams/Teacher/EvaluatePaper'
-import ExamResult from './components/Exams/Teacher/ExamResult'
-import NotFound from './components/Common/404'
+import { connect } from 'react-redux'
+import { Route, Switch } from 'react-router'
+const Login = lazy(() => import('./components/Login/Login'));
+const DashboardForTeacher = lazy(() => import('./components/Dashboard/Teacher/Dashboard'));
+const Dashboard = lazy(() => import('./components/Dashboard/Dashboard'));
+const DashboardPageForStudent = lazy(() => import('./components/Dashboard/Student/Dashboard'));
+const Logout = lazy(() => import('./components/Logout/Logout'));
+const CoursesForAdmin = lazy(() => import('./components/Courses/DeptAdmin/Courses'));
+const CoursePageForTeacher = lazy(() => import('./components/Courses/Teacher/CoursePage'));
+const CoursesForTeacher = lazy(() => import('./components/Courses/Teacher/Courses')); 
+const CoursePageForAdmin = lazy(() => import('./components/Courses/DeptAdmin/CoursePage'));
+const TeachersForAdmin = lazy(() => import('./components/Teachers/DeptAdmin/Teachers'));
+const StudentsForAdmin = lazy(() => import('./components/Students/DeptAdmin/Students'));
+const ExamPageForAdmin = lazy(() => import('./components/Exams/DeptAdmin/ExamPage'));
+const QuestionPageForTeacher = lazy(() => import('./components/Question/Teacher/QuestionPage'));
+const Loading = lazy(() => import('./components/Common/Loading'));
+const ExamsForStudent = lazy(() => import('./components/Exams/Student/index'));
+const QuestionViewPageForTeacher = lazy(() => import('./components/Exams/Teacher/QuestionView'));
+const CoursesForStudent = lazy(() => import('./components/Courses/Student'));
+const QuestionsForTeacher = lazy(() => import('./components/Question/Teacher/Questions'))
+const CoursePageForStudents = lazy('./components/Courses/Student/CoursePage');
+const ExamPageForTeacher = lazy(() => import('./components/Exams/Teacher/ExamPage'));
+const ExamPageForStudents = lazy(() => import('./components/Exams/Student/ExamPage'));
+const ResultsForStudent = lazy(() => import('./components/Results/Student/Results'));
+const EvaluatePaper = lazy(() => import('./components/Exams/Teacher/EvaluatePaper'));
+const ExamResult = lazy(() => import('./components/Exams/Teacher/ExamResult'));
+const NotFound = lazy(() => import('./components/Common/404'));
 
 require('dotenv').config()
 const loadUser = async (dispatch) => {

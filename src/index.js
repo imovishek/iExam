@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
@@ -6,12 +6,15 @@ import reportWebVitals from './reportWebVitals'
 import { Provider } from 'react-redux'
 import configureStore, { history } from './store'
 import { ConnectedRouter } from 'connected-react-router'
+import Loading from './components/Common/Loading'
 
 ReactDOM.render(
   <Provider store={configureStore()}>
-    <ConnectedRouter history={history}>
-      <App/>
-    </ConnectedRouter>
+    <Suspense fallback={<Loading isLoading={true}/>}>
+      <ConnectedRouter history={history}>
+        <App/>
+      </ConnectedRouter>
+    </Suspense>
   </Provider>,
   document.getElementById('root')
 )
