@@ -1,9 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import createExamIcon from "../../../images/createexamicon.png";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import CreateExamModal from "./CreateExamModal";
-import { useState } from "react/cjs/react.development";
 import { onUpdateCurrentTab } from "../../Exams/actions";
 import { push } from "connected-react-router";
 import { setNavigaitonTabAction } from "../../NavBar/actions";

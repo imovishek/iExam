@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { Modal, Popconfirm, Tooltip } from 'antd';
 import moment from 'moment';
 import api from '../../../utitlities/api';
@@ -7,7 +7,6 @@ import { PRIVATE, PUBLIC } from '../../../utitlities/constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobeAsia, faLock } from '@fortawesome/free-solid-svg-icons';
 import { Row } from '../../../utitlities/styles';
-import { useEffect } from 'react/cjs/react.development';
 import { getName, smartLabel } from '../../../utitlities/common.functions';
 
 const BodyWrapper = styled.div`

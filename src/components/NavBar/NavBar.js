@@ -3,13 +3,12 @@ import { connect } from 'react-redux'
 import { onSetNavbarCollapsed, setNavigaitonTabAction } from './actions'
 import { push } from 'connected-react-router'
 import { hasPageAccess, mapDesignations } from '../../utitlities/constants'
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useLayoutEffect, useEffect } from 'react'
 import UserInfo from '../UserSettings/User/UserInfo'
 import { Tooltip } from 'antd'
 import { AppTitle, BodyWrapper, DesignationWraper, FontAwesomeIconWrapper, FooterIconWraper, FooterNameWrapper, FooterWraper, LabelHeader, LinkWrapper, LogoWrapper, NavWrapper, SubWrapper } from './styles'
 import { navLinks } from './constants'
 import confirm from 'antd/lib/modal/confirm'
-import { useEffect } from 'react/cjs/react.development'
 
 function useWindowSize() {
   const [size, setSize] = useState([0, 0]);
