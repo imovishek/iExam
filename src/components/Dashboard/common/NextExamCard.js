@@ -11,7 +11,7 @@ import { setNavigaitonTabAction } from "../../NavBar/actions";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { onUpdateCurrentTab } from "../../Exams/actions";
-import { RUNNING } from "../../../utitlities/constants";
+import { ENDED, RUNNING, UPCOMING } from "../../../utitlities/constants";
 
 const NextExamWrapper = styled.div`
   margin-left: 25px;
@@ -48,38 +48,60 @@ const StyledButton = styled.div`
     cursor: pointer;
   }
 `;
-const ExamRemainingTime = ({ exam, statusText }) => {
+const ExamRemainingTime = ({ timeString, statusText }) => (
+  <div style={{ justifyContent: "center", textAlign: "center" }}>
+    <h4 style={{...headerTextStyleObject, color: 'rgb(204 136 121)'}}>{statusText}</h4>
+    <h1 style={{ ...headerTextStyleObject, color: "orange" }}>
+      {timeString}
+    </h1>
+  </div>
+);
+
+const NextExamCard = ({ exam, dispatch, haveSingleRunningExam }) => {
   const [{ timeString }, setTimeDifference] = useState(
     getExamTimeDiffInFormat(exam)
   );
+  const [status, setStatus] = useState(
+    getExamStatus(exam).toLocaleLowerCase()
+  );
+  let examStatText = '';
+  switch (status) {
+    case RUNNING:
+      examStatText = "Running Now";
+      break;
+    case UPCOMING:
+      examStatText = "Next Exam";
+      break;
+    case ENDED:
+      examStatText = "Ended";
+      break;
+  }
+
+  let examTimerText = '';
+  switch (status) {
+    case RUNNING:
+      examTimerText = "Ends in";
+      break;
+    case UPCOMING:
+      examTimerText = "Starts in";
+      break;
+    case ENDED:
+      examTimerText = "Ended";
+      break;
+  }
+
   useEffect(() => {
     if (exam && exam._id) {
       const interval = setInterval(() => {
         const { timeString } = getExamTimeDiffInFormat(exam);
         setTimeDifference({ timeString });
+        setStatus(getExamStatus(exam).toLocaleLowerCase());
       }, 1000);
       return () => {
         clearInterval(interval);
       };
     }
   }, []);
-  return (
-    <div style={{ justifyContent: "center", textAlign: "center" }}>
-      <h4 style={{...headerTextStyleObject, color: 'rgb(204 136 121)'}}>{statusText}</h4>
-      <h1 style={{ ...headerTextStyleObject, color: "orange" }}>
-        {timeString}
-      </h1>
-    </div>
-  );
-};
-
-const NextExamCard = ({ exam, dispatch, haveSingleRunningExam }) => {
-  let examStatText;
-  const isRunning = getExamStatus(exam).toLocaleLowerCase() === RUNNING;
-  if (isRunning)
-    examStatText = "Running Now";
-  else examStatText = "Next Exam";
-
   return (
     <NextExamWrapper
       style={
@@ -95,7 +117,7 @@ const NextExamCard = ({ exam, dispatch, haveSingleRunningExam }) => {
             {exam.course.courseCode} {exam.title}
           </h1>
         </div>
-        <ExamRemainingTime statusText={isRunning ? 'Ends in' : 'Starts in'} exam={exam} />
+        <ExamRemainingTime timeString={timeString} statusText={examTimerText} exam={exam} />
         <div
           style={{
             margin: "20px",
