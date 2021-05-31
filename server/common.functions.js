@@ -3,7 +3,15 @@ const moment = require('moment');
 const Papa = require('papaparse');
 const bcrypt = require('bcryptjs');
 const _ = require('underscore');
-const { requiredCsvHeaders, inputDateFormats } = require('./constants');
+const {
+  requiredCsvHeaders,
+  inputDateFormats,
+  timeFormat,
+  STUDENT,
+  RUNNING,
+  ENDED,
+  UPCOMING,
+} = require('./constants');
 
 exports.parseQuery = (value) => {
   try {
@@ -98,3 +106,86 @@ exports.mapCsvToTeacher = (teachers = [], user) =>
       department: user.department
     };
   });
+
+  
+exports.getExamStatus = (exam = {}) => {
+  const { startDate = "", startTime = "", duration = "" } = exam;
+  const dateString = moment(startDate).format("YYYY-MM-DD");
+  const timeString = moment(startTime, timeFormat).format("HH:mm:ss");
+  const startDateWithTime = new Date(`${dateString} ${timeString}`);
+  if (moment(new Date()).isAfter(moment(startDateWithTime))) {
+    const diffInMinutes = moment(new Date()).diff(startDateWithTime, "minutes");
+    const hh = duration.split(":")[0];
+    const mm = duration.split(":")[1];
+    const durationTime = Number(Number(hh) * 60) + Number(mm);
+    if (diffInMinutes < durationTime) return RUNNING;
+    return ENDED;
+  }
+  return UPCOMING;
+};
+
+exports.cleanExamForStudent = (req, exam, shouldDeleteQuestions = false) => {
+  if (req.user.userType !== STUDENT) return;
+  if (shouldDeleteQuestions) exam.questions = [];
+  exam.questions = (exam.questions || []).map(question => {
+    if (typeof question === 'string') return 'questionID';
+    ((question.matchingOptions || {}).leftSide || []).forEach(left => {
+      delete left.matchingID;
+    });
+    (question.options || []).forEach(option => delete option.isAnswer);
+    const {
+      _id,
+      title,
+      marks,
+      type,
+      options,
+      body,
+      matchingOptions,
+    } = question;
+    return {
+      _id,
+      title,
+      marks,
+      type,
+      options,
+      body,
+      matchingOptions,
+    };
+  })
+  const status = this.getExamStatus(exam);
+  exam.status = status;
+  console.log('should see exam', status, exam.shouldNotSeePaperAfterEnded);
+  if (status !== RUNNING && (status !== ENDED || exam.shouldNotSeePaperAfterEnded)) {
+    exam.questions = [];
+  }
+  delete exam.papers;
+}
+
+
+exports.cleanCourseForStudent = (req, course) => {
+  if (req.user.userType !== STUDENT) return;
+  _.forEach(course.exams, exam => this.cleanExamForStudent(req, exam, true));
+  delete course.pendingEnrollStudents;
+  delete course.enrolledStudents;
+}
+
+exports.checkEqual = (objA, objB) => {
+  if (objA === objB) return true; // undefined, null, string, number
+  if (objA === null || objB === null) return false;
+  if (objA === undefined || objB === undefined) return false;
+
+  // object or array
+  if (typeof objA !== typeof objB) return false;
+  if (typeof objA !== 'object') return objA === objB;
+  if (Array.isArray(objA) !== Array.isArray(objB)) return false;
+  const objAKeys = Object.keys(objA);
+  const objBKeys = Object.keys(objB);
+  const aKeysString = objAKeys.sort().join('#');
+  const bKeysString = objBKeys.sort().join('#');
+  if (aKeysString !== bKeysString) return false; // checking keys are equal
+  if (objAKeys.length !== objBKeys.length) return false;
+  for (const key of objAKeys) {
+    if (!this.checkEqual(objA[key], objB[key])) return false;
+  }
+  return true;
+}

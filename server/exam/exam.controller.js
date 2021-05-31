@@ -3,8 +3,10 @@ const studentHelper = require('../student/student.helper');
 const questionHelper = require('../question/question.helper');
 const courseHelper = require('../course/course.helper');
 const paperHelper = require('../paper/paper.helper');
-const { httpStatuses } = require('../constants');
+const { httpStatuses, STUDENT } = require('../constants');
 const _ = require('underscore');
+const { getExamStatus, cleanExamForStudent } = require('../common.functions');
+const responseHandler = require('../middlewares/responseHandler');
 
 // GET EXAM
 
@@ -47,12 +49,14 @@ exports.getExamByID = async (req, res) => {
 exports.getExamByIDWithUserPaper = async (req, res) => {
   const { id } = req.params;
   const { student, question } = req.query;
-  const isRequestFromStudent = (student || question) ? false : true;
+  const isRequestFromStudent = req.user.userType === STUDENT;
+  console.log('isRequest', isRequestFromStudent);
   const studentID = student ? student : req.user._id;
   let paper = null;
   try {
     const result = await getExamByIDWithParticipants(id);
     const papers = _.filter(result.papers, paper => String(paper.student) === studentID);
+    console.log('question', question);
     if (question) {
       paper = {
         student: null,
@@ -75,7 +79,8 @@ exports.getExamByIDWithUserPaper = async (req, res) => {
       paper.answers.forEach(answer => {
         answer.paperID = paper._id;
       })
-    } else if (papers.length > 1){
+      console.log(paper);
+    } else if (papers.length > 1) {
       throw new Error('Too many papers for one student!');
     } else if (isRequestFromStudent) {
       paper = await paperHelper.createPaper({
@@ -83,6 +88,7 @@ exports.getExamByIDWithUserPaper = async (req, res) => {
         answers: [],
         totalMarks: 0,
         examID: id,
+        isSubmitted: false,
       });
       await examHelper.updateExamByID(id, {
         $push: {
@@ -90,12 +96,12 @@ exports.getExamByIDWithUserPaper = async (req, res) => {
         }
       });
     }
-    res.status(httpStatuses.OK).send({ payload: { exam: result, paper } });
+
+    if (isRequestFromStudent) cleanExamForStudent(req, result);
+    responseHandler(res, httpStatuses.OK, { payload: { exam: result, paper } });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res. httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -130,7 +136,9 @@ exports.updateExamPaperForStudent = async (req, res) => {
               _id: paper._id,
               'answers.questionID': answer.questionID,
             }, {
-              'answers.$.answer': answer.answer
+              'answers.$.answer': answer.answer,
+              isSubmitted: true,
+              lastSubmittedAt: Date.now(),
           });
         } else {
           await paperHelper.updatePaperByID(paper, {
@@ -140,7 +148,9 @@ exports.updateExamPaperForStudent = async (req, res) => {
                 answer: answer.answer,
                 marks: 0,
               }
-            }
+            },
+            isSubmitted: true,
+            lastSubmittedAt: Date.now(),
           });
         }
       }

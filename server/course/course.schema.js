@@ -42,7 +42,6 @@ const courseSchema = new Schema({
     },
     required: true,
   },
-  announcements: [String],
 },
 {
   timestamps: true,

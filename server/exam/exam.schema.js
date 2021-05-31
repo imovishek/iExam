@@ -33,7 +33,11 @@ const examSchema = new Schema({
 		seen: [Schema.Types.ObjectId]
 	}],
 	resultPublishedDate: Date,
-	totalMarks: Number
+	totalMarks: Number,
+	shouldNotSeePaperAfterEnded: {
+		type: Boolean,
+		default: false,
+	}
 },
 {
 	timestamps: true,

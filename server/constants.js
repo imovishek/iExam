@@ -2,6 +2,7 @@ exports.httpStatuses = {
   OK: 200,
   INTERNAL_SERVER_ERROR: 500,
   NOT_FOUND: 404,
+  FORBIDDEN: 403,
 }
 
 exports.allBatches = {
@@ -18,9 +19,18 @@ exports.allStatuses = {
   running: 'Running',
   ended: 'Ended',
 }
+
 exports.TEACHER = 'teacher';
 exports.STUDENT = 'student';
 exports.DEPTADMIN = 'deptAdmin';
+
+exports.UPCOMING = 'upcoming';
+exports.RUNNING = 'running';
+exports.ENDED = 'ended';
+
+
+exports.timeFormat = "hh:mm A";
+exports.durationFormat = "HH:mm";
 
 exports.inputDateFormats = [
   'DD/MM/YY',
