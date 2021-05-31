@@ -114,6 +114,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     const { payload = {} } = await api.getExamByIDWithPaper(id);
     const { exam: updatedExam, paper: updatedPaper } = payload;
     setExam(updatedExam);
+    console.log('updatedExam', updatedExam, paper);
     const newPaper = createPaperForMe(updatedExam, updatedPaper);
     setPaper(newPaper);
     virtualState.paper = newPaper;
