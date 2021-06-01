@@ -5,6 +5,7 @@ import { setUserAction } from './components/Login/actions'
 import { setNavigaitonTabAction } from './components/NavBar/actions'
 import api from './utitlities/api'
 import ExamsForTeacher from './components/Exams/Teacher/index'
+import Credits from './components/Credits/index'
 import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router'
@@ -87,6 +88,7 @@ const App = ({ user, dispatch }) => {
       { userType === 'teacher' && <Route path="/exams" component={ExamsForTeacher} /> }
       { userType === 'teacher' && <Route path="/dashboard" component={DashboardForTeacher} /> }
       <Route path="/login" component={Login} />
+      <Route path="/credits" component={Credits} />
       <Route path="/logout" component={Logout} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/404" component={NotFound} />
