@@ -1,6 +1,7 @@
 import { Row, Col } from 'antd';
 import MyCard from './CreditCard';
 import { PageHeader } from '../styles/pageStyles';
+import persons from './persons';
 
 const CreditList=function () {
   return (
@@ -11,8 +12,20 @@ const CreditList=function () {
         </PageHeader>
       </Row>
       <Row gutter={[8, 8]} justify="center" style={{marginBottom:32}}>
-        <Col span={12}><MyCard title={"Ovishek Paul"} description={"Software Engineer, Kinetik Care"} links={{github:"https://github.com",mail:"",facebook:"",linkedin:"",twitter:""}} img="naruto.jpg"/></Col>
-        <Col span={12}><MyCard title={"Md Maruful Alam"} description={`Student, SUST`} links={{github:"",mail:"https://gmail.com",facebook:"",linkedin:"",twitter:""}} img="naruto.jpg"/></Col>
+        <Col span={12}><MyCard 
+          title={persons.ovishek.name} 
+          description={persons.ovishek.description} 
+          links={persons.ovishek.links} 
+          img={persons.ovishek.img}/>
+        </Col>
+
+        <Col span={12}><MyCard 
+          title={persons.maruf.name} 
+          description={persons.maruf.description} 
+          links={persons.maruf.links} 
+          img={persons.maruf.img}/>
+        </Col>
+
       </Row>
       <Row gutter={[8, 8]} justify="center">
         <PageHeader>
@@ -20,7 +33,12 @@ const CreditList=function () {
         </PageHeader>
       </Row>
       <Row gutter={[8, 8]} justify="center" style={{marginBottom:32}}>
-        <Col span={12}><MyCard title={"Enamul Hassan"} description={"Asistant Professor,SUST"} links={{github:"",mail:"",facebook:"https://facebook.com",linkedin:"",twitter:""}} img="naruto.jpg"/></Col>
+        <Col span={12}><MyCard 
+          title={persons.enam.name} 
+          description={persons.enam.description} 
+          links={persons.enam.links} 
+          img={persons.enam.img}/>
+        </Col>
       </Row>
       <Row justify="center">
         <PageHeader>
@@ -28,8 +46,33 @@ const CreditList=function () {
         </PageHeader>
       </Row>
       <Row gutter={[8, 8]} style={{marginBottom:32}}>
-        <Col span={12}><MyCard title={"Antor Roy"} description={"Student, SUST"} links={{github:"",mail:"",facebook:"",linkedin:"https://linkedin.com",twitter:""}} img="naruto.jpg"/></Col>
-        <Col span={12}><MyCard title={"Faridul Reza Sagor"} description={"Student, SUST"} links={{github:"",mail:"",facebook:"",linkedin:"",twitter:"https://twitter.com"}} img="naruto.jpg"ss/></Col>
+        <Col span={12}><MyCard 
+          title={persons.antar.name}
+          description={persons.antar.description} 
+          links={persons.antar.links} 
+          img={persons.antar.img}/>
+        </Col>
+
+        <Col span={12}><MyCard 
+          title={persons.sagor.name} 
+          description={persons.sagor.description}
+          links={persons.sagor.links} 
+          img={persons.sagor.img}/>
+        </Col>
+
+        <Col span={12}><MyCard 
+          title={persons.tithi.name} 
+          description={persons.tithi.description} 
+          links={persons.tithi.links} 
+          img={persons.tithi.img}/>
+        </Col>
+
+        <Col span={12}><MyCard 
+          title={persons.arnob.name} 
+          description={persons.arnob.description} 
+          links={persons.arnob.links} 
+          img={persons.arnob.img}/></Col>
+
       </Row>
     </div>
   );

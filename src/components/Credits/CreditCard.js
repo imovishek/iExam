@@ -8,7 +8,7 @@ const { Meta } = Card;
 const MyCard=({title,description,links,img})=>(
   <div style={{padding:"8px"}}>
     <Card
-      bordered={false}
+      bordered={true}
       style={{width: 400}}
       actions={[
         <a href={links.facebook} key="a"><FacebookOutlined/></a>,
