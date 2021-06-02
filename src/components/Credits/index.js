@@ -8,7 +8,7 @@ const Credits=()=>(<div>
   <BodyWrapper>
     <NavBar />
     <Container rows="80px 1fr">
-      <PageHeader>Credits</PageHeader>
+      
       <CreditList/>
     </Container>
   </BodyWrapper>

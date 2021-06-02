@@ -5,34 +5,32 @@ import persons from './persons';
 
 const CreditList=function () {
   return (
-    <div align="center">
+    <div style={{margin:"0 auto"}} >
       <Row justify="center">
         <PageHeader>
           Created By
         </PageHeader>
       </Row>
-      <Row gutter={[8, 8]} justify="center" style={{marginBottom:32}}>
+      <Row gutter={[200, 0]}  style={{paddingBottom:32}}>
         <Col span={12}><MyCard 
           title={persons.ovishek.name} 
           description={persons.ovishek.description} 
           links={persons.ovishek.links} 
           img={persons.ovishek.img}/>
         </Col>
-
         <Col span={12}><MyCard 
           title={persons.maruf.name} 
           description={persons.maruf.description} 
           links={persons.maruf.links} 
           img={persons.maruf.img}/>
         </Col>
-
       </Row>
       <Row gutter={[8, 8]} justify="center">
         <PageHeader>
           Supervised By
         </PageHeader>
       </Row>
-      <Row gutter={[8, 8]} justify="center" style={{marginBottom:32}}>
+      <Row gutter={[200, 0]} justify="center" style={{paddingBottom:32}}>
         <Col span={12}><MyCard 
           title={persons.enam.name} 
           description={persons.enam.description} 
@@ -45,7 +43,7 @@ const CreditList=function () {
           Special Contributors
         </PageHeader>
       </Row>
-      <Row gutter={[8, 8]} style={{marginBottom:32}}>
+      <Row gutter={[200, 0]} style={{marginBottom:32}}>
         <Col span={12}><MyCard 
           title={persons.antar.name}
           description={persons.antar.description} 
@@ -59,7 +57,8 @@ const CreditList=function () {
           links={persons.sagor.links} 
           img={persons.sagor.img}/>
         </Col>
-
+      </Row>
+      <Row gutter={[200, 0]} style={{paddingBottom:32}}>
         <Col span={12}><MyCard 
           title={persons.tithi.name} 
           description={persons.tithi.description} 
