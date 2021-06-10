@@ -15,7 +15,7 @@ const Questions = ({ questions, user, dispatch }) => {
   const [isLoading, setLoading] = useState(true)
   const onDeleteHandler = async (question) => {
     try {
-      await api.updateUserByID(user._id, { $pull: { questionIDs: question._id } });
+      await api.updateUserMe({ $pull: { questionIDs: question._id } });
       await api.deleteQuestion(question);
       message.success("Successfully Deleted!");
       setQuestionChanged(true);

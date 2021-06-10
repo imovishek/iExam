@@ -29,13 +29,12 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch, isColl
     setNavigationTab(path)
     dispatch(push(`/${path}`))
   }
-  const [width, height] = useWindowSize();
+  const [width] = useWindowSize();
   const { userType } = user
   const [showUserInfoModal, setShowUserInfoModal] = useState(false);
   useEffect(() => {
     let state = false;
     if (Number(width) === 0) return;
-    console.log(width);
     if (width < 1000) {
       state = true;
     }

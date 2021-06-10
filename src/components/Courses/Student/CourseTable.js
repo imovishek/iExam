@@ -53,11 +53,7 @@ const CourseCard = ({
 
   const enrollRequestHandler = async (e) => {
     try {
-      await api.updateCourse(course, {
-        $push: {
-          pendingEnrollStudents: user._id
-        }
-      });
+      await api.enrollRequest(course._id);
       message.success('Enrollment request sent!');
       await updateCoursesOnUI(course._id)
     } catch (err) {

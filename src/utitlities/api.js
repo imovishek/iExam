@@ -276,13 +276,31 @@ export const evaluateBroadQuestion = async (code, lang, answer, marks) => {
     value: msg === "error" ? 0 : evaluation,
   };
 }
+
+export const enrollRequest = (courseID) => {
+  requestApiAndGetResponse(`${apiUrl}/enrollrequest/${courseID}`, 'put')
+    .then(res => res.data)
+}
+
+export const getUserMe = () =>
+  requestApiAndGetResponse(`${apiUrl}/user/me`, 'get')
+    .then(res => res.data)
+
+export const updateUserMe = async (body) =>
+  requestApiAndGetResponse(`${apiUrl}/user/me`, 'put', {
+    update: body
+  })
+    .then(res => res.data)
 const api = {
+  getUserMe,
+  updateUserMe,
   apiLogin,
   getCourses,
   getQuestions,
   createCourse,
   getCourseByID,
   updateCourse,
+  enrollRequest,
   requestApiAndGetResponse,
   deleteCourse,
   createTeacher,

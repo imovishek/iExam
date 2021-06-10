@@ -128,7 +128,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
           );
           await api.updateExam({ _id: examID }, { totalMarks });
         }
-        await api.updateUserByID(user._id, {
+        await api.updateUserMe({
           $push: { questionIDs: newQuestion._id },
         });
         message.success("Question Creation Successful!");
