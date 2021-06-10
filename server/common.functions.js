@@ -11,6 +11,7 @@ const {
   RUNNING,
   ENDED,
   UPCOMING,
+  TEACHER,
 } = require('./constants');
 
 exports.parseQuery = (value) => {
@@ -124,7 +125,7 @@ exports.getExamStatus = (exam = {}) => {
   return UPCOMING;
 };
 
-exports.cleanExamForStudent = (req, exam, shouldDeleteQuestions = false) => {
+exports.cleanExamForStudent = (req, exam, shouldDeleteQuestions = false, keepPaper = false) => {
   if (req.user.userType !== STUDENT) return;
   if (shouldDeleteQuestions) exam.questions = [];
   exam.questions = (exam.questions || []).map(question => {
@@ -154,11 +155,23 @@ exports.cleanExamForStudent = (req, exam, shouldDeleteQuestions = false) => {
   })
   const status = this.getExamStatus(exam);
   exam.status = status;
-  console.log('should see exam', status, exam.shouldNotSeePaperAfterEnded);
   if (status !== RUNNING && (status !== ENDED || exam.shouldNotSeePaperAfterEnded)) {
     exam.questions = [];
   }
-  delete exam.papers;
+  if (!keepPaper)
+    exam.papers = [];
+  else cleanPaperForStudent(req.user._id, exam);
+}
+
+exports.cleanExamForTeacher = (req, exam, shouldDeleteQuestions = false, keepPaper = false) => {
+  if (req.user.userType !== TEACHER) return;
+  if (shouldDeleteQuestions) exam.questions = [];
+  if (!keepPaper)
+    exam.papers = [];
+}
+
+const cleanPaperForStudent = (studentID, exam) => {
+  exam.papers = _.filter(exam.papers, paper => String(paper.student) === String(studentID));
 }
 
 

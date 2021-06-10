@@ -1,61 +1,60 @@
 const express = require('express');
+const { TEACHER, STUDENT } = require('../constants');
 const router = express.Router();
-const expressJWT = require('express-jwt');
-
-const config = require('../../config/config');
+const secureApiCall = require('../middlewares/secureApiCall');
 const examController = require('./exam.controller');
 
 router
   .route('/exams')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER, STUDENT]),
     examController.getExams
   ).post(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     examController.createExam
   ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     examController.updateExams
   ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     examController.deleteExams
   );
 
 router
   .route('/exam/:id')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER, STUDENT]),
     examController.getExamByID
   ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     examController.updateExamByID
   ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     examController.deleteExamByID
   );
 
 router
   .route('/exam/:id/paper')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER, STUDENT]),
     examController.getExamByIDWithUserPaper
   )
   .put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER, STUDENT]),
     examController.updateExamPaperForStudent
   )
 
 router
   .route('/exam/:id/evaluatepaper')
   .put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     examController.updateExamPaperForTeacher
   )
 
 router
   .route('/exam/:id/filter')
   .post(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     examController.getExamUsingFilterByID
   )
 

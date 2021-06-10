@@ -11,7 +11,9 @@ exports.getClarificationByID = (_id) =>
 
 
 exports.getClarifications = (query, sort = { askTime: -1 }) =>
-  Clarification.find(query).sort(sort);
+  Clarification
+  .find(query)
+  .sort(sort);
 
 
 // UPDATE
