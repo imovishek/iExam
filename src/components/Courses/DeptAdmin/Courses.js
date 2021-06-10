@@ -32,7 +32,6 @@ const Courses = ({ courses, user, dispatch }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     if (isCoursesChanged) {
-      const { courseIDs = [] } = user
       try {
         const { payload = [] } = await api.getCourses({ 'department.departmentCode': user.department.departmentCode })
         dispatch(onUpdateCourses(payload))
@@ -50,7 +49,6 @@ const Courses = ({ courses, user, dispatch }) => {
     setLoading(true)
     course.assignedTeacher = course.assignedTeacher ? course.assignedTeacher._id : null;
     const { payload: newCourse } = await api.createCourse(course)
-    const { payload: newUser } = await api.updateUserByID(user._id, { $push: { courseIDs: newCourse._id } })
     if (course.batchCode !== "others") {
       const { payload: students } = await api.getStudentsByBatch({ batch: course.batchCode, departmentCode: user.department.departmentCode })
       const ids = _.map(students, student => student._id)
@@ -60,7 +58,6 @@ const Courses = ({ courses, user, dispatch }) => {
         }
       })
     }
-    dispatch(setUserAction(newUser))
     setCourseChanged(true)
   }
 
@@ -72,8 +69,6 @@ const Courses = ({ courses, user, dispatch }) => {
   const deleteCourseHandler = async (course) => {
     setLoading(true)
     await api.deleteCourse(course)
-    const { payload: newUser } = await api.updateUserByID(user._id, { $pull: { courseIDs: course._id } })
-    dispatch(setUserAction(newUser))
     setCourseChanged(true)
   }
 

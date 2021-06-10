@@ -282,7 +282,18 @@ export const enrollRequest = (courseID) => {
     .then(res => res.data)
 }
 
+export const getUserMe = () =>
+  requestApiAndGetResponse(`${apiUrl}/user/me`, 'get')
+    .then(res => res.data)
+
+export const updateUserMe = async (body) =>
+  requestApiAndGetResponse(`${apiUrl}/user/me`, 'put', {
+    update: body
+  })
+    .then(res => res.data)
 const api = {
+  getUserMe,
+  updateUserMe,
   apiLogin,
   getCourses,
   getQuestions,

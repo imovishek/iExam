@@ -39,8 +39,8 @@ const UserInfo = ({ selectedUser, visible, setVisibility, dispatch }) => {
       }
     }
     try {
-      await api.updateUserByID(user._id, update)
-      const { payload: newUser } = await api.getUserByID(user._id)
+      await api.updateUserMe(update)
+      const { payload: newUser } = await api.getUserMe()
       dispatch(setUserAction(newUser));
       message.success("Successfully updated your info!");
     } catch (err) {

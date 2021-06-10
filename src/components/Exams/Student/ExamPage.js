@@ -114,7 +114,6 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     const { payload = {} } = await api.getExamByIDWithPaper(id);
     const { exam: updatedExam, paper: updatedPaper } = payload;
     setExam(updatedExam);
-    console.log('updatedExam', updatedExam, paper);
     const newPaper = createPaperForMe(updatedExam, updatedPaper);
     setPaper(newPaper);
     virtualState.paper = newPaper;
@@ -160,21 +159,17 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       ...paper,
     };
     try {
-      const { payload: nowExam } = await api.getExamByID(id);
-      if (getExamStatus(nowExam) === "ended") {
-        message.error("Sorry exam ended you can't submit now");
-        setSavedText("");
-        await updateExamOnUI();
-      } else if (meGotBanned(nowExam, user)) {
-        message.error("You got banned from this exam");
-        setSavedText("");
-        await updateExamOnUI();
-      } else {
-        await api.updateExamPaperForStudent(id, cleanPaper);
-        await updateExamOnUI();
-        message.success("Submitted Successfully");
-      }
+      await api.updateExamPaperForStudent(id, cleanPaper);
+      await updateExamOnUI();
+      message.success("Submitted Successfully");
     } catch (err) {
+      message.error(err.response.data.message);
+      dispatch(push(`/exam/${exam._id}`));
+      try {
+        await updateExamOnUI();
+      } catch (error) {
+        
+      }
       console.log(err);
     } finally {
       setIsLoading(false);
@@ -186,29 +181,24 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       ...virtualState.paper,
     };
     try {
-      const { payload: nowExam } = await api.getExamByID(id);
-      if (getExamStatus(nowExam) === "ended") {
-        message.info("Exam ended");
-        setSavedText("");
-        await updateExamOnUI();
-        return;
-      } else if (meGotBanned(nowExam, user)) {
-        message.error("You got banned from this exam");
-        setSavedText("");
-        await updateExamOnUI();
-        return;
-      }
       await api.updateExamPaperForStudent(id, cleanPaper);
+      await updateExamOnUI();
       setSavedText("Saved a few seconds ago");
     } catch (err) {
+      message.error(err.response.data.message);
+      dispatch(push(`/exam/${exam._id}`));
+      try {
+        await updateExamOnUI();
+      } catch (error) {
+        
+      }
       console.log(err);
-      setSavedText("Error saving");
     }
   };
 
   const autoSubmitUpdateHandler = async (checked) => {
     setSwitchLoading(true);
-    const { payload: newUser } = await api.updateUserByID(user._id, {
+    const { payload: newUser } = await api.updateUserMe({
       autoSubmitPaper: checked,
     });
     dispatch(setUserAction(newUser));

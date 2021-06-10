@@ -30,7 +30,6 @@ const Students = ({ students, user, dispatch }) => {
 
   useEffect(() => {
     if (isStudentsChanged) {
-      const { studentIDs = [] } = user
       api.getStudents({ 'department.departmentCode': user.department.departmentCode })
         .then(({ payload }) => {
           dispatch(onUpdateStudents(payload))
@@ -43,9 +42,7 @@ const Students = ({ students, user, dispatch }) => {
   const createStudentHandler = async (student) => {
     try {
       setLoading(true)
-      const { payload: newStudent } = await api.createStudent(student)
-      const { payload: newUser } = await api.updateUserByID(user._id, { $push: { studentIDs: newStudent._id } })
-      dispatch(setUserAction(newUser))
+      await api.createStudent(student)
       setStudentChanged(true)
     } catch (err) {
       message.error('Server Error Try again later!')
@@ -62,7 +59,6 @@ const Students = ({ students, user, dispatch }) => {
 
   const deleteStudentHandler = async (student) => {
     setLoading(true);
-    await api.updateUserByID(user._id, { $pull: { studentIDs: student._id } });
     await api.deleteStudent(student)
     setStudentChanged(true)
   }

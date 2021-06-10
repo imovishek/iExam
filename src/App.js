@@ -1,6 +1,5 @@
 import { lazy } from 'react'
 import './App.less'
-import jwt from 'jsonwebtoken'
 import { setUserAction } from './components/Login/actions'
 import { setNavigaitonTabAction } from './components/NavBar/actions'
 import api from './utitlities/api'
@@ -26,7 +25,7 @@ const ExamsForStudent = lazy(() => import('./components/Exams/Student/index'));
 const QuestionViewPageForTeacher = lazy(() => import('./components/Exams/Teacher/QuestionView'));
 const CoursesForStudent = lazy(() => import('./components/Courses/Student'));
 const QuestionsForTeacher = lazy(() => import('./components/Question/Teacher/Questions'))
-const CoursePageForStudents = lazy('./components/Courses/Student/CoursePage');
+const CoursePageForStudents = lazy(() => import('./components/Courses/Student/CoursePage'));
 const ExamPageForTeacher = lazy(() => import('./components/Exams/Teacher/ExamPage'));
 const ExamPageForStudents = lazy(() => import('./components/Exams/Student/ExamPage'));
 const ResultsForStudent = lazy(() => import('./components/Results/Student/Results'));
@@ -36,9 +35,8 @@ const NotFound = lazy(() => import('./components/Common/404'));
 
 require('dotenv').config()
 const loadUser = async (dispatch) => {
-  const localUser = jwt.decode(localStorage.token)
   try {
-    const { payload: user } = await api.getUserByID(localUser._id);
+    const { payload: user } = await api.getUserMe();
     dispatch(setUserAction(user))
   } catch (err) {
     console.log(err)
@@ -53,13 +51,13 @@ const loadInit = async (dispatch) => {
 }
 
 const App = ({ user, dispatch }) => {
-  if (!user || !user.credential) {
+  if (!user || !user.userType) {
     if (!localStorage.token) return <Login />
     else loadInit(dispatch);
     return <Loading isLoading={true} />
   }
   let userType = ''
-  if (user.credential) userType = user.credential.userType
+  if (user) userType = user.userType
   return (
     <Switch>
       { userType === 'student' && <Route path="/exams" component={ExamsForStudent} /> }
