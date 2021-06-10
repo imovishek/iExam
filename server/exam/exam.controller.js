@@ -3,8 +3,10 @@ const studentHelper = require('../student/student.helper');
 const questionHelper = require('../question/question.helper');
 const courseHelper = require('../course/course.helper');
 const paperHelper = require('../paper/paper.helper');
-const { httpStatuses } = require('../constants');
+const { httpStatuses, STUDENT, ENDED, RUNNING } = require('../constants');
 const _ = require('underscore');
+const { getExamStatus, cleanExamForStudent, cleanExamForTeacher } = require('../common.functions');
+const responseHandler = require('../middlewares/responseHandler');
 
 // GET EXAM
 
@@ -12,19 +14,19 @@ exports.getExams = async (req, res) => {
   const { query } = req;
   try {
     const result = await examHelper.getExams(query);
-    res.status(httpStatuses.OK).send({ payload: result });
+    _.forEach(result, exam => {
+      cleanExamForStudent(req, exam, false, true);
+      cleanExamForTeacher(req, exam, false, false);
+    });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-      .status(httpStatuses.INTERNAL_SERVER_ERROR)
-      .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 const getExamByIDWithParticipants = async (id) => {
   const result = await examHelper.getExamByID(id).lean();
-  const course = await courseHelper.getCourseByID(result.course._id);
-  let participants = _.filter(course.enrolledStudents, st => !_.any(result.bannedParticipants, pt => String(pt._id) === String(st._id)));
-  participants = _.filter(participants, pt => _.any(result.papers, paper => String(pt._id) === String(paper.student)));
+  let participants = _.filter(result.participants, st => !_.any(result.bannedParticipants, pt => String(pt._id) === String(st)));
   result.participants = participants;
   result.participants.reverse();
   result.bannedParticipants.reverse();
@@ -35,24 +37,25 @@ exports.getExamByID = async (req, res) => {
   const { id } = req.params;
   try {
     const result = await getExamByIDWithParticipants(id);
-    res.status(httpStatuses.OK).send({ payload: result });
+    cleanExamForStudent(req, result, true, false);
+    cleanExamForTeacher(req, result, true, false);
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
 exports.getExamByIDWithUserPaper = async (req, res) => {
   const { id } = req.params;
   const { student, question } = req.query;
-  const isRequestFromStudent = (student || question) ? false : true;
+  const isRequestFromStudent = req.user.userType === STUDENT;
   const studentID = student ? student : req.user._id;
   let paper = null;
   try {
     const result = await getExamByIDWithParticipants(id);
     const papers = _.filter(result.papers, paper => String(paper.student) === studentID);
+    console.log('question', question);
     if (question) {
       paper = {
         student: null,
@@ -75,7 +78,7 @@ exports.getExamByIDWithUserPaper = async (req, res) => {
       paper.answers.forEach(answer => {
         answer.paperID = paper._id;
       })
-    } else if (papers.length > 1){
+    } else if (papers.length > 1) {
       throw new Error('Too many papers for one student!');
     } else if (isRequestFromStudent) {
       paper = await paperHelper.createPaper({
@@ -83,19 +86,24 @@ exports.getExamByIDWithUserPaper = async (req, res) => {
         answers: [],
         totalMarks: 0,
         examID: id,
+        isSubmitted: false,
       });
       await examHelper.updateExamByID(id, {
         $push: {
-          papers: paper._id
+          papers: paper._id,
+        },
+        $addToSet: {
+          participants: req.user._id,
         }
       });
     }
-    res.status(httpStatuses.OK).send({ payload: { exam: result, paper } });
+
+    cleanExamForStudent(req, result, false, false);
+    cleanExamForTeacher(req, result, false, false);
+    responseHandler(res, httpStatuses.OK, { payload: { exam: result, paper } });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res. httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -104,12 +112,10 @@ exports.getExamUsingFilterByID = async (req, res) => {
   const { id } = req.params;
   try {
     const exams = await examHelper.getExamAggregate(id, body);
-    res.status(httpStatuses.OK).send({ payload: exams[0] });
+    responseHandler(res, httpStatuses.OK, { payload: exams[0] });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 }
 
@@ -124,13 +130,20 @@ exports.updateExamPaperForStudent = async (req, res) => {
     _.forEach(dbPaper.answers, answer => {
       queObj[String(answer.questionID)] = 1;
     });
+    const exams = await examHelper.getExamAggregate(id, { startDate: 1, startTime: 1, duration: 1, bannedParticipants: 1 });
+    const status = getExamStatus(exams[0]);
+    const amIBanned = exams[0].bannedParticipants.filter(bannedID => String(bannedID) === req.user._id);
+    if (status !== RUNNING) throw new Error("Exam ended can't take submission");
+    if (amIBanned) throw new Error("You got banned, please contact your course teacher");
     await Promise.all(_.map(paper.answers, async answer => {
         if (queObj[answer.questionID]) {
           await paperHelper.updatePapers({
               _id: paper._id,
               'answers.questionID': answer.questionID,
             }, {
-              'answers.$.answer': answer.answer
+              'answers.$.answer': answer.answer,
+              isSubmitted: true,
+              lastSubmittedAt: Date.now(),
           });
         } else {
           await paperHelper.updatePaperByID(paper, {
@@ -140,17 +153,17 @@ exports.updateExamPaperForStudent = async (req, res) => {
                 answer: answer.answer,
                 marks: 0,
               }
-            }
+            },
+            isSubmitted: true,
+            lastSubmittedAt: Date.now(),
           });
         }
       }
     ));
-    res.status(httpStatuses.OK).send({ payload: {} });
+    responseHandler(res, httpStatuses.OK, { payload: {} });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -178,12 +191,10 @@ exports.updateExamPaperForTeacher = async (req, res) => {
         await actualPaper.save();
       }
     ));
-    res.status(httpStatuses.OK).send({ payload: {} });
+    responseHandler(res, httpStatuses.OK, { payload: {} });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -192,12 +203,10 @@ exports.createExam = async (req, res) => {
   const { exam } = req.body;
   try {
     const result = await examHelper.createExam(exam);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -206,12 +215,10 @@ exports.updateExams = async (req, res) => {
   const { query, body } = req;
   try {
     const result = await examHelper.updateExams(query, body);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -220,12 +227,10 @@ exports.updateExamByID = async (req, res) => {
   const { body } = req;
   try {
     const result = await examHelper.updateExamByID(id, body.update);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -235,12 +240,10 @@ exports.deleteExams = async (req, res) => {
   const { query } = req;
   try {
     const result = await examHelper.deleteExams(query);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -248,11 +251,9 @@ exports.deleteExamByID = async (req, res) => {
   const { id } = req.params;
   try {
     const result = await examHelper.deleteExamByID(id);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };

@@ -1,5 +1,6 @@
 const deptAdminHelper = require('./deptAdmin.helper');
 const { httpStatuses } = require('../constants');
+const responseHandler = require('../middlewares/responseHandler');
 
 // GET DEPTADMIN
 
@@ -7,12 +8,10 @@ exports.getDeptAdmins = async (req, res) => {
   const { query } = req;
   try {
     const result = await deptAdminHelper.getDeptAdmins(query);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-      .status(httpStatuses.INTERNAL_SERVER_ERROR)
-      .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -20,12 +19,10 @@ exports.getDeptAdminByID = async (req, res) => {
   const { id } = req.params;
   try {
     const result = await deptAdminHelper.getDeptAdminByID(id);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -34,12 +31,10 @@ exports.createDeptAdmin = async (req, res) => {
   const { deptAdmin } = req.body;
   try {
     const result = await deptAdminHelper.createDeptAdmin(deptAdmin);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -48,12 +43,10 @@ exports.updateDeptAdmins = async (req, res) => {
   const { query, body } = req;
   try {
     const result = await deptAdminHelper.updateDeptAdmins(query, body);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -62,12 +55,10 @@ exports.updateDeptAdminByID = async (req, res) => {
   const { body } = req;
   try {
     const result = await deptAdminHelper.updateDeptAdminByID(id, body.update);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -77,12 +68,10 @@ exports.deleteDeptAdmins = async (req, res) => {
   const { query } = req;
   try {
     const result = await deptAdminHelper.deleteDeptAdmins(query);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 
@@ -90,11 +79,9 @@ exports.deleteDeptAdminByID = async (req, res) => {
   const { id } = req.params;
   try {
     const result = await deptAdminHelper.deleteDeptAdminByID(id);
-    res.status(httpStatuses.OK).send({ payload: result });
+    responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    res
-    .status(httpStatuses.INTERNAL_SERVER_ERROR)
-    .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };

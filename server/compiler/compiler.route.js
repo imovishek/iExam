@@ -1,21 +1,22 @@
 const express = require('express');
+const { TEACHER } = require('../constants');
 const router = express.Router();
-const expressJWT = require('express-jwt');
+const secureApiCall = require('../middlewares/secureApiCall');
 
-const config = require('../../config/config');
+
 const compilerController = require('./compiler.controller');
 
 router
   .route('/compiler/simpleRun')
   .post(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     compilerController.simpleRun
   )
 
 router
   .route('/compiler/runEvaluation')
   .post(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     compilerController.runEvaluation
   )
 

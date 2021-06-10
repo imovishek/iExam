@@ -11,6 +11,14 @@ const paperSchema = new Schema({
 	}],
 	examID: { type: Schema.Types.ObjectId, ref: 'Exam', required: true },
 	totalMarks: Number,
+	isSubmitted: {
+		type: Boolean,
+		default: false,
+	},
+	lastSubmittedAt: {
+		type: Date,
+		default: Date.now(),
+	}
 },
 {
 	timestamps: true,

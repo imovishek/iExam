@@ -10,6 +10,7 @@ const helmet = require('helmet');
 
 const cors = require('cors');
 const { parseObject } = require('./server/common.functions');
+const verifyToken = require('./server/middlewares/verifyToken');
 
 const connectToDB = async () => {
     await connectToMongoDB().then(async (mongoose) => {
@@ -53,6 +54,8 @@ app.use(function (req, res, next) {
   }
   next()
 })
+
+app.use(verifyToken);
 
 // routes
 app.get("/", (req, res) => {

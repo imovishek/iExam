@@ -1,6 +1,7 @@
 const { httpStatuses, TEACHER } = require("../constants");
 const { spawnSync, spawn } = require("child_process");
 const fs = require("fs");
+const responseHandler = require("../middlewares/responseHandler");
 
 const url = "./server/compiler/files/";
 const PYTHON_CLI = process.env.PYTHON_CLI || 'python';
@@ -43,14 +44,14 @@ exports.simpleRun = async (req, res) => {
             console.log(`Output:\n${data}`);
             deleteFiles([fileBaseName, fileName]);
             if (sent) return;
-            res.status(httpStatuses.OK).send({ msg: "ok", output: data.toString() });
+            responseHandler(res, httpStatuses.OK, { msg: "ok", output: data.toString() });
             sent = 1;
           });
           runCode.stderr.on("data", (data) => {
             console.log(`ERROR:\n${data}`);
             deleteFiles([fileBaseName, fileName]);
             if (sent) return;
-            res.status(httpStatuses.OK).send({ msg: "error", output: data.toString() });
+            responseHandler(res, httpStatuses.OK, { msg: "error", output: data.toString() });
             sent = 1;
           });
           runCode.on('close', (code) => {
@@ -58,7 +59,7 @@ exports.simpleRun = async (req, res) => {
             deleteFiles([fileBaseName, fileName]);
             if (code) {
               if (sent) return;
-              res.status(httpStatuses.OK).send({ msg: "error", output: "CE/TLE" });
+              responseHandler(res, httpStatuses.OK, { msg: "error", output: "CE/TLE" });
               sent = 1;
             }
           });
@@ -70,9 +71,7 @@ exports.simpleRun = async (req, res) => {
     
   } catch (err) {
     console.log(err);
-    res
-      .status(httpStatuses.INTERNAL_SERVER_ERROR)
-      .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
 const deleteFiles = (files) => files.forEach(fileName => {
@@ -116,7 +115,7 @@ exports.runEvaluation = async (req, res) => {
             console.log(`Output:\n${data}`);
             deleteFiles([fileBaseName, fileName]);
             if (sent) return;
-            res.status(httpStatuses.OK).send({ msg: "ok", output: data.toString() });
+            responseHandler(res, httpStatuses.OK, { msg: "ok", output: data.toString() });
             sent = 1;
           });
           runCode.stderr.on("data", (data) => {
@@ -125,7 +124,7 @@ exports.runEvaluation = async (req, res) => {
             if (sent) return;
             data = data.toString();
             data = data.replace(new RegExp(`./server/compiler/files/${fileBaseName}`, "g"), 'script')
-            res.status(httpStatuses.OK).send({ msg: "error", output: data });
+            responseHandler(res, httpStatuses.OK, { msg: "error", output: data });
             sent = 1;
           });
           runCode.on('close', (code) => {
@@ -133,10 +132,10 @@ exports.runEvaluation = async (req, res) => {
             deleteFiles([fileBaseName, fileName]);
             if (sent) return;
             if (code) {
-              res.status(httpStatuses.OK).send({ msg: "error", output: "CE/TLE" });
+              responseHandler(res, httpStatuses.OK, { msg: "error", output: "CE/TLE" });
               sent = 1;
             } else {
-              res.status(httpStatuses.OK).send({ msg: "ok", output: "" });
+              responseHandler(res, httpStatuses.OK, { msg: "ok", output: "" });
               sent = 1;
             }
           });
@@ -148,8 +147,6 @@ exports.runEvaluation = async (req, res) => {
     
   } catch (err) {
     console.log(err);
-    res
-      .status(httpStatuses.INTERNAL_SERVER_ERROR)
-      .send({ error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
   }
 };
