@@ -1,4 +1,5 @@
 import { Card, Col,Avatar,Image, Row } from 'antd';
+import path from 'path';
 import {FacebookFilled,TwitterOutlined,GithubFilled,LinkedinFilled,MailOutlined} from '@ant-design/icons';
 const gmicon=(<img width="28" alt="Gmail icon (2020)" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/64px-Gmail_icon_%282020%29.svg.png"></img>)
 const { Meta } = Card;
@@ -12,7 +13,7 @@ const MyCard=({title,description,links,img})=>(
     <Row style={{paddingBottom:"8px"}}>
       <Meta
         style={{width:'25%',marginRight:"16px"}}
-        avatar={<Avatar size={75} src={`./images/${img}`}/>}
+        avatar={<Avatar size={75} src={path.join(__dirname,`images/${img}`)}/>}
       />
       <div style={{paddingLeft:"16px"}}>
         <h3 >{title}</h3>
