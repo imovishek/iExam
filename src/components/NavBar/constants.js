@@ -1,4 +1,4 @@
-import { faBookOpen, faChalkboardTeacher, faChartLine, faPencilRuler, faQuestion, faScroll, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faMedal,faBookOpen, faChalkboardTeacher, faChartLine, faPencilRuler, faQuestion, faScroll, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 export const SET_NAVIGATION_TAB = 'navbar/SET_NAVIGATION_TAB'
 export const SET_IS_COLLAPSED = 'navbar/SET_IS_COLLAPSED'
@@ -38,6 +38,11 @@ export const navLinks = [
     link: 'questions',
     body: 'Questions',
     icon: faQuestion,
+  },
+  {
+    link: 'credits',
+    body: 'Credits',
+    icon: faMedal,
   },
 ];
 

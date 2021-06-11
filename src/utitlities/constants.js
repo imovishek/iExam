@@ -16,18 +16,21 @@ export const hasPageAccess = {
     Students: true,
     CoursePage: true,
     ExamPage: true,
+    Credits:true,
   },
   student: {
     Dashboard: true,
     Exams: true,
     Courses: true,
     Results: true,
+    Credits:true,
   },
   teacher: {
     Dashboard: true,
     Exams: true,
     Courses: true,
     Questions: true,
+    Credits:true,
   },
 };
 
