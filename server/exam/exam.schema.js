@@ -16,6 +16,7 @@ const examSchema = new Schema({
 	course: { type: Schema.Types.ObjectId, ref: 'Course' },
 	questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
 	bannedParticipants: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
+	participants: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
 	papers: [{ type: Schema.Types.ObjectId, ref: 'Paper' }],
 	resultPublished: { type: Boolean, default: false },
 	announcements: [{

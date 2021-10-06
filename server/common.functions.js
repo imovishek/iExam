@@ -3,6 +3,7 @@ const moment = require('moment');
 const Papa = require('papaparse');
 const bcrypt = require('bcryptjs');
 const _ = require('underscore');
+const uniqid = require('uniqid');
 const {
   requiredCsvHeaders,
   inputDateFormats,
@@ -72,12 +73,14 @@ exports.mapCsvToStudent = async (students = [], user) =>
     const requiredHeaders = requiredCsvHeaders.STUDENT;
     if (_.any(requiredHeaders, header => !_.contains(Object.keys(student), header)))
       throw new Error('Some fields are missing');
+    const randomPassword = this.getEightDigitRandomPassword();
     const salt = await bcrypt.genSalt(10);
-    const password = await bcrypt.hash(student['Registration Number'], salt);
+    const password = await bcrypt.hash(randomPassword, salt);
     return {
       firstName: student['First Name'],
       lastName: student['Last Name'],
       registrationNo: student['Registration Number'],
+      plainPassword: randomPassword,
       credential: {
         email: student["Email"],
         password,
@@ -88,25 +91,29 @@ exports.mapCsvToStudent = async (students = [], user) =>
     };
   }));
 
-exports.mapCsvToTeacher = (teachers = [], user) =>
-  teachers.map(teacher => {
+exports.mapCsvToTeacher = async (teachers = [], user) =>
+  Promise.all(teachers.map(async teacher => {
     const requiredHeaders = requiredCsvHeaders.TEACHER;
     if (_.any(requiredHeaders, header => !_.contains(Object.keys(teacher), header)))
       throw new Error('Some fields are missing');
+    const salt = await bcrypt.genSalt(10);
+    const randomPassword = this.getEightDigitRandomPassword();
+    const password = await bcrypt.hash(randomPassword, salt);
     return {
       firstName: teacher['First Name'],
       lastName: teacher['Last Name'],
       shortName: teacher['Short Name'],
       designation: teacher['Designation'],
+      plainPassword: randomPassword,
       credential: {
         email: teacher["Email"],
-        password: "$2a$10$mub9.N4UeLgLmwbr727hW.v1rZ0VTigz9LW/dPIGprM1Xi182wmom",
+        password,
         userType: "teacher"
       },
       phoneNumber: teacher['Phone Number'],
       department: user.department
     };
-  });
+  }));
 
   
 exports.getExamStatus = (exam = {}) => {
@@ -142,6 +149,7 @@ exports.cleanExamForStudent = (req, exam, shouldDeleteQuestions = false, keepPap
       options,
       body,
       matchingOptions,
+      answerType,
     } = question;
     return {
       _id,
@@ -151,6 +159,7 @@ exports.cleanExamForStudent = (req, exam, shouldDeleteQuestions = false, keepPap
       options,
       body,
       matchingOptions,
+      answerType,
     };
   })
   const status = this.getExamStatus(exam);
@@ -164,10 +173,10 @@ exports.cleanExamForStudent = (req, exam, shouldDeleteQuestions = false, keepPap
 }
 
 exports.cleanExamForTeacher = (req, exam, shouldDeleteQuestions = false, keepPaper = false) => {
-  if (req.user.userType !== TEACHER) return;
-  if (shouldDeleteQuestions) exam.questions = [];
-  if (!keepPaper)
-    exam.papers = [];
+  // if (req.user.userType !== TEACHER) return;
+  // if (shouldDeleteQuestions) exam.questions = [];
+  // if (!keepPaper)
+  //   exam.papers = [];
 }
 
 const cleanPaperForStudent = (studentID, exam) => {
@@ -201,4 +210,8 @@ exports.checkEqual = (objA, objB) => {
     if (!this.checkEqual(objA[key], objB[key])) return false;
   }
   return true;
+}
+
+exports.getEightDigitRandomPassword = () => {
+  return uniqid().slice(-8);
 }

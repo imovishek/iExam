@@ -69,3 +69,9 @@ exports.requiredCsvHeaders = {
     "Email"
   ]
 }
+
+exports.ANSWER_TYPES = {
+  'plain-text': 'Plain Text',
+  'rich-text': 'Rich Text',
+  'code': 'Code',
+};

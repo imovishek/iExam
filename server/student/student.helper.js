@@ -2,6 +2,7 @@ const Student = require('./student.model');
 const Credential = require('../credential/credential.model');
 const _ = require('underscore');
 const bcrypt = require('bcryptjs');
+const emailHelper = require('../email/email.helper');
 
 // CREATE
 exports.createStudent = async (student) => {
@@ -60,6 +61,8 @@ exports.createOrUpdateStudent = (students = [], user) => {
     }).countDocuments();
     if (oldStudentCount) return null;
     await Credential.create(student.credential);
+    const emailBody = emailHelper.generateRegisterEmailBody(student.firstName, student.plainPassword);
+    await emailHelper.sendMail(student.credential.email, 'Registration Successful', emailBody);
     return new Student(student).save();
   }));
 }

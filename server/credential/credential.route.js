@@ -1,4 +1,5 @@
 const express = require('express');
+const { DEPTADMIN } = require('../constants');
 const router = express.Router();
 const secureApiCall = require('../middlewares/secureApiCall');
 
@@ -8,7 +9,7 @@ const credentialController = require('./credential.controller');
 router
   .route('/credentials')
   .get(
-    secureApiCall([]),
+    secureApiCall([DEPTADMIN]),
     credentialController.getCredentials
   ).post(
     secureApiCall([]),

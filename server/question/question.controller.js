@@ -15,6 +15,18 @@ exports.getQuestions = async (req, res) => {
   }
 };
 
+exports.getQuestionsOfMe = async (req, res) => {
+  const { user } = req;
+  const query = { $or: [{ authorID: user._id }, { teacherAccess: user._id }] };
+  try {
+    const result = await questionHelper.getQuestions(query);
+    responseHandler(res, httpStatuses.OK, { payload: result });
+  } catch (error) {
+    console.log(err);
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+  }
+}
+
 exports.getQuestionByID = async (req, res) => {
   const { id } = req.params;
   try {

@@ -1,9 +1,8 @@
 const studentHelper = require('./student.helper');
-const { httpStatuses } = require('../constants');
-const { readCSV, mapCsvToStudent, removeFile } = require('../common.functions');
-const fs = require('fs');
-const Papa = require('papaparse');
+const { httpStatuses, STUDENT } = require('../constants');
+const { readCSV, mapCsvToStudent, removeFile, getEightDigitRandomPassword } = require('../common.functions');
 const responseHandler = require('../middlewares/responseHandler');
+const emailHelper = require('../email/email.helper');
 
 // GET STUDENT
 
@@ -30,9 +29,19 @@ exports.getStudentByID = async (req, res) => {
 };
 
 exports.getStudentsByBatch = async (req, res) => {
-  const { batch, departmentCode } = req.query;
+  const { batch, departmentCode, oddEven } = req.query;
   try {
-    const result = await studentHelper.getStudents({ registrationNo: { $regex: new RegExp(`^${batch}`) }, 'department.departmentCode': departmentCode });
+    let result = await studentHelper.getStudents({ registrationNo: { $regex: new RegExp(`^${batch}`) }, 'department.departmentCode': departmentCode });
+    try {
+      result = result.toObject();
+    } catch (e) {}
+    if (oddEven && oddEven !== 'all') {
+      result = result.filter(st => {
+        const regNo = Number(st.registrationNo);
+        if (oddEven === 'odd') return regNo % 2 === 1;
+        else return regNo % 2 === 0;
+      })
+    }
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
@@ -43,8 +52,14 @@ exports.getStudentsByBatch = async (req, res) => {
 // CREATE STUDENT
 exports.createStudent = async (req, res) => {
   const { student } = req.body;
+  const { credential } = student;
   try {
+    const randomPassword = getEightDigitRandomPassword();
+    credential.password = randomPassword;
+    credential.userType = STUDENT;
     const result = await studentHelper.createStudent(student);
+    const emailBody = emailHelper.generateRegisterEmailBody(student.firstName, randomPassword);
+    await emailHelper.sendMail(credential.email, 'Registration Successful', emailBody);
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);

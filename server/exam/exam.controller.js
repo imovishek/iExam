@@ -26,8 +26,10 @@ exports.getExams = async (req, res) => {
 };
 const getExamByIDWithParticipants = async (id) => {
   const result = await examHelper.getExamByID(id).lean();
-  let participants = _.filter(result.participants, st => !_.any(result.bannedParticipants, pt => String(pt._id) === String(st)));
-  result.participants = participants;
+  const course = await courseHelper.getCourseByID(result.course._id);
+  // console.log(course.enrolledStudents, result.papers);
+  let participants = _.filter(course.enrolledStudents, st => !_.any(result.bannedParticipants, pt => String(pt._id) === String(st._id)));
+  result.participants =  _.filter(participants, pt => _.any(result.papers, paper => String(pt._id) === String(paper.student)));
   result.participants.reverse();
   result.bannedParticipants.reverse();
   result.questions.reverse();
@@ -38,7 +40,7 @@ exports.getExamByID = async (req, res) => {
   try {
     const result = await getExamByIDWithParticipants(id);
     cleanExamForStudent(req, result, true, false);
-    cleanExamForTeacher(req, result, true, false);
+    cleanExamForTeacher(req, result, false, false);
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
@@ -132,7 +134,7 @@ exports.updateExamPaperForStudent = async (req, res) => {
     });
     const exams = await examHelper.getExamAggregate(id, { startDate: 1, startTime: 1, duration: 1, bannedParticipants: 1 });
     const status = getExamStatus(exams[0]);
-    const amIBanned = exams[0].bannedParticipants.filter(bannedID => String(bannedID) === req.user._id);
+    const amIBanned = exams[0].bannedParticipants.filter(bannedID => String(bannedID) === req.user._id)[0];
     if (status !== RUNNING) throw new Error("Exam ended can't take submission");
     if (amIBanned) throw new Error("You got banned, please contact your course teacher");
     await Promise.all(_.map(paper.answers, async answer => {
@@ -160,6 +162,11 @@ exports.updateExamPaperForStudent = async (req, res) => {
         }
       }
     ));
+    await examHelper.updateExamByID(id, {
+      $addToSet: {
+        participants: req.user._id,
+      }
+    });
     responseHandler(res, httpStatuses.OK, { payload: {} });
   } catch (err) {
     console.log(err);

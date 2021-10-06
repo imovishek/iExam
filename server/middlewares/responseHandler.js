@@ -1,5 +1,4 @@
 const forbiddenFields = [
-  'credential',
   'password',
 ];
 const filterForbiddenFields = (obj, allow) => {

@@ -9,7 +9,7 @@ const upload = multer({ dest: './public/data/uploads/' });
 router
   .route('/students')
   .get(
-    secureApiCall([DEPTADMIN]),
+    secureApiCall([DEPTADMIN, TEACHER]),
     studentController.getStudents
   ).post(
     secureApiCall([DEPTADMIN]),

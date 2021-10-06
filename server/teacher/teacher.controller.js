@@ -1,9 +1,8 @@
 const teacherHelper = require('./teacher.helper');
-const { httpStatuses } = require('../constants');
-const fs = require('fs');
-const Papa = require('papaparse');
-const { readCSV, mapCsvToTeacher, removeFile } = require('../common.functions');
+const { httpStatuses, STUDENT, TEACHER } = require('../constants');
+const { readCSV, mapCsvToTeacher, removeFile, getEightDigitRandomPassword } = require('../common.functions');
 const responseHandler = require('../middlewares/responseHandler');
+const emailHelper = require('../email/email.helper');
 
 // GET TEACHER
 
@@ -33,7 +32,13 @@ exports.getTeacherByID = async (req, res) => {
 exports.createTeacher = async (req, res) => {
   const { teacher } = req.body;
   try {
+    const { credential } = teacher;
+    const randomPassword = getEightDigitRandomPassword();
+    credential.password = randomPassword;
+    credential.userType = TEACHER;
     const result = await teacherHelper.createTeacher(teacher);
+    const emailBody = emailHelper.generateRegisterEmailBody(teacher.firstName, randomPassword);
+    await emailHelper.sendMail(credential.email, 'Registration Successful', emailBody);
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
@@ -97,7 +102,7 @@ exports.teachersFileUpload = async (req, res) => {
     const teachers = await readCSV(filePath);
     teachers.splice(-1, 1);
     if (!teachers.length) throw new Error('Please select a valid file!');
-    const mappedTeachers = mapCsvToTeacher(teachers, user);
+    const mappedTeachers = await mapCsvToTeacher(teachers, user);
     let createdTeachers = await teacherHelper.createOrUpdateTeacher(mappedTeachers, user);
     createdTeachers = createdTeachers.filter(teacher => teacher);
     const teacherIDs = createdTeachers.map(teacher => teacher._id);

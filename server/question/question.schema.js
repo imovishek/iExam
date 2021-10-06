@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uniqid = require("uniqid");
+const { ANSWER_TYPES } = require("../constants");
 const { Schema } = mongoose;
 const departmentSchema = require("../department/department.schema");
 
@@ -57,6 +58,13 @@ const questionSchema = new Schema(
       type: departmentSchema,
       required: true,
     },
+    answerType: {
+      type: String,
+      enum: {
+        values: Object.keys(ANSWER_TYPES)
+      },
+      default: 'plain-text',
+    }
   },
   {
     timestamps: true,

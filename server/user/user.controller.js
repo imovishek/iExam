@@ -1,9 +1,12 @@
 const { httpStatuses, DEPTADMIN } = require('../constants');
 const _ = require('underscore');
-const { parseQuery } = require('../common.functions');
-const { userTypeToHelperMapping } = require('../../config/const');
+const { parseQuery, getEightDigitRandomPassword } = require('../common.functions');
+const { userTypeToHelperMapping, userTypeToModelMapping } = require('../../config/const');
 const bcrypt = require('bcryptjs');
 const responseHandler = require('../middlewares/responseHandler');
+const emailHelper = require('../email/email.helper');
+const credentialHelper = require('../credential/credential.helper');
+
 const firstUpperCase = userType => userType.replace(/\b\w/g, c => c.toUpperCase());
 // GET USER
 exports.getUsers = async (req, res) => {
@@ -117,10 +120,10 @@ exports.resetPassword = async (req, res) => {
   const { userType = 'deptAdmin' } = user;
   const userHelper = userTypeToHelperMapping[userType];
   const UserType = firstUpperCase(userType);
-  const { id } = req.params;
   try {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(String(password), salt);
+    console.log('----- password', password, passwordHash);
     if (req.user.userType !== DEPTADMIN) throw new Error('You do not have access to reset password');
     const body = {
       credential: {
@@ -129,7 +132,35 @@ exports.resetPassword = async (req, res) => {
       }
     };
     const result = await userHelper[`update${UserType}ByID`](user._id, body);
+    const emailBody = emailHelper.generateResetPassEmailBody(user.firstName, password);
+    await emailHelper.sendMail(user.credential.email, 'Password Reset', emailBody);
     responseHandler(res, httpStatuses.OK, { payload: result });
+  } catch (err) {
+    console.log(err);
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const credential = await credentialHelper.getCredential({ email });
+    if (!credential) return res.send({ error: true, message: 'Invalid email' });
+    const password = getEightDigitRandomPassword();
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(String(password), salt);
+    const body = {
+      credential: {
+        email,
+        password: passwordHash,
+      }
+    };
+    const Modal = userTypeToModelMapping[credential.userType];
+    const user = await Modal.findOneAndUpdate({ 'credential.email': email }, body);
+    await credentialHelper.updateCredential({ email }, body.credential);
+    const emailBody = emailHelper.generateResetPassEmailBody(user.firstName, password);
+    await emailHelper.sendMail(email, 'Password Reset', emailBody);
+    responseHandler(res, httpStatuses.OK, { error: false, message: 'Password Successfully Reset, Please check your mail' });
   } catch (err) {
     console.log(err);
     responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });

@@ -21,6 +21,12 @@ router
   );
 
 router
+  .route('/questions/me')
+  .get(
+    secureApiCall([TEACHER]),
+    questionController.getQuestionsOfMe
+  )
+router
   .route('/question/:id')
   .get(
     secureApiCall([TEACHER]),

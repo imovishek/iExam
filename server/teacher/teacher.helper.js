@@ -2,6 +2,7 @@ const Teacher = require('./teacher.model');
 const Credential = require('../credential/credential.model');
 const _ = require('underscore');
 const bcrypt = require('bcryptjs');
+const emailHelper = require('../email/email.helper');
 
 
 // CREATE
@@ -61,6 +62,8 @@ exports.createOrUpdateTeacher = (teachers = [], user) => {
     }).countDocuments();
     if (oldTeacherCount) return null;
     await Credential.create(teacher.credential);
+    const emailBody = emailHelper.generateRegisterEmailBody(teacher.firstName, teacher.plainPassword);
+    await emailHelper.sendMail(teacher.credential.email, 'Registration Successful', emailBody);
     return new Teacher(teacher).save();
   }));
 }

@@ -1,5 +1,5 @@
 const express = require('express');
-const { TEACHER } = require('../constants');
+const { TEACHER, STUDENT } = require('../constants');
 const router = express.Router();
 const secureApiCall = require('../middlewares/secureApiCall');
 
@@ -13,6 +13,12 @@ router
     compilerController.simpleRun
   )
 
+router
+  .route('/compiler/runCode')
+  .post(
+    secureApiCall([TEACHER, STUDENT]),
+    compilerController.runCode
+  )
 router
   .route('/compiler/runEvaluation')
   .post(
