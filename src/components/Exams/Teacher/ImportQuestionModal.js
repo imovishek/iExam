@@ -37,7 +37,7 @@ const ImportQuestionsModal = ({
   const [questionID, setQuestionID] = useState(null);
   useEffect(async () => {
     try {
-      let { payload = [] } = await api.getQuestions({ authorID: user._id });
+      let { payload = [] } = await api.getQuestionsOfMe();
       payload = _.filter(payload, q => !_.any(exam.questions, eque => eque._id === q._id));
       setQuestions(payload);
     } catch (err) {

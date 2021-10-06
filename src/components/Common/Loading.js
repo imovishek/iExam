@@ -23,6 +23,7 @@ const SpinStyled = styled(Spin)`
   position: absolute;
   top: 50vh;
   left: 50vw;
+  z-index: 1000;
 `
 
 const Loading = ({ isLoading, ...props }) => {

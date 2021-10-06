@@ -141,7 +141,7 @@ const QuestionPaper = ({ disabled, exam, paper, setPaper, questions }) => {
     questionTitle: "Question Title",
     unAnsweredFirst: "Unanswered First",
     answeredFirst: "Answered First",
-  };
+  }; 
   return (
     <>
       <SelectStyled

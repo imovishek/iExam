@@ -72,9 +72,9 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [clarifications, setClarifications] = useState([]);
   useEffect(async () => {
-    if (!exam._id) return;
+    console.log('hi------------------');
     try {
-      const { payload: claries } = await api.getClarifications({ examID: exam._id });
+      const { payload: claries } = await api.getClarifications({ examID: id });
       const userIDsObj = {};
       _.forEach(claries, clarie => {
         if (clarie.userID) userIDsObj[clarie.userID] = true;
@@ -88,7 +88,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     } catch (e) {
 
     }
-  }, [exam]);
+  }, [id]);
 
   useEffect(async () => {
     try {

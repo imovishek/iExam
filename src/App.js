@@ -86,6 +86,7 @@ const App = ({ user, dispatch }) => {
       { userType === 'teacher' && <Route path="/exams" component={ExamsForTeacher} /> }
       { userType === 'teacher' && <Route path="/dashboard" component={DashboardForTeacher} /> }
       <Route path="/login" component={Login} />
+      <Route path="/forgotPassword" component={Login} />
       <Route path="/credits" component={Credits} />
       <Route path="/logout" component={Logout} />
       <Route path="/dashboard" component={Dashboard} />

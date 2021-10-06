@@ -13,6 +13,7 @@ import { Row } from "../../../../utitlities/styles";
 import { connect } from "react-redux";
 import FillBlankBody from "../../Common/FillBlankBody";
 import {
+  ANSWER_TYPE_VALUES,
   BROAD,
   FILLINTHEBLANK,
   MATCHING,
@@ -20,6 +21,7 @@ import {
   RUNNING,
 } from "../../../../utitlities/constants";
 import MatchingBody from "../../Common/MatchingBody";
+import CodeIDE from "../../Common/CodeIDE";
 
 const Container = styled.div`
   display: flex;
@@ -43,9 +45,6 @@ const TitleWrapper = styled.div`
 
 const AddPadding = styled.div`
   overflow: auto;
-  ::-webkit-scrollbar {
-    width: 0px;
-  }
 `;
 
 const HeaderWrapper = styled.div`
@@ -99,14 +98,10 @@ const BroadAnswer = styled.div`
 
 const AnsweredBy = styled.div`
   margin-left: 10px;
-  box-shadow: 0px 1px 5px #bbbbbb;
   border-radius: 8px;
   width: fit-content;
   font-size: 16px;
-  padding: 10px;
   margin-bottom: 10px;
-  color: white;
-  background: #455858;
 `;
 
 const defaultQuestion = {
@@ -219,13 +214,9 @@ const SingleQuestion = ({
       {!isFillInTheBlank && (
         <BodyWrapper>
           <AddPadding>
-            {isBroad ? (
-              <BroadBodyWrapper
-                dangerouslySetInnerHTML={{ __html: question.body }}
-              />
-            ) : (
-              <MCQBodyWrapper> {question.body}</MCQBodyWrapper>
-            )}
+            <BroadBodyWrapper
+              dangerouslySetInnerHTML={{ __html: question.body }}
+            />
           </AddPadding>
         </BodyWrapper>
       )}
@@ -247,7 +238,22 @@ const SingleQuestion = ({
         <BodyWrapper>
           <AddPadding>
             <LabelWrapper>Answer:</LabelWrapper>
-            <BroadAnswer> {(answer || "").split('\n').map((line, index) => <div key={index}>{line}</div>)} </BroadAnswer>
+            {(!question.answerType || question.answerType === ANSWER_TYPE_VALUES.PLAIN_TEXT) && <BroadAnswer> {(answer || "").split('\n').map((line, index) => <div key={index}>{line}</div>)} </BroadAnswer>}
+            {(question.answerType === ANSWER_TYPE_VALUES.RICH_TEXT) && (
+              <BroadAnswer>
+                <div
+                  dangerouslySetInnerHTML={{ __html: answer }}
+                />
+              </BroadAnswer>
+            )}
+            {isEditing && (question.answerType === ANSWER_TYPE_VALUES.CODE) && (
+              <CodeIDE
+                value={answer}
+                onChange={(code) => {
+                  setAnswerValue(code)
+                }}
+              />
+            )}
           </AddPadding>
         </BodyWrapper>
       )}

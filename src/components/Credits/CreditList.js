@@ -6,6 +6,7 @@ import Organized from './Organized';
 import { PageHeader } from '../styles/pageStyles';
 import persons from './persons';
 import OrganizedDescriptions from './OrganizedDescription';
+import { Box } from '../../utitlities/styles'
 
 const CreditList=function () {
   return (
@@ -107,13 +108,11 @@ const CreditList=function () {
         <Col span={12}>
           <Organized description={OrganizedDescriptions.cseDept.description} />
         </Col>
-      </Row>
-      <Row gutter={[280, 0]} style={{marginBottom:32}} justify="center">
         <Col span={12}>
           <Organized description={OrganizedDescriptions.researchCenter.description} />
         </Col>
       </Row>
-
+      <Box height="100px"/>
     </div>
   );
 }

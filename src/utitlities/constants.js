@@ -60,6 +60,17 @@ export const allBatches = {
   others: 'Others',
 };
 
+export const ANSWER_TYPES = {
+  'plain-text': 'Plain Text',
+  'rich-text': 'Rich Text',
+  'code': 'Code',
+};
+
+export const ANSWER_TYPE_VALUES = {
+  PLAIN_TEXT: 'plain-text',
+  RICH_TEXT: 'rich-text',
+  CODE: 'code',
+};
 
 export const isAnswered = (ans) => {
   if (!ans) return false;

@@ -120,3 +120,15 @@ export const AppTitle = styled.div`
   font-size: 16px;
   color: #6c1894;
 `; 
+
+export const DepartmentNameWrapper = styled.div`
+  transform-origin: 0 0;
+  z-index: 1;
+  transform: rotate(270deg);
+  margin-bottom: 10px;
+  margin-top: 20px;
+  margin-left: 10px;
+  width: 100%;
+  color: grey;
+  display: none;
+`

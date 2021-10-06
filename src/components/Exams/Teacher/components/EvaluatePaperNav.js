@@ -81,7 +81,7 @@ const QuestionCard = ({
       gridGap="10px"
       isSelected={questionID === question._id}
       onClick={() => dispatch(push(`/exam/${exam._id}/paper/question/${question._id}`))}
-      columns="1fr 120px 44px"
+      columns="1fr 50px 44px"
     >
       <Wrapper>{question.title}</Wrapper>
       <Wrapper>{smartLabel(question.type)}</Wrapper>
@@ -250,7 +250,7 @@ const EvaluatePaperNav = ({
     );
     return (
       <TableWrapper>
-        <Row columns="1fr 120px 44px">
+        <Row columns="1fr 50px 44px">
           <HeaderLabel>Title</HeaderLabel>
           <HeaderLabel>Type</HeaderLabel>
           <HeaderLabel>Marks</HeaderLabel>

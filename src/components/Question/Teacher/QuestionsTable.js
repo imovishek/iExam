@@ -80,7 +80,7 @@ const QuestionTable = ({
         <TableHeaderChild> Author </TableHeaderChild>
         <TableHeaderChild> </TableHeaderChild>
       </Row>
-      {(isNoData && !isLoading) && <NoDataComponent title="No Questions Created" />}
+      {(isNoData && !isLoading) && <NoDataComponent title="No Questions" />}
       { !isLoading && _.map(paginatedQuestions, (question, index) => (
         <QuestionCard
           key={`questions_${index}`}

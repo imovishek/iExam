@@ -6,7 +6,7 @@ import { hasPageAccess, mapDesignations } from '../../utitlities/constants'
 import React, { useState, useLayoutEffect, useEffect } from 'react'
 import UserInfo from '../UserSettings/User/UserInfo'
 import { Tooltip } from 'antd'
-import { AppTitle, BodyWrapper, DesignationWraper, FontAwesomeIconWrapper, FooterIconWraper, FooterNameWrapper, FooterWraper, LabelHeader, LinkWrapper, LogoWrapper, NavWrapper, SubWrapper } from './styles'
+import { AppTitle, BodyWrapper, DepartmentNameWrapper, DesignationWraper, FontAwesomeIconWrapper, FooterIconWraper, FooterNameWrapper, FooterWraper, LabelHeader, LinkWrapper, LogoWrapper, NavWrapper, SubWrapper } from './styles'
 import { navLinks } from './constants'
 import confirm from 'antd/lib/modal/confirm'
 
@@ -71,6 +71,7 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch, isColl
           })}
         </div>
         <FooterWraper isCollapsed={isCollapsed}>
+          {/* {!isCollapsed && <DepartmentNameWrapper>{(user.department || {}).departmentName}</DepartmentNameWrapper>} */}
           <FooterNameWrapper isCollapsed={isCollapsed}>
             <LabelHeader >{isCollapsed ? user.firstName[0] : user.firstName}{isCollapsed ? '' : ' '}{isCollapsed ? user.lastName[0] : user.lastName}</LabelHeader>
           </FooterNameWrapper>

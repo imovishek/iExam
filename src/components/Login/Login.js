@@ -2,7 +2,7 @@ import { Input, Button, message } from "antd";
 import React, { useState } from "react";
 import jwt from "jsonwebtoken";
 import styled from "styled-components";
-import { apiLogin } from "../../utitlities/api";
+import api, { apiLogin } from "../../utitlities/api";
 import { connect } from "react-redux";
 import { setUserAction } from "./actions";
 import { push } from "connected-react-router";
@@ -110,6 +110,7 @@ const setLocalStorage = (user, token) => {
   localStorage.setItem("token", token);
 };
 const Login = ({ setUser, dispatch }) => {
+  const [isForgotPassword, setIsForgotPassword] = useState(window.location.pathname === "/forgotPassword");
   const tryToLogin = async (email, password) => {
     try {
       const { data: res } = await apiLogin(email, password);
@@ -135,6 +136,24 @@ const Login = ({ setUser, dispatch }) => {
     setIsLoading(true);
     tryToLogin(email, password);
   };
+  
+  const onResetPassword = async () => {
+    setIsLoading(true);
+    try {
+      const { error, message: msg } = await api.forgotPassword(email);
+      console.log(error, msg);
+      if (error) {
+        message.error(msg);
+      } else {
+        message.success(msg);
+        dispatch(push("/login"));
+      }
+    } catch (e) {
+      console.log(e);
+      message.error('Something went wrong! please try again later!')
+    }
+    setIsLoading(false);
+  }
 
   const handleKeypress = (e) => {
     if (e.charCode === 13) {
@@ -162,28 +181,42 @@ const Login = ({ setUser, dispatch }) => {
             onKeyPress={handleKeypress}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <label style={{ color: fontColor, fontWeight: "bold" }}>
-            Password
-          </label>
-          <InputWrapper
-            placeholder="Enter password"
-            type="password"
-            value={password}
-            onKeyPress={handleKeypress}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
+          {!isForgotPassword && (
+            <>
+              <label style={{ color: fontColor, fontWeight: "bold" }}>
+                Password
+              </label>
+              <InputWrapper
+                placeholder="Enter password"
+                type="password"
+                value={password}
+                onKeyPress={handleKeypress}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </>
+          )}
           <div>
-            <ButtonWrapper type="primary" onClick={onEnterLogin}>
-              Enter
+            <ButtonWrapper type="primary" onClick={isForgotPassword ? onResetPassword : onEnterLogin}>
+              {isForgotPassword ? 'Reset Password' : 'Enter'}
             </ButtonWrapper>
-            <TextWrapper>
-              {" "}
-              <a href="/" style={{ color: fontColor }}>
+            {!isForgotPassword && (
+              <TextWrapper>
                 {" "}
-                Forgotten Password
-              </a>{" "}
-            </TextWrapper>
+                <a href="/forgotPassword" style={{ color: fontColor }}>
+                  {" "}
+                  Forgotten Password
+                </a>{" "}
+              </TextWrapper>
+            )}
+            {isForgotPassword && (
+              <TextWrapper>
+                {" "}
+                <a href="/login" style={{ color: fontColor }}>
+                  {" "}
+                  Login
+                </a>{" "}
+              </TextWrapper>
+            )}
           </div>
           {isLoading?
             <SpinWrapper>

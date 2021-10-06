@@ -180,6 +180,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     const cleanPaper = {
       ...virtualState.paper,
     };
+    console.log('virtualState.paper', cleanPaper);
     try {
       await api.updateExamPaperForStudent(id, cleanPaper);
       await updateExamOnUI();
@@ -204,7 +205,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     dispatch(setUserAction(newUser));
     setSwitchLoading(false);
   };
-  const AUTO_SAVE_TIME_INTERVAL = 60000;
+  const AUTO_SAVE_TIME_INTERVAL = 5000;
   useEffect(() => {
     if (user.autoSubmitPaper) {
       // console.log('Starting new one...........');

@@ -145,7 +145,7 @@ const CreateExamModal = ({ visible, setVisibility, courses, dispatch }) => {
           <Select
             showSearch
             style={{ width: "100%" }}
-            value={selectedCourse === "" ? "" : selectedCourse.courseCode}
+            value={selectedCourse === "" ? "" : selectedCourse.title}
             optionFilterProp="children"
             filterOption={true}
             filterSort={(optionA, optionB) =>
@@ -163,7 +163,7 @@ const CreateExamModal = ({ visible, setVisibility, courses, dispatch }) => {
             }}
           >
             {courses.map((course) => (
-              <Option key={course.id}>{course.courseCode}</Option>
+              <Option key={course.id}>{`${course.courseCode} ${course.batchCode} ${course.title}`}</Option>
             ))}
           </Select>
           <ErrorWrapper> {errors.course} </ErrorWrapper>
@@ -176,7 +176,7 @@ const CreateExamModal = ({ visible, setVisibility, courses, dispatch }) => {
             allowClear={false}
             placeholder="Start Date"
             value={!exam.startDate ? "" : moment(exam.startDate)}
-            style={{ width: 270 }}
+            style={{ width: '100%' }}
             format="DD/MM/YYYY"
             onChange={(d) => setValue("startDate", d)}
           />
@@ -186,6 +186,7 @@ const CreateExamModal = ({ visible, setVisibility, courses, dispatch }) => {
           <LabelWrapper>Start Time</LabelWrapper>
           <TimePicker
             allowClear={false}
+            style={{ width: '100%' }}
             value={moment(exam.startTime, timeFormat)}
             format={timeFormat}
             onSelect={(v) => setValue("startTime", v.format(timeFormat))}
@@ -196,6 +197,8 @@ const CreateExamModal = ({ visible, setVisibility, courses, dispatch }) => {
           <LabelWrapper>Duration</LabelWrapper>
           <TimePicker
             allowClear={false}
+            showNow={false}
+            style={{ width: '100%' }}
             value={moment(exam.duration, durationFormat)}
             format={durationFormat}
             onSelect={(v) => setValue("duration", v.format(durationFormat))}

@@ -28,7 +28,9 @@ const MCQBody = ({
     <div>
       <BodyWrapper>
         <AddPadding>
-          <MCQBodyWrapper> {question.body}</MCQBodyWrapper>
+          <MCQBodyWrapper
+            dangerouslySetInnerHTML={{ __html: question.body }}
+          />
         </AddPadding>
       </BodyWrapper>
       {options.map((option, index) => (

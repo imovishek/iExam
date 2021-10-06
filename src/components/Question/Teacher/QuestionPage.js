@@ -23,12 +23,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../../Common/Loading";
 import { questionTypes } from "../constants";
-
+import QuestionAccess from "./components/QuestionAccess";
+import Modal from "antd/lib/modal/Modal";
+import { ANSWER_TYPES, BROAD } from "../../../utitlities/constants";
 const { Option } = Select;
 const QuestionBodyRow = styled.div`
   padding: 10px;
   margin-bottom: 20px;
   margin-top: 30px;
+  height: 100%;
   border: 1px solid rgba(10, 10, 10, 0.3);
 `;
 
@@ -66,30 +69,46 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
     }
   };
   const [question, setQuestion] = useState(deepCopy(defaultQuestion));
+  const [questionBody, setQuestionBody] = useState(null);
   const [errors, setErrors] = useState({});
   const [isLoading, setLoading] = useState(false);
   const [teachersObj, setTeachersObj] = useState({});
+  const [accessTeachers, setAccessTeachers] = useState([]);
+  const [showAccessModal, setShowAcccessModal] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
-    const { payload: teachers } = await api.getTeachers({});
-    const obj = {};
-    _.map(teachers, (teacher) => {
-      obj[teacher._id] = getName(teacher);
-    });
-    setTeachersObj(obj);
-  }, [question.authorID]);
+    let obj = {};
+    if (_.isEmpty(teachersObj)) {
+      const { payload: teachers } = await api.getTeachers({});
+      _.map(teachers, (teacher) => {
+        obj[teacher._id] = teacher;
+      });
+      setTeachersObj(obj);
+    } else {
+      obj = teachersObj;
+    }
+    const accessTeachers = [];
+    _.forEach(question.teacherAccess, teacherID => accessTeachers.push(obj[teacherID]));
+    setAccessTeachers(accessTeachers);
+    console.log(obj);
+  }, [question.authorID, question.teacherAccess]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     if (questionID !== "new") {
+      setLoading(true);
       try {
         const { payload: newQuestion } = await api.getQuestionByID(questionID);
         setQuestion({ ...newQuestion });
+        setQuestionBody(newQuestion.body);
+        console.log('question', newQuestion);
       } catch (err) {
         console.log(err);
         message.error("Cannot find the question");
         dispatch(push("/"));
       }
+      setLoading(false);
     } else {
       setQuestion({...defaultQuestion});
     }
@@ -100,6 +119,10 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
       ...question,
       [key]: value,
     };
+    if (key === 'body') {
+      setQuestion(newQuestion);
+      return setQuestionBody(value);
+    }
     const newErrors = {
       ...errors,
     };
@@ -113,6 +136,8 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
     const isCreate = questionID === "new";
     try {
       if (questionID === "new") {
+        question.teacherAccess = _.map(accessTeachers, teacher => teacher._id);
+        question.body = questionBody;
         const { payload: newQuestion } = await api.createQuestion(question);
         setQuestion(newQuestion);
         if (examID) {
@@ -136,6 +161,8 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
           push(`${examID ? `/exam/${examID}` : ""}/question/${newQuestion._id}`)
         );
       } else {
+        question.teacherAccess = _.map(accessTeachers, teacher => teacher._id);
+        question.body = questionBody;
         await api.updateQuestion(question, question);
         if (examID) {
           const { payload: exam } = await api.getExamByID(examID);
@@ -159,14 +186,17 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
       setLoading(false);
     }
   };
-
+  const propQuestion = { ...question };
+  console.log('propQuestion', propQuestion);
+  const isBroad = question.type === BROAD;
+  const filteredTeachers = Object.values(teachersObj).filter(t => !_.any(accessTeachers, aT => aT._id === t._id));
   return (
     <div>
       <CheckAuthentication />
       {isLoading && <Loading isLoading={isLoading} />}
       <BodyWrapper>
         <NavBar />
-        <Container rows="80px 70px 1fr">
+        <Container rows="80px 70px minmax(700px, 1fr) 1fr">
           <TileHeaderWrapper columns="1fr 1fr">
             <div>
               {hasBack && (
@@ -198,7 +228,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               </ButtonStyled>
             </RightButtonWrapper>
           </TileHeaderWrapper>
-          <Row columns="1fr 1fr 1fr 150px">
+          <Row columns={`minmax(220px, 1fr) 220px ${isBroad ? '220px' : ''} 220px 70px`}>
             <HeaderRow>
               <LabelWrapper>Title</LabelWrapper>
               <InputWrapper
@@ -212,7 +242,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               <LabelWrapper>Question Type</LabelWrapper>
               <Select
                 style={{ width: "100%" }}
-                placeholder="Select a status"
+                placeholder="Select a type"
                 value={question.type}
                 onChange={(value) => setValue("type", value)}
               >
@@ -221,12 +251,27 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
                 ))}
               </Select>
             </HeaderRow>
-
+            {isBroad && (
+              <HeaderRow>
+                <LabelWrapper>Answer Type</LabelWrapper>
+                <Select
+                  style={{ width: "100%" }}
+                  placeholder="Select a answer type"
+                  value={question.answerType}
+                  onChange={(value) => setValue("answerType", value)}
+                >
+                  {_.map(ANSWER_TYPES, (val, key) => (
+                    <Option value={key}>{val}</Option>
+                  ))}
+                </Select>
+              </HeaderRow>
+            )}
+            
             <HeaderRow>
               <LabelWrapper>Author</LabelWrapper>
               <InputWrapper
                 disabled={true}
-                value={teachersObj[question.authorID] || "Anonymous"}
+                value={getName(teachersObj[question.authorID] || {}) || "Anonymous"}
               />
             </HeaderRow>
 
@@ -238,36 +283,62 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               />
             </HeaderRow>
           </Row>
-          <Row columns="1fr">
-            <QuestionBodyRow>
-              <LabelWrapper>Question</LabelWrapper>
-              <QuestionBody question={question} setQuestionValue={setValue} />
-            </QuestionBodyRow>
-          </Row>
-          <Row columns="1fr 1fr">
-            {/* <BodyRow>
-              <TileHeaderWrapper>
-                <PageHeader>Access</PageHeader>
-                <RightButtonWrapper>
-                  <ButtonStyled type="primary">
-                    Add Access
-                  </ButtonStyled>
-                </RightButtonWrapper>
-              </TileHeaderWrapper>
-              <QuestionAccess  />
-            </BodyRow> */}
-            {/* <BodyRow>
-              <TileHeaderWrapper>
-                <LabelWrapper>Exams</LabelWrapper>
-                <RightButtonWrapper>
-                  <ButtonStyled type="primary">
-                    Create Exam
-                  </ButtonStyled>
-                </RightButtonWrapper>
-              </TileHeaderWrapper>
-              <Exams exams={exams} />
-            </BodyRow> */}
-          </Row>
+          {!isLoading && (
+            <>
+              <Row columns="1fr">
+                <QuestionBodyRow>
+                  <LabelWrapper>Question</LabelWrapper>
+                  <QuestionBody question={propQuestion} setQuestionValue={setValue} />
+                </QuestionBodyRow>
+              </Row>
+              {user._id === question.authorID && (
+                <Row columns="1fr 1fr" style={{ marginTop: '70px' }}>
+                  <div>
+                    <Row columns="1fr 1fr">
+                      <PageHeader>Access</PageHeader>
+                      <RightButtonWrapper>
+                        <ButtonStyled type="primary" onClick={setShowAcccessModal}>
+                          Add Access
+                        </ButtonStyled>
+                      </RightButtonWrapper>
+                    </Row>
+                    <QuestionAccess teachers={accessTeachers} setAccessTeachers={setAccessTeachers}/>
+                  </div>
+                  
+                </Row>
+              )}
+    
+              <Modal
+                title="Give Access"
+                visible={showAccessModal}
+                width={500}
+                style={{ height: '700px' }}
+                onOk={() => setShowAcccessModal(false)}
+                onCancel={() => setShowAcccessModal(false)}
+                okText="Import"
+                footer={[
+                  <Button
+                    key="add-access" type="primary" onClick={() => {
+                      if (!selectedTeacher) return message.error("Please select anyone");
+                      const newTeachers = [...accessTeachers, teachersObj[selectedTeacher.split("#")[0]]];
+                      setAccessTeachers(newTeachers);
+                      setSelectedTeacher(null);
+                      setShowAcccessModal(false);
+                    }}>Share</Button>
+                ]}
+              >
+                <Select
+                  placeholder="Select a teacher" filterOption={(searchParam, v) => {
+                    const val = v.value.split('#')[1];
+                    return val.trim().toLowerCase().includes(searchParam.toLowerCase());
+                  }} showSearch onChange={v => setSelectedTeacher(v)} value={selectedTeacher} style={{ width: '50%' }}>
+                  {filteredTeachers.map(teacher => (
+                    <Option key={Math.random()} value={`${teacher._id}#${getName(teacher)} ${teacher.department.departmentCode}`}> {`${getName(teacher)} ${teacher.department.departmentCode}`} </Option>
+                  ))}
+                </Select>
+              </Modal>
+            </>
+          )}
         </Container>
       </BodyWrapper>
     </div>

@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 import _ from 'underscore'
+import SunEditor from 'suneditor-react'
+import katex from 'katex'
 import { Button, Input, Radio } from 'antd'
 import { LabelWrapper, RightButtonWrapper, TileHeaderWrapper } from '../../../styles/pageStyles'
 import React, { useState, useEffect } from 'react'
@@ -16,9 +18,7 @@ const Row = styled.div`
 `
 
 const InputWrapper = styled(Input)`
-  && {
-    width: 100%;
-  }
+  width: 100%;
 `
 
 const MCQ = ({
@@ -48,13 +48,34 @@ const MCQ = ({
       );
     setOptions(newOptions)
   }, [question.options])
-
+  console.log('question.body', question.body);
   return (
     <Container>
-      <InputWrapper
-        placeholder="Enter the question"
-        value={question.body}
-        onChange={(e) => setQuestionValue('body', e.target.value)}
+      <SunEditor
+        onImageUpload={() => {}}
+        defaultValue={question.body}
+        setOptions={{
+          toolbarContainer: '#toolbar_container',
+          showPathLabel: false,
+          charCounter: true,
+          katex: katex,
+          maxCharCount: 2048,
+          width: '100%',
+          height: '100%',
+          minHeight: '20px',
+          maxHeight: '250px',
+          buttonList: [
+            ['undo', 'redo', 'font', 'fontSize', 'formatBlock'],
+            ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript', 'removeFormat'],
+            ['fontColor', 'hiliteColor', 'outdent', 'indent', 'align', 'horizontalRule', 'list', 'table'],
+            ['link', 'math', 'image', 'video', 'fullScreen', 'showBlocks', 'codeView', 'preview', 'print', 'save']
+          ],
+          callBackSave: function (contents, isChanged) {
+          }
+        }}
+        onChange={(content) => {
+          setQuestionValue('body', content)
+        }}
       />
       <Row style={{ width: '100%', marginTop: '20px' }}>
         <TileHeaderWrapper>
@@ -86,9 +107,9 @@ const MCQ = ({
                   }))
                   setQuestionValue('options', newOptions)
                 }}
-                style={{ width: '500px' }}
+                style={{ width: '525px' }}
               >
-                <InputWrapper value={option.value} onChange={(e) => setOptionValue(index, 'value', e.target.value)}/>
+                <InputWrapper style={{ width: '400px' }} value={option.value} onChange={(e) => setOptionValue(index, 'value', e.target.value)}/>
               </Radio>
               <Button
                 style={{ marginLeft: '30px' }}

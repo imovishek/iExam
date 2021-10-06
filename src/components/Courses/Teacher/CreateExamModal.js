@@ -9,7 +9,7 @@ import { joiObjectParser, deepCopy, getExamStatus } from '../../../utitlities/co
 const { Option } = Select
 
 const InputWrapper = styled(Input)`
-  height: 40px;
+  height: 33px;
   border-radius: 5px;
 `
 
@@ -148,7 +148,7 @@ const CreateExamModal = ({
             allowClear={false}
             placeholder="Start Date"
             value={!exam.startDate ? '' : moment(exam.startDate)}
-            style={{ width: 270 }}
+            style={{ width: '100%' }}
             format="DD/MM/YYYY"
             onChange={(d) => setValue('startDate', d)}
           />
@@ -158,6 +158,7 @@ const CreateExamModal = ({
           <LabelWrapper>Start Time</LabelWrapper>
           <TimePicker
             allowClear={false}
+            style={{ width: '100%' }}
             value={moment(exam.startTime, timeFormat)}
             format={timeFormat}
             onSelect={(v) => setValue('startTime', v.format(timeFormat))}
@@ -168,6 +169,8 @@ const CreateExamModal = ({
           <LabelWrapper>Duration</LabelWrapper>
           <TimePicker
             allowClear={false}
+            showNow={false}
+            style={{ width: '100%' }}
             value={moment(exam.duration, durationFormat)}
             format={durationFormat}
             onSelect={(v) => setValue('duration', v.format(durationFormat))}

@@ -7,7 +7,7 @@ const Organized=({description})=>(
   <Card
     bordered={false}
     size="small"
-    style={{width:280}}
+    style={{ width:280, boxShadow: '1px 1px 5px #bbbbbb', borderRadius: '10px', padding: '10px' }}
   >
     <Row style={{paddingBottom:"0px"}}>
       <Meta

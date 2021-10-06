@@ -197,7 +197,7 @@ const EvaluatePaper = ({ dispatch, user, hasBack = true }) => {
       />
       <BodyWrapper>
         <NavBar />
-        <Container rows="80px 1fr">
+        <Container>
           <TileHeaderWrapper columns="1fr 1fr">
             <div>
               {hasBack &&

@@ -1,10 +1,8 @@
-import styled from 'styled-components';
-import React, { useState } from 'react';
-import { Modal, Select, Button, Upload } from 'antd';
-import _ from 'underscore';
-import api from '../../../utitlities/api';
-
-import { UploadOutlined } from '@ant-design/icons';
+import styled from 'styled-components'
+import React, { useState } from 'react'
+import { Modal, Select, Input } from 'antd'
+import _ from 'underscore'
+import api from '../../../utitlities/api'
 
 
 const { Option } = Select
@@ -23,7 +21,8 @@ const LabelWrapper = styled.p`
   margin-bottom: 5px;
   color: #608794;
 `
-
+const BATCH = 'batch';
+const REGNO = 'regNo';
 const ImportStudentsModal = ({
   user,
   visible,
@@ -33,7 +32,10 @@ const ImportStudentsModal = ({
 }) => {
   const [type, setType] = useState('batch')
   const [batch, setBatch] = useState('2015')
-
+  const [isLoading, setLoading] = useState(false)
+  const [oddEven, setOddEven] = useState('all');
+  const [regNo, setRegNo] = useState('');
+  
   const closeModal = () => {
     setVisibility(false)
   }
@@ -45,44 +47,27 @@ const ImportStudentsModal = ({
 
   const importStudentsHandler = async (e) => {
     try {
-      let { payload: students } = await api.getStudentsByBatch({ batch, departmentCode: user.department.departmentCode })
-      students = _.filter(students, student => !_.any(course.enrolledStudents, enst => enst._id === student._id))
-      const ids = _.map(students, student => student._id)
+      setLoading(true)
+      let ids = [];
+      if (type === BATCH) {
+        let { payload: students } = await api.getStudentsByBatch({ batch, departmentCode: user.department.departmentCode, oddEven })
+        students = _.filter(students, student => !_.any(course.enrolledStudents, enst => enst._id === student._id))
+        ids = _.map(students, student => student._id)
+      } else if (type === REGNO) {
+        const { payload: students } = await api.getStudents({ registrationNo: regNo });
+        ids = _.map(students, student => student._id)
+      }
+      console.log(ids);
       await api.updateCourse(course, {
-        $push: {
+        $addToSet: {
           enrolledStudents: { $each: ids }
         }
       })
       await updateCourseOnUi()
     } catch (err) {
 
-    }
-  }
-
-  const draggerProps = {
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-    listType: 'picture',
-    beforeUpload (file) {
-      return new Promise(resolve => {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => {
-          const img = document.createElement('img')
-          img.src = reader.result
-          img.onload = () => {
-            const canvas = document.createElement('canvas')
-            canvas.width = img.naturalWidth
-            canvas.height = img.naturalHeight
-            const ctx = canvas.getContext('2d')
-            ctx.drawImage(img, 0, 0)
-            ctx.fillStyle = 'red'
-            ctx.textBaseline = 'middle'
-            ctx.font = '33px Arial'
-            ctx.fillText('Ant Design', 20, 20)
-            canvas.toBlob(resolve)
-          }
-        }
-      })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -90,49 +75,70 @@ const ImportStudentsModal = ({
     <Modal
       title={'Import Students'}
       visible={visible}
-      width={400}
+      width={500}
       height={500}
       style={{ height: '600px' }}
       onOk={() => onSubmit()}
       onCancel={() => closeModal()}
       okText="Import"
     >
-      <Row columns="1fr 1fr">
+      <Row columns="auto auto auto">
         <ColumnWrapper>
           <LabelWrapper>By</LabelWrapper>
           <Select
             defaultValue={type}
             onChange={(v) => setType(v)}
           >
-            <Option value="batch">Batch</Option>
-            <Option value="csv">CSV</Option>
+            <Option value={BATCH}>Batch</Option>
+            <Option value={REGNO}>Reg No</Option>
           </Select>
         </ColumnWrapper>
 
-        {type === 'batch' && (
+        {type === BATCH && (
+          <>
+            <ColumnWrapper>
+              <LabelWrapper>Batch</LabelWrapper>
+              <Select
+                defaultValue={batch}
+                onChange={(v) => setBatch(v)}
+              >
+                <Option value="2019"> 2019 </Option>
+                <Option value="2018"> 2018 </Option>
+                <Option value="2017"> 2017 </Option>
+                <Option value="2016"> 2016 </Option>
+                <Option value="2015"> 2015 </Option>
+                <Option value="2014"> 2014 </Option>
+              </Select>
+            </ColumnWrapper>
+            <ColumnWrapper>
+              <LabelWrapper>Batch</LabelWrapper>
+              <Select
+                style={{ width: '170px' }}
+                defaultValue={oddEven}
+                onChange={(v) => setOddEven(v)}
+              >
+                <Option value="all"> All </Option>
+                <Option value="odd"> Odd (Section A) </Option>
+                <Option value="even"> Even (Secton B) </Option>
+              </Select>
+            </ColumnWrapper>
+          </>
+        )}
+
+        {type === REGNO && (
           <ColumnWrapper>
-            <LabelWrapper>Batch</LabelWrapper>
-            <Select
-              defaultValue={batch}
-              onChange={(v) => setBatch(v)}
-            >
-              <Option value="2019"> 2019 </Option>
-              <Option value="2018"> 2018 </Option>
-              <Option value="2017"> 2017 </Option>
-              <Option value="2016"> 2016 </Option>
-              <Option value="2015"> 2015 </Option>
-              <Option value="2014"> 2014 </Option>
-            </Select>
+            <LabelWrapper> Reg No</LabelWrapper>
+            <Input style={{height: "30px"}} value={regNo} onChange={(e) => setRegNo(e.target.value)} />
           </ColumnWrapper>
         )}
-        {type === 'csv' && (
+        {/* {type === 'csv' && (
           <ColumnWrapper>
             <LabelWrapper>CSV</LabelWrapper>
             <Upload {...draggerProps}>
               <Button icon={<UploadOutlined />}>Upload</Button>
             </Upload>
           </ColumnWrapper>
-        )}
+        )} */}
 
       </Row>
     </Modal>

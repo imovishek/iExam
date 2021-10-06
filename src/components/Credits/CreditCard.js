@@ -23,10 +23,10 @@ const MyCard=({title,description,links,img})=>(
     </Row>
     <Row style={{padding:"8px"}}>
       <Col span={3}></Col>
-      <Col span={5}><a href={links.facebook}><FacebookFilled style={{fontSize:28,color:"#0000FF",background:"#FFFFFF"}}/></a></Col>
+      <Col span={5}><a href={links.facebook}><FacebookFilled style={{fontSize:28,color:"#4267B2",background:"#FFFFFF"}}/></a></Col>
       <Col span={5}><a href={links.github}><GithubFilled style={{fontSize:28,color:"#000000",background:"#FFFFFF","border-radius": "50px"}}/></a></Col>
       <Col span={5}><a href={links.mail}>{gmicon}</a></Col>
-      <Col span={5}><a href={links.linkedin}><LinkedinFilled style={{fontSize:28,color:"#0000FF",background:"#FFFFFF"}}/></a></Col>
+      <Col span={5}><a href={links.linkedin}><LinkedinFilled style={{fontSize:28,color:"#0e76a8",background:"#FFFFFF"}}/></a></Col>
       <Col span={2}></Col>
     </Row>
   </Card>

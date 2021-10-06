@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import _ from "underscore";
 import {
-  getExamStatus,
+  getExamStatus, smartLabel,
 } from "../../../../utitlities/common.functions";
 import {
   PageHeader,
@@ -67,7 +67,7 @@ const CenterTextWrapper = styled.h1`
 const Card = ({ question, isAnswered, dispatch, examID }) => (
   <TableRowStyled columns="repeat(2, 1fr) 100px 40px" onClick={() => dispatch(push(`/exam/${examID}/answer?top=${question._id}`))}>
     <Wrapper>{question.title}</Wrapper>
-    <Wrapper>{question.type}</Wrapper>
+    <Wrapper>{smartLabel(question.type)}</Wrapper>
     <Wrapper>{question.marks}</Wrapper>
     {isAnswered && <AwesomeIcon />}
   </TableRowStyled>

@@ -131,7 +131,7 @@ const CreateEditStudentModal = ({
     }
   }
 
-  const checkCredentialOnChangeDebounced = _.debounce(checkCredentialOnChange, 300)
+  const checkCredentialOnChangeDebounced = checkCredentialOnChange
 
   const onSubmit = async () => {
     let newErrors = joiObjectParser(student, studentValidator)

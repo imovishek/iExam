@@ -29,7 +29,7 @@ const Questions = ({ questions, user, dispatch }) => {
   useEffect(async () => {
     if (isQuestionsChanged) {
       try {
-        const { payload = [] } = await api.getQuestions({ authorID: user._id })
+        const { payload = [] } = await api.getQuestionsOfMe();
         dispatch(onUpdateQuestions(payload))
       } catch (err) {
         console.log(err)

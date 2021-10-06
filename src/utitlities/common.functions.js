@@ -4,7 +4,7 @@ import moment from "moment";
 import CheckAuthentication from "../components/CheckAuthentication/CheckAuthentication";
 import { BodyWrapper } from "./styles";
 import NavBar from "../components/NavBar/NavBar";
-import { ENDED, ignoreKeys, timeFormat, UPCOMING } from "./constants";
+import { ENDED, FILLINTHEBLANK, ignoreKeys, MCQ, timeFormat, UPCOMING } from "./constants";
 import { CenterNoData } from "../components/styles/tableStyles";
 
 export const joiObjectParser = (object, validator) => {
@@ -49,8 +49,14 @@ export const useNavAuthentication = (Component) => (
     </BodyWrapper>
   </div>
 );
-
-export const smartLabel = (s) => s.replace(/^./, (str) => str.toUpperCase());
+const LABEL_CHANGE = {
+  [FILLINTHEBLANK]: 'Fill Blank',
+  [MCQ]: 'MCQ',
+}
+export const smartLabel = (s) => {
+  if (LABEL_CHANGE[s]) return LABEL_CHANGE[s];
+  return s.replace(/^./, (str) => str.toUpperCase());
+}
 export const getShortName = (teacher) => {
   if (teacher.shortName) return teacher.shortName;
   return (teacher.firstName || "Z")[0] + (teacher.lastName || "Z")[0];
