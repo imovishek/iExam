@@ -1,11 +1,10 @@
 import styled from 'styled-components'
 import React, { useState, useEffect } from 'react'
-import teacherValidator from '../teacher.validation'
+import deptAdminValidator from '../deptAdmin.validation'
 import { Modal, Input, Select } from 'antd'
 import _ from 'underscore'
 import { joiObjectParser, isValidEmail } from '../../../utitlities/common.functions'
 import api from '../../../utitlities/api'
-import { mapDesignations } from '../../../utitlities/constants'
 
 const { Option } = Select
 
@@ -36,67 +35,71 @@ const ErrorWrapper = styled.p`
   height: 20px;
 `
 
-const CreateEditTeacherModal = ({
-  selectedTeacher,
+const CreateEditDeptAdminModal = ({
+  selectedDeptAdmin,
   visible,
   setVisibility,
-  createTeacher,
-  updateTeacher,
+  createDeptAdmin,
+  updateDeptAdmin,
   previousEmail,
-  user
+  depts
 }) => {
-  const isEditing = !(!selectedTeacher)
-  const title = isEditing ? 'Edit Teacher' : 'Create Teacher'
-  const defaultTeacher = {
+  const isEditing = !(!selectedDeptAdmin)
+  const title = isEditing ? 'Edit Department Admin' : 'Create Department Admin'
+  const defaultDeptAdmin = {
     firstName: '',
     lastName: '',
-    shortName: '',
-    designation: null,
+    registrationNo: '',
     phoneNumber: '',
     department: {
-      departmentCode: user.department.departmentCode,
-      departmentName: user.department.departmentName
+      departmentCode: 'CSE',
+      departmentName: 'Computer Science and Engineering'
     },
     credential: {
       email: '',
       password: 'superuser',
-      userType: 'teacher'
+      // userType: 'deptAdmin',
+      userType: 'superUser'
     },
-    userType: 'teacher',
-    questions: []
+    // userType: 'deptAdmin'
+    userType: 'superUser'
   }
 
-  const [teacher, setTeacher] = useState(isEditing
-    ? { ...selectedTeacher, email: selectedTeacher.credential.email }
-    : defaultTeacher)
+  const [deptAdmin, setDeptAdmin] = useState(defaultDeptAdmin)
 
   const [errors, setErrors] = useState({})
 
   useEffect(() => {
-    const editTeacher = selectedTeacher ? { ...selectedTeacher, email: selectedTeacher.credential.email } : null
-    setTeacher(editTeacher || defaultTeacher)
-  }, [isEditing, selectedTeacher])
+    const editDeptAdmin = selectedDeptAdmin ? {
+      ...JSON.parse(JSON.stringify(selectedDeptAdmin)),
+      email: selectedDeptAdmin.credential.email
+    } : null
+    setDeptAdmin(editDeptAdmin || defaultDeptAdmin)
+  }, [isEditing, selectedDeptAdmin])
+  useEffect(()=>{
+    console.log(depts)
+  },[depts])
 
   const setValue = (key, value) => {
-    const newTeacher = {
-      ...teacher,
+    const newDeptAdmin = {
+      ...deptAdmin,
       [key]: value
     }
     if (key === 'email') {
-      newTeacher.credential.email = value
+      newDeptAdmin.credential.email = value
     }
     const newErrors = {
       ...errors
     }
     delete newErrors[key]
 
-    setTeacher(newTeacher)
+    setDeptAdmin(newDeptAdmin)
     setErrors(newErrors)
   }
 
   const closeModal = () => {
     setVisibility(false)
-    setTeacher(defaultTeacher)
+    setDeptAdmin(defaultDeptAdmin)
     setErrors({})
   }
 
@@ -119,7 +122,7 @@ const CreateEditTeacherModal = ({
   }
 
   const getErrorCheckingCredentials = async () => {
-    const email = teacher.email
+    const email = deptAdmin.email
     if (!email) return {}
     if (previousEmail === email) return {}
     if (!isValidEmail(email)) {
@@ -134,20 +137,20 @@ const CreateEditTeacherModal = ({
   const checkCredentialOnChangeDebounced = checkCredentialOnChange
 
   const onSubmit = async () => {
-    let newErrors = joiObjectParser(teacher, teacherValidator)
-    if (teacher.email && !isValidEmail(teacher.email)) {
+    let newErrors = joiObjectParser(deptAdmin, deptAdminValidator)
+    if (deptAdmin.email && !isValidEmail(deptAdmin.email)) {
       newErrors.email = 'Email is invalid'
     }
-    const credError = await getErrorCheckingCredentials(teacher.email)
+    const credError = await getErrorCheckingCredentials(deptAdmin.email)
     newErrors = { ...credError, ...newErrors }
     setErrors(newErrors)
     if (!_.isEmpty(newErrors)) {
       return
     }
 
-    if (isEditing) updateTeacher(teacher)
-    else {
-      createTeacher(teacher)
+    if (isEditing) { updateDeptAdmin(deptAdmin) } else {
+      console.log(deptAdmin)
+      createDeptAdmin(deptAdmin)
     }
     closeModal()
   }
@@ -168,7 +171,7 @@ const CreateEditTeacherModal = ({
           <LabelWrapper>First Name</LabelWrapper>
           <InputWrapper
             placeholder="First Name"
-            value={teacher.firstName}
+            value={deptAdmin.firstName}
             style={{ width: 270 }}
             onChange={(e) => setValue('firstName', e.target.value)}
           />
@@ -178,7 +181,7 @@ const CreateEditTeacherModal = ({
           <LabelWrapper>Last Name</LabelWrapper>
           <InputWrapper
             placeholder="Last Name"
-            value={teacher.lastName}
+            value={deptAdmin.lastName}
             style={{ width: 270 }}
             onChange={(e) => setValue('lastName', e.target.value)}
           />
@@ -187,34 +190,10 @@ const CreateEditTeacherModal = ({
       </Row>
       <Row columns="1fr 1fr">
         <ColumnWrapper>
-          <LabelWrapper>Short Name</LabelWrapper>
-          <InputWrapper
-            placeholder="Short Name"
-            value={teacher.shortName}
-            style={{ width: 270 }}
-            onChange={(e) => setValue('shortName', e.target.value)}
-          />
-          <ErrorWrapper> {errors.shortName} </ErrorWrapper>
-        </ColumnWrapper>
-        <ColumnWrapper>
-          <LabelWrapper>Designation</LabelWrapper>
-          <Select
-            placeholder="Choose Designation"
-            style={{ width: 270 }}
-            value={teacher.designation}
-            onChange={(v) => setValue('designation', v)}
-          >
-            {_.map(mapDesignations, (value, key) => <Option value={key}>{value}</Option>)}
-          </Select>
-          <ErrorWrapper> {errors.designation} </ErrorWrapper>
-        </ColumnWrapper>
-      </Row>
-      <Row columns="1fr 1fr">
-        <ColumnWrapper>
           <LabelWrapper>Phone Number</LabelWrapper>
           <InputWrapper
             placeholder="Phone Number"
-            value={teacher.phoneNumber}
+            value={deptAdmin.phoneNumber}
             style={{ width: 270 }}
             onChange={(e) => setValue('phoneNumber', e.target.value)}
           />
@@ -224,7 +203,7 @@ const CreateEditTeacherModal = ({
           <LabelWrapper>Email</LabelWrapper>
           <InputWrapper
             placeholder="Email"
-            value={teacher.credential.email}
+            value={deptAdmin.credential.email}
             style={{ width: 270 }}
             onChange={(e) => {
               setValue('email', e.target.value)
@@ -234,19 +213,27 @@ const CreateEditTeacherModal = ({
           <ErrorWrapper> {errors.email} </ErrorWrapper>
         </ColumnWrapper>
       </Row>
-      <Row columns="1fr">
+      <Row columns="1fr 1fr">
+
         <ColumnWrapper>
           <LabelWrapper>Department</LabelWrapper>
-          <Select
+          <select
             defaultValue="CSE"
-            style={{ width: 270 }}
+            style={{ width: 300 }}
           >
-            <Option value="CSE">{user.department.departmentName}</Option>
-          </Select>
+            {depts.map(((dept,index)=><option 
+              key={index}
+              value={dept.departmentCode}
+              onClick={()=>{setValue('department',{ 
+                departmentCode: dept.departmentCode,
+                departmentName: dept.departmentName
+              })}}
+            >{dept.departmentName}</option>))}
+          </select>
         </ColumnWrapper>
       </Row>
     </Modal>
   )
 }
 
-export default CreateEditTeacherModal
+export default CreateEditDeptAdminModal

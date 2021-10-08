@@ -109,6 +109,7 @@ const Teachers = ({ teachers, user, dispatch }) => {
             createTeacher={createTeacherHandler}
             updateTeacher={updateTeacherHandler}
             previousEmail={selectedTeacher ? selectedTeacher.credential.email : null}
+            user={user}
           />
         </Container>
       </BodyWrapper>

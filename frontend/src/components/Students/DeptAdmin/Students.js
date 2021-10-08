@@ -108,6 +108,7 @@ const Students = ({ students, user, dispatch }) => {
             createStudent={createStudentHandler}
             updateStudent={updateStudentHandler}
             previousEmail={selectedStudent ? selectedStudent.credential.email : null}
+            user={user}
           />
         </Container>
       </BodyWrapper>
