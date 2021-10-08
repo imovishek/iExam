@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uniqid = require("uniqid");
+const { ANSWER_TYPES } = require("../constants");
 const { Schema } = mongoose;
 const departmentSchema = require("../department/department.schema");
 
@@ -25,7 +26,6 @@ const questionSchema = new Schema(
             type: String,
             default: uniqid("match"),
             required: true,
-            unique: true,
           },
           value: String,
           matchingID: String,
@@ -37,7 +37,6 @@ const questionSchema = new Schema(
             type: String,
             default: uniqid("match"),
             required: true,
-            unique: true,
           },
           value: String,
         },
@@ -45,12 +44,27 @@ const questionSchema = new Schema(
     },
     body: String,
     defaultCode: String,
+    evaluationCode: String,
+    evaluationLang: {
+      type: String,
+      enum: {
+        values: ["cpp", "py"],
+        message: 'Invalid language'
+      }
+    },
     securityType: { type: String, default: "public", required: true },
     teacherAccess: [Schema.Types.ObjectId],
     department: {
       type: departmentSchema,
       required: true,
     },
+    answerType: {
+      type: String,
+      enum: {
+        values: Object.keys(ANSWER_TYPES)
+      },
+      default: 'plain-text',
+    }
   },
   {
     timestamps: true,

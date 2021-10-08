@@ -1,14 +1,13 @@
-const paperHelper = require('./paper.helper');
-const { httpStatuses } = require('../constants');
-const _ = require('underscore');
+const deptHelper = require('./dept.helper');
+const { httpStatuses, DEPT } = require('../constants');
 const responseHandler = require('../middlewares/responseHandler');
 
-// GET PAPER
+// GET DEPT
 
-exports.getPapers = async (req, res) => {
+exports.getDepts = async (req, res) => {
   const { query } = req;
   try {
-    const result = await paperHelper.getPapers(query);
+    const result = await deptHelper.getDepts(query);
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
@@ -16,10 +15,10 @@ exports.getPapers = async (req, res) => {
   }
 };
 
-exports.getPaperByID = async (req, res) => {
+exports.getDeptByID = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await paperHelper.getPaperByID(id);
+    const result = await deptHelper.getDeptByID(id);
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
@@ -27,27 +26,11 @@ exports.getPaperByID = async (req, res) => {
   }
 };
 
-exports.getPaperByIDWithUserPaper = async (req, res) => {
-  const { id } = req.params;
-  const { _id } = req.user;
-  console.log(id, _id);
+// CREATE DEPT
+exports.createDept = async (req, res) => {
+  const { dept } = req.body;
   try {
-    const result = await paperHelper.getPaperByID(id);
-    const papers = _.filter(result.papers, paper => paper.student._id === req.user._id);
-    let paper = null;
-    if (papers.length === 1) paper = papers[0];
-    responseHandler(res, httpStatuses.OK, { payload: { paper: result, paper } });
-  } catch (err) {
-    console.log(err);
-    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
-  }
-};
-
-// CREATE PAPER
-exports.createPaper = async (req, res) => {
-  const { paper } = req.body;
-  try {
-    const result = await paperHelper.createPaper(paper);
+    const result = await deptHelper.createDept(dept);
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
@@ -55,11 +38,11 @@ exports.createPaper = async (req, res) => {
   }
 };
 
-// UPDATE PAPER
-exports.updatePapers = async (req, res) => {
+// UPDATE DEPT
+exports.updateDepts = async (req, res) => {
   const { query, body } = req;
   try {
-    const result = await paperHelper.updatePapers(query, body);
+    const result = await deptHelper.updateDepts(query, body);
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
@@ -67,11 +50,11 @@ exports.updatePapers = async (req, res) => {
   }
 };
 
-exports.updatePaperByID = async (req, res) => {
+exports.updateDeptByID = async (req, res) => {
   const { id } = req.params;
   const { body } = req;
   try {
-    const result = await paperHelper.updatePaperByID(id, body.update);
+    const result = await deptHelper.updateDeptByID(id, body.update);
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
@@ -80,11 +63,11 @@ exports.updatePaperByID = async (req, res) => {
 };
 
 
-// DELETE PAPER
-exports.deletePapers = async (req, res) => {
+// DELETE DEPT
+exports.deleteDepts = async (req, res) => {
   const { query } = req;
   try {
-    const result = await paperHelper.deletePapers(query);
+    const result = await deptHelper.deleteDepts(query);
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
@@ -92,10 +75,10 @@ exports.deletePapers = async (req, res) => {
   }
 };
 
-exports.deletePaperByID = async (req, res) => {
+exports.deleteDeptByID = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await paperHelper.deletePaperByID(id);
+    const result = await deptHelper.deleteDeptByID(id);
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);

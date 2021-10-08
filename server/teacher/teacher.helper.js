@@ -2,6 +2,7 @@ const Teacher = require('./teacher.model');
 const Credential = require('../credential/credential.model');
 const _ = require('underscore');
 const bcrypt = require('bcryptjs');
+const emailHelper = require('../email/email.helper');
 
 
 // CREATE
@@ -18,8 +19,8 @@ exports.createTeacher = async (teacher) => {
 exports.getTeacherByID = (_id) =>
   Teacher.findOne({ _id });
 
-exports.getTeachers = (query) =>
-  Teacher.find(query);
+exports.getTeachers = (query, sort = { createdAt: -1 }) =>
+  Teacher.find(query).sort(sort);
 
 
 // UPDATE
@@ -52,4 +53,17 @@ exports.deleteTeacherByID = async _id => {
 exports.deleteTeachers = query => {
   if (_.isEmpty(query)) return null;
   return Teacher.remove(query);
+}
+
+exports.createOrUpdateTeacher = (teachers = [], user) => {
+  return Promise.all(teachers.map(async teacher => {
+    const oldTeacherCount = await Teacher.find({
+      'credential.email': teacher.credential.email
+    }).countDocuments();
+    if (oldTeacherCount) return null;
+    await Credential.create(teacher.credential);
+    const emailBody = emailHelper.generateRegisterEmailBody(teacher.firstName, teacher.plainPassword);
+    await emailHelper.sendMail(teacher.credential.email, 'Registration Successful', emailBody);
+    return new Teacher(teacher).save();
+  }));
 }

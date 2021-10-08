@@ -8,6 +8,7 @@ const examSchema = require('../exam/exam.schema');
 const mongooseLeanGetters = require('mongoose-lean-getters');
 const mongooseLeanVirtuals = require('mongoose-lean-virtuals');
 const mongooseLeanDefaults = require('mongoose-lean-defaults');
+const { allBatches, allStatuses } = require('../constants');
 
 const courseSchema = new Schema({
   title: {
@@ -26,9 +27,21 @@ const courseSchema = new Schema({
   pendingEnrollStudents: [{ type: Schema.Types.ObjectId, ref: 'Student'}],
   assignedTeacher: { type: Schema.Types.ObjectId, ref: 'Teacher'},
   startDate: { type: Date },
-  batchCode: { type: String },
-  status: { type: String, required: true },
-  announcements: [String],
+  batchCode: {
+    type: String,
+    enum: {
+      values: Object.keys(allBatches),
+      message: 'Invalid batch'
+    }
+  },
+  status: {
+    type: String,
+    enum: {
+      values: Object.keys(allStatuses),
+      message: 'Invalid Status'
+    },
+    required: true,
+  },
 },
 {
   timestamps: true,

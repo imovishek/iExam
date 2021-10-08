@@ -1,38 +1,60 @@
 const express = require('express');
+const { DEPTADMIN, TEACHER, STUDENT,SUPERADMIN } = require('../constants');
 const router = express.Router();
-const expressJWT = require('express-jwt');
-
-const config = require('../../config/config');
+const secureApiCall = require('../middlewares/secureApiCall');
 const userController = require('./user.controller');
+
+router
+  .route('/user/me')
+  .get(
+    secureApiCall([DEPTADMIN, TEACHER, STUDENT,SUPERADMIN]),
+    userController.getUserMe
+  )
+  .put(
+    secureApiCall([DEPTADMIN, TEACHER, STUDENT,SUPERADMIN]),
+    userController.updateUserMe
+  )
 
 router
   .route('/users')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([DEPTADMIN, STUDENT, TEACHER]),
     userController.getUsers
   ).post(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([DEPTADMIN]),
     userController.createUser
   ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([DEPTADMIN]),
     userController.updateUsers
   ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([]),
     userController.deleteUsers
   );
 
 router
   .route('/user/:id')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([DEPTADMIN]),
     userController.getUserByID
   ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([DEPTADMIN]),
     userController.updateUserByID
   ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([DEPTADMIN]),
     userController.deleteUserByID
   );
 
+router
+  .route('/user/resetPassword')
+  .post(
+    secureApiCall([DEPTADMIN,SUPERADMIN]),
+    userController.resetPassword
+  )
+
+router
+  .route('/user/forgotPassword')
+  .post(
+    userController.forgotPassword
+  )
 
 module.exports = router;

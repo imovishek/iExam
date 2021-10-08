@@ -16,7 +16,7 @@ exports.login = async (email, password) => {
     console.log('credential', credential);
     if (!credential) return { error: true, message: 'Invalid email/password' };
     if (credential) {
-      const isValid = await bcryptjs.compare(password, credential.password);
+      const isValid = await bcryptjs.compare(String(password), credential.password);
       if (!isValid) {
           return { error: true, message: 'Invalid email/password' };
       }

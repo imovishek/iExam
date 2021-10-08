@@ -1,36 +1,41 @@
 const express = require('express');
+const { TEACHER } = require('../constants');
 const router = express.Router();
-const expressJWT = require('express-jwt');
-
-const config = require('../../config/config');
+const secureApiCall = require('../middlewares/secureApiCall');
 const questionController = require('./question.controller');
 
 router
   .route('/questions')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     questionController.getQuestions
   ).post(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     questionController.createQuestion
   ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     questionController.updateQuestions
   ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     questionController.deleteQuestions
   );
 
 router
+  .route('/questions/me')
+  .get(
+    secureApiCall([TEACHER]),
+    questionController.getQuestionsOfMe
+  )
+router
   .route('/question/:id')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     questionController.getQuestionByID
   ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     questionController.updateQuestionByID
   ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     questionController.deleteQuestionByID
   );
 

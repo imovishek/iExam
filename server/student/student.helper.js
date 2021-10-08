@@ -2,6 +2,7 @@ const Student = require('./student.model');
 const Credential = require('../credential/credential.model');
 const _ = require('underscore');
 const bcrypt = require('bcryptjs');
+const emailHelper = require('../email/email.helper');
 
 // CREATE
 exports.createStudent = async (student) => {
@@ -17,8 +18,8 @@ exports.createStudent = async (student) => {
 exports.getStudentByID = (_id) =>
   Student.findOne({ _id });
 
-exports.getStudents = (query) =>
-  Student.find(query);
+exports.getStudents = (query, sort = { createdAt: -1 }) =>
+  Student.find(query).sort(sort);
 
 
 // UPDATE
@@ -51,4 +52,17 @@ exports.deleteStudentByID = async _id => {
 exports.deleteStudents = query => {
   if (_.isEmpty(query)) return null;
   return Student.remove(query);
+}
+
+exports.createOrUpdateStudent = (students = [], user) => {
+  return Promise.all(students.map(async student => {
+    const oldStudentCount = await Student.find({
+      'credential.email': student.credential.email
+    }).countDocuments();
+    if (oldStudentCount) return null;
+    await Credential.create(student.credential);
+    const emailBody = emailHelper.generateRegisterEmailBody(student.firstName, student.plainPassword);
+    await emailHelper.sendMail(student.credential.email, 'Registration Successful', emailBody);
+    return new Student(student).save();
+  }));
 }

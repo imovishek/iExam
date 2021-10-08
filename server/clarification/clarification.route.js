@@ -1,43 +1,44 @@
 const express = require('express');
+const { TEACHER, STUDENT } = require('../constants');
 const router = express.Router();
-const expressJWT = require('express-jwt');
+const secureApiCall = require('../middlewares/secureApiCall');
 
-const config = require('../../config/config');
+
 const clarificationController = require('./clarification.controller');
 
 router
   .route('/clarifications')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER, STUDENT]),
     clarificationController.getClarifications
   ).post(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER, STUDENT]),
     clarificationController.createClarification
   ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER, STUDENT]),
     clarificationController.updateClarifications
   ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     clarificationController.deleteClarifications
   );
 
 router
   .route('/clarification/:id')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     clarificationController.getClarificationByID
   ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     clarificationController.updateClarificationByID
   ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     clarificationController.deleteClarificationByID
   );
 
 router
   .route('/clarification/:id/clarification')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([TEACHER]),
     clarificationController.getClarificationByIDWithUserClarification
   )
 

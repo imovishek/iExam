@@ -1,36 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const secureApiCall = require('../middlewares/secureApiCall');
-const deptAdminController = require('./deptAdmin.controller');
+const deptController = require('./dept.controller');
 const { SUPERADMIN,DEPTADMIN } = require('../constants');
 
 router
-  .route('/deptAdmins')
+  .route('/depts')
   .get(
     secureApiCall([SUPERADMIN,DEPTADMIN]),
-    deptAdminController.getDeptAdmins
+    deptController.getDepts
   ).post(
     secureApiCall([SUPERADMIN,DEPTADMIN]),
-    deptAdminController.createDeptAdmin
+    deptController.createDept
   ).put(
     secureApiCall([SUPERADMIN]),
-    deptAdminController.updateDeptAdmins
+    deptController.updateDepts
   ).delete(
     secureApiCall([SUPERADMIN]),
-    deptAdminController.deleteDeptAdmins
+    deptController.deleteDepts
   );
 
 router
-  .route('/deptAdmin/:id')
+  .route('/dept/:id')
   .get(
     secureApiCall([SUPERADMIN]),
-    deptAdminController.getDeptAdminByID
+    deptController.getDeptByID
   ).put(
     secureApiCall([SUPERADMIN,DEPTADMIN]),
-    deptAdminController.updateDeptAdminByID
+    deptController.updateDeptByID
   ).delete(
     secureApiCall([SUPERADMIN,DEPTADMIN]),
-    deptAdminController.deleteDeptAdminByID
+    deptController.deleteDeptByID
   );
 
 

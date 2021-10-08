@@ -1,38 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const expressJWT = require('express-jwt');
+const multer = require('multer');
 
-const config = require('../../config/config');
+const { TEACHER, STUDENT, DEPTADMIN } = require('../constants');
+const secureApiCall = require('../middlewares/secureApiCall');
 const courseController = require('./course.controller');
+const upload = multer({ dest: './public/data/uploads/' });
 
 router
   .route('/courses')
-  .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    courseController.getCourses
-  ).post(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    courseController.createCourse
-  ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    courseController.updateCourses
-  ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    courseController.deleteCourses
-  );
+  .get(courseController.getCourses)
+  .post(secureApiCall([TEACHER, DEPTADMIN]), courseController.createCourse)
+  .put(secureApiCall([]), courseController.updateCourses)
+  .delete(secureApiCall([]), courseController.deleteCourses);
 
 router
   .route('/course/:id')
-  .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    courseController.getCourseByID
-  ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    courseController.updateCourseByID
-  ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
-    courseController.deleteCourseByID
-  );
-
-
+  .get(courseController.getCourseByID)
+  .put(secureApiCall([TEACHER, DEPTADMIN]), courseController.updateCourseByID)
+  .delete(secureApiCall([DEPTADMIN]), courseController.deleteCourseByID);
+router
+  .route('/courses/upload')
+  .post(
+    upload.single('file'),
+    secureApiCall([DEPTADMIN]),
+    courseController.coursesFileUpload
+  )
+router
+  .route('/enrollrequest/:courseID')
+  .put(secureApiCall([STUDENT]), courseController.enrollMeRequest)
 module.exports = router;

@@ -1,36 +1,37 @@
 const express = require('express');
+const { DEPTADMIN,SUPERADMIN } = require('../constants');
 const router = express.Router();
-const expressJWT = require('express-jwt');
+const secureApiCall = require('../middlewares/secureApiCall');
 
-const config = require('../../config/config');
+
 const credentialController = require('./credential.controller');
 
 router
   .route('/credentials')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([DEPTADMIN,SUPERADMIN]),
     credentialController.getCredentials
   ).post(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([]),
     credentialController.createCredential
   ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([]),
     credentialController.updateCredentials
   ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([]),
     credentialController.deleteCredentials
   );
 
 router
   .route('/credential/:id')
   .get(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([]),
     credentialController.getCredentialByID
   ).put(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([]),
     credentialController.updateCredentialByID
   ).delete(
-    expressJWT({ secret: config.jwtSecret, algorithms: ['HS256'] }),
+    secureApiCall([]),
     credentialController.deleteCredentialByID
   );
 

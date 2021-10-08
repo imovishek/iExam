@@ -16,18 +16,29 @@ const examSchema = new Schema({
 	course: { type: Schema.Types.ObjectId, ref: 'Course' },
 	questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
 	bannedParticipants: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
+	participants: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
 	papers: [{ type: Schema.Types.ObjectId, ref: 'Paper' }],
 	resultPublished: { type: Boolean, default: false },
 	announcements: [{
 		dateTime: { type: Date, default: Date.now() },
 		body: { type: String, required: true },
-		securityType: { type: String, required: true, default: 'public' },
-		access: [{ type: Schema.Types.ObjectId }],
+		securityType: {
+			type: String,
+			enum: {
+				values: ['public', 'private']
+			},
+			required: true,
+			default: 'public' },
+		access: { type: [Schema.Types.ObjectId], default: [] },
 		authorID: Schema.Types.ObjectId,
 		seen: [Schema.Types.ObjectId]
 	}],
 	resultPublishedDate: Date,
-	totalMarks: Number
+	totalMarks: Number,
+	shouldNotSeePaperAfterEnded: {
+		type: Boolean,
+		default: false,
+	}
 },
 {
 	timestamps: true,
