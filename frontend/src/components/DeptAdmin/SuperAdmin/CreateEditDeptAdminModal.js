@@ -58,11 +58,11 @@ const CreateEditDeptAdminModal = ({
     credential: {
       email: '',
       password: 'superuser',
-      // userType: 'deptAdmin',
-      userType: 'superUser'
+      userType: 'deptAdmin',
+      // userType: 'superUser'
     },
-    // userType: 'deptAdmin'
-    userType: 'superUser'
+    userType: 'deptAdmin'
+    // userType: 'superUser'
   }
 
   const [deptAdmin, setDeptAdmin] = useState(defaultDeptAdmin)
