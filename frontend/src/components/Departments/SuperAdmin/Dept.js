@@ -70,7 +70,7 @@ const Depts = ({ user, dispatch }) => {
         <NavBar />
         <Container rows="80px 1fr">
           <Row columns="1fr 150px 170px">
-            <PageHeader>Department Admins</PageHeader>
+            <PageHeader>Departments</PageHeader>
             <div></div>
             <Button
               onClick={() => {
