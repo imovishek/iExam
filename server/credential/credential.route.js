@@ -1,39 +1,24 @@
-const express = require('express');
-const { DEPTADMIN,SUPERADMIN } = require('../constants');
+const express = require("express");
+const { DEPTADMIN, SUPERADMIN } = require("../constants");
 const router = express.Router();
-const secureApiCall = require('../middlewares/secureApiCall');
+const secureApiCall = require("../middlewares/secureApiCall");
 
-
-const credentialController = require('./credential.controller');
+const credentialController = require("./credential.controller");
 
 router
-  .route('/credentials')
+  .route("/credentials")
   .get(
-    secureApiCall([DEPTADMIN,SUPERADMIN]),
+    secureApiCall([DEPTADMIN, SUPERADMIN]),
     credentialController.getCredentials
-  ).post(
-    secureApiCall([]),
-    credentialController.createCredential
-  ).put(
-    secureApiCall([]),
-    credentialController.updateCredentials
-  ).delete(
-    secureApiCall([]),
-    credentialController.deleteCredentials
-  );
+  )
+  .post(secureApiCall([]), credentialController.createCredential)
+  .put(secureApiCall([]), credentialController.updateCredentials)
+  .delete(secureApiCall([]), credentialController.deleteCredentials);
 
 router
-  .route('/credential/:id')
-  .get(
-    secureApiCall([]),
-    credentialController.getCredentialByID
-  ).put(
-    secureApiCall([]),
-    credentialController.updateCredentialByID
-  ).delete(
-    secureApiCall([]),
-    credentialController.deleteCredentialByID
-  );
-
+  .route("/credential/:id")
+  .get(secureApiCall([]), credentialController.getCredentialByID)
+  .put(secureApiCall([]), credentialController.updateCredentialByID)
+  .delete(secureApiCall([]), credentialController.deleteCredentialByID);
 
 module.exports = router;
