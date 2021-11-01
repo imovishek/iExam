@@ -45,8 +45,8 @@ const CreateEditModal = ({
   const isEditing = !(!selectedDept)
   const title = isEditing ? 'Edit Department' : 'Create Department'
   const defaultDept = {
-    departmentCode: 'CSE',
-    departmentName: 'Computer Science and Engineering',
+    departmentCode: '',
+    departmentName: '',
   }
 
   const [dept, setDept] = useState(defaultDept)

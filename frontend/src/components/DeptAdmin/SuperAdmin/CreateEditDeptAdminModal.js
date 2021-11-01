@@ -42,7 +42,7 @@ const CreateEditDeptAdminModal = ({
   createDeptAdmin,
   updateDeptAdmin,
   previousEmail,
-  depts
+  depts=[]
 }) => {
   const isEditing = !(!selectedDeptAdmin)
   const title = isEditing ? 'Edit Department Admin' : 'Create Department Admin'
@@ -154,7 +154,13 @@ const CreateEditDeptAdminModal = ({
     }
     closeModal()
   }
-
+  const selecDept=(code)=>{
+    const dept=depts.filter(department=>department.departmentCode===code)[0]
+    setValue('department',{ 
+      departmentCode: dept.departmentCode,
+      departmentName: dept.departmentName
+    })
+  }
   return (
     <Modal
       title={title}
@@ -214,22 +220,18 @@ const CreateEditDeptAdminModal = ({
         </ColumnWrapper>
       </Row>
       <Row columns="1fr 1fr">
-
         <ColumnWrapper>
           <LabelWrapper>Department</LabelWrapper>
-          <select
-            defaultValue="CSE"
+          <Select
+            placeholder={deptAdmin.department.departmentName}
             style={{ width: 300 }}
+            onChange={(value)=>{selecDept(value)}}
           >
-            {depts.map(((dept,index)=><option 
+            {depts.map(((dept,index)=><Option 
               key={index}
               value={dept.departmentCode}
-              onClick={()=>{setValue('department',{ 
-                departmentCode: dept.departmentCode,
-                departmentName: dept.departmentName
-              })}}
-            >{dept.departmentName}</option>))}
-          </select>
+            >{dept.departmentName}</Option>))}
+          </Select>
         </ColumnWrapper>
       </Row>
     </Modal>
