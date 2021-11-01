@@ -148,7 +148,12 @@ exports.resetPassword = async (req, res) => {
   const { user, password } = req.body;
   const { userType = "deptAdmin" } = user;
   const userHelper = userTypeToHelperMapping[userType];
-  const UserType = firstUpperCase(userType);
+  let UserType='';
+  if(userType==='deptAdmin')
+    UserType = 'DeptAdmin';
+  else
+    UserType = firstUpperCase(userType);
+  console.log('---'+UserType)
   try {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(String(password), salt);
