@@ -14,7 +14,8 @@ const emailHelper = require("../email/email.helper");
 const credentialHelper = require("../credential/credential.helper");
 
 const firstUpperCase = (userType) => {
-  userType.replace(/\b\w/g, (c) => c.toUpperCase());
+  if (!userType) return "";
+  return userType.charAt(0).toUpperCase() + userType.slice(1);
 };
 
 // GET USER
@@ -148,12 +149,7 @@ exports.resetPassword = async (req, res) => {
   const { user, password } = req.body;
   const { userType = "deptAdmin" } = user;
   const userHelper = userTypeToHelperMapping[userType];
-  let UserType='';
-  if(userType==='deptAdmin')
-    UserType = 'DeptAdmin';
-  else
-    UserType = firstUpperCase(userType);
-  console.log('---'+UserType)
+  const UserType = firstUpperCase(userType);
   try {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(String(password), salt);
