@@ -150,6 +150,7 @@ exports.resetPassword = async (req, res) => {
   const { userType = "deptAdmin" } = user;
   const userHelper = userTypeToHelperMapping[userType];
   let UserType='';
+  // first Upper case
   if(userType==='deptAdmin')
     UserType = 'DeptAdmin';
   else if(userType==='teacher')
