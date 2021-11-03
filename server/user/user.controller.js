@@ -14,7 +14,8 @@ const emailHelper = require("../email/email.helper");
 const credentialHelper = require("../credential/credential.helper");
 
 const firstUpperCase = (userType) => {
-  userType.replace(/\b\w/g, (c) => c.toUpperCase());
+  if (!userType) return "";
+  return userType.charAt(0).toUpperCase() + userType.slice(1);
 };
 
 // GET USER
