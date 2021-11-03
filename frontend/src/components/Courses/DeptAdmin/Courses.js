@@ -71,7 +71,6 @@ const Courses = ({ courses, user, dispatch }) => {
     await api.deleteCourse(course)
     setCourseChanged(true)
   }
-
   return (
     <div>
       <ImportCoursesModal
@@ -116,6 +115,7 @@ const Courses = ({ courses, user, dispatch }) => {
             setVisibility={setShowCreateEditModal}
             createCourse={createCourseHandler}
             updateCourse={updateCourseHandler}
+            department={user.department}
           />
         </Container>
       </BodyWrapper>
