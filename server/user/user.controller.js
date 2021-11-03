@@ -151,6 +151,10 @@ exports.resetPassword = async (req, res) => {
   let UserType='';
   if(userType==='deptAdmin')
     UserType = 'DeptAdmin';
+  else if(userType==='teacher')
+    UserType = 'Teacher';
+  else if(userType==='student')
+    UserType = 'Student';
   else
     UserType = firstUpperCase(userType);
   console.log('---'+UserType)
