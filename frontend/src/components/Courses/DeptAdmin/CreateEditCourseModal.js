@@ -46,7 +46,8 @@ const CreateEditCourseModal = ({
   visible,
   setVisibility,
   createCourse,
-  updateCourse
+  updateCourse,
+  department
 }) => {
   const isEditing = !(!selectedCourse)
   const title = isEditing ? 'Edit Course' : 'Create Course'
@@ -54,8 +55,8 @@ const CreateEditCourseModal = ({
     title: '',
     courseCode: '',
     department: {
-      departmentCode: 'CSE',
-      departmentName: 'Computer Science and Engineering'
+      departmentCode: department.departmentCode,
+      departmentName: department.departmentName
     },
     exams: [],
     enrolledStudents: [],
@@ -72,7 +73,7 @@ const CreateEditCourseModal = ({
   useEffect(async () => {
     setCourse(selectedCourse || defaultCourse)
     const { payload: fetchedTeachers = [] } = await api.getTeachers({})
-    setTeachers(fetchedTeachers)
+    setTeachers(fetchedTeachers.filter(teacher=>teacher.department.departmentCode===department.departmentCode))
   }, [isEditing, selectedCourse])
 
   const setValue = (key, value) => {
@@ -141,9 +142,9 @@ const CreateEditCourseModal = ({
         <ColumnWrapper>
           <LabelWrapper>Department</LabelWrapper>
           <SelectStyled
-            defaultValue="CSE"
+            defaultValue={department.departmentCode}
           >
-            <Option value="CSE">Computer Science And Engineering</Option>
+            <Option value={department.departmentCode}>{department.departmentName}</Option>
           </SelectStyled>
         </ColumnWrapper>
         <ColumnWrapper>

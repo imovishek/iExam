@@ -57,7 +57,7 @@ const CoursePage = ({ dispatch, user, hasBack = true }) => {
       const { payload = {} } = await api.getCourseByID(id)
       const { payload: fetchedTeachers = [] } = await api.getTeachers({})
       setCourse(payload)
-      setTeachers(fetchedTeachers)
+      setTeachers(fetchedTeachers.filter(teacher=>teacher.department.departmentCode===user.department.departmentCode))
     } catch (err) {
       console.log(err)
     } finally {

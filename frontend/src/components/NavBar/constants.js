@@ -44,6 +44,17 @@ export const navLinks = [
     body: 'Credits',
     icon: faMedal,
   },
+  {
+    link: 'departments',
+    body: 'Departments',
+    icon: faScroll,
+  },
+  {
+    link: 'admins',
+    body: 'Admins',
+    icon: faUsers,
+  },
+  
 ];
 
 export const navKeys = {

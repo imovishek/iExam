@@ -9,6 +9,7 @@ const teacherSchema = require('../teacher/teacher.schema');
 const deptAdminSchema = new Schema({
   firstName: String,
   lastName: String,
+  phoneNumber: String,
   userType: { type: String, default: 'deptAdmin' },
   department: {
       type: departmentSchema,
@@ -18,6 +19,7 @@ const deptAdminSchema = new Schema({
   teacherIDs: [Schema.Types.ObjectId],
   studentIDs: [Schema.Types.ObjectId],
   credential: { type: credentialSchema, required: true },
+  userAccess: [String]
 },
 {
   timestamps: true,

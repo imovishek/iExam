@@ -33,6 +33,8 @@ const ResultsForStudent = lazy(() => import('./components/Results/Student/Result
 const EvaluatePaper = lazy(() => import('./components/Exams/Teacher/EvaluatePaper'));
 const ExamResult = lazy(() => import('./components/Exams/Teacher/ExamResult'));
 const NotFound = lazy(() => import('./components/Common/404'));
+const DeptAdminsForSuperAdmin = lazy(() => import('./components/DeptAdmin/SuperAdmin/DeptAdmin'));
+const DeptsForSuperAdmin = lazy(() => import('./components/Departments/SuperAdmin/Dept'));
 
 require('dotenv').config()
 const loadUser = async (dispatch) => {
@@ -85,6 +87,9 @@ const App = ({ user, dispatch }) => {
       { userType === 'teacher' && <Route path="/exam/:id" component={ExamPageForTeacher} /> }
       { userType === 'teacher' && <Route path="/exams" component={ExamsForTeacher} /> }
       { userType === 'teacher' && <Route path="/dashboard" component={DashboardForTeacher} /> }
+      { userType === 'superUser' && <Route exact path="/" component={DeptAdminsForSuperAdmin} /> }
+      { userType === 'superUser' && <Route exact path="/admins" component={DeptAdminsForSuperAdmin} /> }
+      { userType === 'superUser' && <Route exact path="/departments" component={DeptsForSuperAdmin} /> }
       <Route path="/login" component={Login} />
       <Route path="/forgotPassword" component={Login} />
       <Route path="/credits" component={Credits} />

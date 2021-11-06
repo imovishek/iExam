@@ -39,17 +39,17 @@ const ButtonStyled = styled(Button)`
 `;
 
 const FontAwesomeIconWrapper = styled.div`
-width: 30px;
-display: inline-block;
-cursor: pointer;
+  width: 30px;
+  display: inline-block;
+  cursor: pointer;
 `;
 
 const TileBodyWrapper = styled.div`
-background: #ffffff;
+  background: #ffffff;
 `;
 const RedText = styled.span`
-margin-left: 10px;
-color: red;
+  margin-left: 10px;
+  color: red;
 `;
 
 const virtualState = {};
@@ -63,7 +63,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   const [switchLoading, setSwitchLoading] = useState(false);
   const [savedText, setSavedText] = useState("");
   const [clarifications, setClarifications] = useState([]);
-  const [clarificationsUpdated, setClarificationsUpdated] = useState({})
+  const [clarificationsUpdated, setClarificationsUpdated] = useState({});
   const getAnswerFromOptions = ({ leftSide, rightSide }) => {
     const arr = [];
     const len = Math.max(leftSide.length, rightSide.length);
@@ -99,7 +99,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
           question.type === MATCHING &&
           (!answer || getParsedAnswer(answer).length === 0)
         ) {
-          answer = '';
+          answer = "";
         }
       }
       return {
@@ -136,23 +136,26 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   }, [id]);
 
   useEffect(async () => {
-    if (!exam._id) return;
+    if (!id) return;
     try {
-      const { payload: claries } = await api.getClarifications({ examID: exam._id });
+      const { payload: claries } = await api.getClarifications({
+        examID: id,
+      });
       const userIDsObj = {};
-      _.forEach(claries, clarie => {
+      _.forEach(claries, (clarie) => {
         if (clarie.userID) userIDsObj[clarie.userID] = true;
-      })
-      const { payload: newUsers } = await api.getUsers({ userType: 'student', _id: { $in: Object.keys(userIDsObj) } });
-      _.forEach(newUsers, user => (userIDsObj[user._id] = user));
-      _.forEach(claries, clarie => {
+      });
+      const { payload: newUsers } = await api.getUsers({
+        userType: "student",
+        _id: { $in: Object.keys(userIDsObj) },
+      });
+      _.forEach(newUsers, (user) => (userIDsObj[user._id] = user));
+      _.forEach(claries, (clarie) => {
         clarie.user = userIDsObj[clarie.userID];
-      })
+      });
       setClarifications(claries);
-    } catch (e) {
-
-    }
-  }, [exam, clarificationsUpdated]);
+    } catch (e) {}
+  }, [id, clarificationsUpdated]);
   const submitPaperHandler = async () => {
     setIsLoading(true);
     const cleanPaper = {
@@ -164,12 +167,10 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       message.success("Submitted Successfully");
     } catch (err) {
       message.error(err.response.data.message);
-      dispatch(push(`/exam/${exam._id}`));
+      dispatch(push(`/exam/${id}`));
       try {
         await updateExamOnUI();
-      } catch (error) {
-        
-      }
+      } catch (error) {}
       console.log(err);
     } finally {
       setIsLoading(false);
@@ -177,22 +178,22 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   };
 
   const submitSilentPaperHandler = async () => {
+    const showingPaper = window.location.pathname.match(/\/answer$/);
+    if (!showingPaper) return;
     const cleanPaper = {
       ...virtualState.paper,
     };
-    console.log('virtualState.paper', cleanPaper);
+    console.log("virtualState.paper", cleanPaper, id);
     try {
       await api.updateExamPaperForStudent(id, cleanPaper);
       await updateExamOnUI();
       setSavedText("Saved a few seconds ago");
     } catch (err) {
       message.error(err.response.data.message);
-      dispatch(push(`/exam/${exam._id}`));
+      dispatch(push(`/exam/${id}`));
       try {
         await updateExamOnUI();
-      } catch (error) {
-        
-      }
+      } catch (error) {}
       console.log(err);
     }
   };
@@ -245,9 +246,8 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               <PageHeader>Exam</PageHeader>
               {meGotBanned(exam, user) && <RedText>Banned</RedText>}
             </div>
-            <ShowExamStatusTitle exam={exam}/>
-            
-            
+            <ShowExamStatusTitle exam={exam} />
+
             <div>
               {showingPaper && (
                 <RightButtonWrapper>
@@ -293,9 +293,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                 <Questions
                   paper={paper}
                   exam={exam}
-                  onShowingPaper={() =>
-                    dispatch(push(`/exam/${exam._id}/answer`))
-                  }
+                  onShowingPaper={() => dispatch(push(`/exam/${id}/answer`))}
                   questions={exam.questions}
                   isLoading={isLoading}
                 />

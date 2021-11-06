@@ -32,6 +32,10 @@ export const hasPageAccess = {
     Questions: true,
     Credits:true,
   },
+  superUser: {
+    Admins:true,
+    Departments:true  
+  },
 };
 
 export const ignoreKeys = {

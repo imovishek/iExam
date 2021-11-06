@@ -353,6 +353,61 @@ export const updateUserMe = async (body) =>
   requestApiAndGetResponse(`${apiUrl}/user/me`, "put", {
     update: body,
   }).then((res) => res.data);
+export const getDeptAdmins = async (query) =>
+  requestApiAndGetResponse(`${apiUrl}/deptAdmins`, "get", {}, query).then(
+    (res) => res.data
+  );
+export const deleteDeptAdmin = async (deptAdmin) =>
+  requestApiAndGetResponse(
+    `${apiUrl}/deptAdmin/${deptAdmin._id || "random"}`,
+    "delete"
+  ).then((res) => res.data);
+export const createDeptAdmin = async (deptAdmin) =>
+  requestApiAndGetResponse(`${apiUrl}/deptAdmins`, "post", {
+    deptAdmin,
+  }).then((res) => res.data);
+  // requestApiAndGetResponse(`${apiUrl}/superUser`, "post", {
+  //  deptAdmin,
+  // }).then((res) => res.data);
+export const updateDeptAdmin = async (deptAdmin) =>
+  requestApiAndGetResponse(
+    `${apiUrl}/deptAdmin/${deptAdmin._id || "random"}`,
+    "put",
+    {
+      query: {
+        _id: deptAdmin._id,
+      },
+      update: deptAdmin,
+    }
+  ).then((res) => res.data);
+
+export const getDepts = async (query) =>
+  requestApiAndGetResponse(`${apiUrl}/depts`, "get", {}, query).then(
+    (res) => res.data
+  );
+export const deleteDept = async (dept) =>
+  requestApiAndGetResponse(
+    `${apiUrl}/dept/${dept._id || "random"}`,
+    "delete"
+  ).then((res) => res.data);
+export const createDept = async (dept) =>
+  requestApiAndGetResponse(`${apiUrl}/depts`, "post", {
+    dept,
+  }).then((res) => res.data);
+export const updateDept = async (dept) =>
+  requestApiAndGetResponse(
+    `${apiUrl}/dept/${dept._id || "random"}`,
+    "put",
+    {
+      query: {
+        _id: dept._id,
+      },
+      update: dept,
+    }
+  ).then((res) => res.data);
+
+
+
 const api = {
   getUserMe,
   updateUserMe,
@@ -403,6 +458,14 @@ const api = {
   resetPassword,
   forgotPassword,
   runCode,
+  getDeptAdmins,
+  deleteDeptAdmin,
+  createDeptAdmin,
+  updateDeptAdmin,
+  getDepts,
+  deleteDept,
+  createDept,
+  updateDept
 };
 
 export default api;

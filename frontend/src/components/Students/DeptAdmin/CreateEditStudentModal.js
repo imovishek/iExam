@@ -41,7 +41,8 @@ const CreateEditStudentModal = ({
   setVisibility,
   createStudent,
   updateStudent,
-  previousEmail
+  previousEmail,
+  user
 }) => {
   const isEditing = !(!selectedStudent)
   const title = isEditing ? 'Edit Student' : 'Create Student'
@@ -51,8 +52,8 @@ const CreateEditStudentModal = ({
     registrationNo: '',
     phoneNumber: '',
     department: {
-      departmentCode: 'CSE',
-      departmentName: 'Computer Science and Engineering'
+      departmentCode: user.department.departmentCode,
+      departmentName: user.department.departmentName
     },
     credential: {
       email: '',
@@ -226,7 +227,7 @@ const CreateEditStudentModal = ({
             defaultValue="CSE"
             style={{ width: 300 }}
           >
-            <Option value="CSE">Computer Science And Engineering</Option>
+            <Option value="CSE">{user.department.departmentName}</Option>
           </Select>
         </ColumnWrapper>
       </Row>
