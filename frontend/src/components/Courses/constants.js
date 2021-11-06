@@ -1,0 +1,1 @@
+export const ON_UPDATE_COURSES = 'ON_UPDATE_COURSES'

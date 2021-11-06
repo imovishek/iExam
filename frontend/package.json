@@ -1,0 +1,78 @@
+{
+  "name": "emsfrontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@craco/craco": "^6.1.2",
+    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/free-brands-svg-icons": "^5.15.2",
+    "@fortawesome/free-regular-svg-icons": "^5.15.2",
+    "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "@fortawesome/react-fontawesome": "^0.1.14",
+    "@hapi/joi": "^15.0.3",
+    "@monaco-editor/react": "^4.0.10",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "antd": "^4.10.3",
+    "axios": "^0.21.1",
+    "bcryptjs": "^2.4.3",
+    "connected-react-router": "^6.0.0",
+    "craco-less": "^1.17.1",
+    "dotenv": "^8.2.0",
+    "history": "^4.10.1",
+    "immer": "^9.0.2",
+    "joi-date-extensions": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "katex": "^0.12.0",
+    "react": "^17.0.1",
+    "react-beautiful-dnd": "^13.0.0",
+    "react-dom": "^17.0.1",
+    "react-dropzone": "^11.3.2",
+    "react-redux": "^7.2.2",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-router-redux": "^4.0.8",
+    "react-scripts": "4.0.1",
+    "redux": "^4.0.5",
+    "styled-components": "^5.2.1",
+    "suneditor-react": "^2.15.2",
+    "underscore": "^1.12.0",
+    "uniqid": "^5.3.0",
+    "web-vitals": "^0.2.4",
+    "yarn": "^1.22.10"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-react": "^7.22.0"
+  }
+}
