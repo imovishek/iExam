@@ -3,15 +3,17 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.sendMail = async (to, subject, body) => {
   const msg = {
-    from: process.env.SENGRID_SENDER_EMAIL, // Change to your recipient
+    from: process.env.SENGRID_SENDER_EMAIL,
     to,
     subject,
     text: body,
   };
-  sgMail
-    .send(msg)
-    .then(() => console.log("sent"))
-    .catch((err) => console.log({ err, body: err.response.body.errors }));
+  try {
+    await sgMail.send(msg);
+    console.log("sendMail", "email sent successfully");
+  } catch (err) {
+    console.error("sendMail", { err: err.response.body.errors });
+  }
 };
 
 exports.generateRegisterEmailBody = (name, password) => `
