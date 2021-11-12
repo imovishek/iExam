@@ -53,7 +53,7 @@ const CreateEditDeptAdminModal = ({
     phoneNumber: '',
     department: {
       departmentCode: null,
-      departmentName: 'Select Department'
+      departmentName: null
     },
     credential: {
       email: '',
@@ -162,6 +162,7 @@ const CreateEditDeptAdminModal = ({
       departmentName: dept.departmentName
     })
   }
+  console.log(deptAdmin.department.departmentCode)
   return (
     <Modal
       title={title}
@@ -224,7 +225,8 @@ const CreateEditDeptAdminModal = ({
         <ColumnWrapper>
           <LabelWrapper>Department</LabelWrapper>
           <Select
-            placeholder={deptAdmin.department.departmentName}
+            value={deptAdmin.department.departmentCode}
+            placeholder="Select Department"
             style={{ width: 300 }}
             onChange={(value)=>{selecDept(value)}}
           >
