@@ -52,8 +52,8 @@ const CreateEditDeptAdminModal = ({
     registrationNo: '',
     phoneNumber: '',
     department: {
-      departmentCode: 'CSE',
-      departmentName: 'Computer Science and Engineering'
+      departmentCode: null,
+      departmentName: null
     },
     credential: {
       email: '',
@@ -138,6 +138,7 @@ const CreateEditDeptAdminModal = ({
 
   const onSubmit = async () => {
     let newErrors = joiObjectParser(deptAdmin, deptAdminValidator)
+    if(deptAdmin.department.departmentCode===null) newErrors.dept="Department is required"
     if (deptAdmin.email && !isValidEmail(deptAdmin.email)) {
       newErrors.email = 'Email is invalid'
     }
@@ -161,6 +162,7 @@ const CreateEditDeptAdminModal = ({
       departmentName: dept.departmentName
     })
   }
+  console.log(deptAdmin.department.departmentCode)
   return (
     <Modal
       title={title}
@@ -223,7 +225,8 @@ const CreateEditDeptAdminModal = ({
         <ColumnWrapper>
           <LabelWrapper>Department</LabelWrapper>
           <Select
-            placeholder={deptAdmin.department.departmentName}
+            value={deptAdmin.department.departmentCode}
+            placeholder="Select Department"
             style={{ width: 300 }}
             onChange={(value)=>{selecDept(value)}}
           >
@@ -232,6 +235,7 @@ const CreateEditDeptAdminModal = ({
               value={dept.departmentCode}
             >{dept.departmentName}</Option>))}
           </Select>
+          <ErrorWrapper> {errors.dept} </ErrorWrapper>
         </ColumnWrapper>
       </Row>
     </Modal>

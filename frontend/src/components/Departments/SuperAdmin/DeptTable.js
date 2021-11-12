@@ -16,7 +16,7 @@ const StyledButton = styled(Button)`
 `;
 
 const DeptCard = ({ dept, setDeptToEdit, showCreateEditModal, deleteDept, onResetPassword }) => (
-  <TableRowStyled columns="repeat(3, 3fr) 80px 270px">
+  <TableRowStyled columns="repeat(3, 3fr) 80px auto">
     <TableRowChild> { dept.departmentName } </TableRowChild>
     <TableRowChild>  </TableRowChild>
     <TableRowChild> { dept.departmentCode } </TableRowChild>
@@ -66,7 +66,7 @@ const DeptTable = ({
   const isNoData = depts.length === 0
   return (
     <TableWrapper>
-      <Row columns="repeat(3, 1fr) 80px 270px">
+      <Row columns="repeat(3, 1fr) 200px auto">
         <TableHeaderChild> Department Name </TableHeaderChild>
         <TableRowChild>  </TableRowChild>
         <TableHeaderChild> Department Code </TableHeaderChild>

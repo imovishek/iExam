@@ -77,11 +77,12 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch, isColl
           </FooterNameWrapper>
           {!isCollapsed && (
             <DesignationWraper>
-              {user.userType === 'teacher' && mapDesignations[user.designation]}
+              {user.userType === 'teacher' && `${mapDesignations[user.designation]}, `}
+              {user.userType !== 'superUser' && user.department.departmentCode}
             </DesignationWraper>
           )}
           <FooterIconWraper isCollapsed={isCollapsed}>
-            <Tooltip title = "Profile">
+            {user.userType!=="superUser"&&<Tooltip title = "Profile">
               <FontAwesomeIconWrapper
                 isCollapsed={isCollapsed}
                 style={{ marginRight: '20px' }}
@@ -91,7 +92,7 @@ const NavBar = ({ user, setNavigationTab, tabKey = 'dashboard', dispatch, isColl
                 icon={faCog}
                 size="lg"
               />
-            </Tooltip>
+            </Tooltip>}
             <Tooltip title = "Logout">
               <FontAwesomeIconWrapper
                 isCollapsed={isCollapsed}
