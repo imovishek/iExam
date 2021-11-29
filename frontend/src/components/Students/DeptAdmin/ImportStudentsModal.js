@@ -1,11 +1,11 @@
-import styled from 'styled-components';
-import React, { useState } from 'react';
-import { Modal, Button, message } from 'antd';
-import Dropzone from '../../Common/Dropzone';
-import api from '../../../utitlities/api';
-import { CenterText, LinkStyled } from '../../../utitlities/styles';
-import { FontAwesomeIconWrapper } from '../../styles/tableStyles';
-import { faFile, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import styled from "styled-components";
+import React, { useState } from "react";
+import { Modal, Button, message } from "antd";
+import Dropzone from "../../Common/Dropzone";
+import api from "../../../utitlities/api";
+import { CenterText, LinkStyled } from "../../../utitlities/styles";
+import { FontAwesomeIconWrapper } from "../../styles/tableStyles";
+import { faFile, faFileAlt } from "@fortawesome/free-solid-svg-icons";
 
 const CenterTextWrapper = styled(CenterText)`
   margin-bottom: 20px;
@@ -16,24 +16,29 @@ const FileNameWrapper = styled.div`
   text-overflow: ellipsis;
   padding: 10px;
 `;
-const ImportStudentsModal = ({
-  visible,
-  setVisibility,
-  setStudentChanged,
-}) => {
+const ImportStudentsModal = ({ visible, setVisibility, setStudentChanged }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState({});
   const closeModal = () => {
     setFile({});
-    setVisibility(false)
+    setVisibility(false);
   };
   const onSubmitHandler = async () => {
-    if (!file.name) return message.error('Please select a file!');
+    if (!file.name) return message.error("Please select a file!");
     try {
       setIsLoading(true);
-      const { payload: StudentIDs } = await api.uploadStudentsFile(file);
+      const response = await api.uploadStudentsFile(file);
+      console.log({ response });
+      const element = document.createElement("a");
+      const studentCredsFile = new Blob([response.data], {
+        type: "text/csv",
+      });
+      element.href = URL.createObjectURL(studentCredsFile);
+      element.download = "student_creds.csv";
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
       setStudentChanged(true);
-      message.success('Successfully uploaded the file!');
+      message.success("Successfully uploaded the file!");
     } catch (e) {
       console.log(e);
       message.error(e.response.data.message);
@@ -41,30 +46,40 @@ const ImportStudentsModal = ({
       setIsLoading(false);
     }
     closeModal();
-  }
+  };
   return (
     <Modal
-      title={'Import Students'}
+      title={"Import Students"}
       visible={visible}
       width={500}
       height={800}
-      style={{ height: '800px' }}
+      style={{ height: "800px" }}
       onOk={() => closeModal()}
       onCancel={() => closeModal()}
-      
       footer={[
-        <Button key="back" onClick={() => onSubmitHandler()} loading={isLoading}>
+        <Button
+          key="back"
+          onClick={() => onSubmitHandler()}
+          loading={isLoading}
+        >
           Upload
-        </Button>
+        </Button>,
       ]}
     >
       <CenterTextWrapper>
-        <LinkStyled href="/files/sampleStudentUpload.csv" download>Download Sample File</LinkStyled>
+        <LinkStyled href="/files/sampleStudentUpload.csv" download>
+          Download Sample File
+        </LinkStyled>
       </CenterTextWrapper>
-      <Dropzone onSubmit={(file) => setFile(file)}/>
-      {file.name && <FileNameWrapper><FontAwesomeIconWrapper icon={faFile} color="#40A9FF"/>{file.name}</FileNameWrapper>}
+      <Dropzone onSubmit={(file) => setFile(file)} />
+      {file.name && (
+        <FileNameWrapper>
+          <FontAwesomeIconWrapper icon={faFile} color="#40A9FF" />
+          {file.name}
+        </FileNameWrapper>
+      )}
     </Modal>
-  )
-}
+  );
+};
 
-export default ImportStudentsModal
+export default ImportStudentsModal;

@@ -1,8 +1,14 @@
-const studentHelper = require('./student.helper');
-const { httpStatuses, STUDENT } = require('../constants');
-const { readCSV, mapCsvToStudent, removeFile, getEightDigitRandomPassword } = require('../common.functions');
-const responseHandler = require('../middlewares/responseHandler');
-const emailHelper = require('../email/email.helper');
+const studentHelper = require("./student.helper");
+const { httpStatuses, STUDENT } = require("../constants");
+const { parse } = require("json2csv");
+const {
+  readCSV,
+  mapCsvToStudent,
+  removeFile,
+  getEightDigitRandomPassword,
+} = require("../common.functions");
+const responseHandler = require("../middlewares/responseHandler");
+const emailHelper = require("../email/email.helper");
 
 // GET STUDENT
 
@@ -13,7 +19,10 @@ exports.getStudents = async (req, res) => {
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, {
+      error: true,
+      message: err.message,
+    });
   }
 };
 
@@ -24,28 +33,37 @@ exports.getStudentByID = async (req, res) => {
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, {
+      error: true,
+      message: err.message,
+    });
   }
 };
 
 exports.getStudentsByBatch = async (req, res) => {
   const { batch, departmentCode, oddEven } = req.query;
   try {
-    let result = await studentHelper.getStudents({ registrationNo: { $regex: new RegExp(`^${batch}`) }, 'department.departmentCode': departmentCode });
+    let result = await studentHelper.getStudents({
+      registrationNo: { $regex: new RegExp(`^${batch}`) },
+      "department.departmentCode": departmentCode,
+    });
     try {
       result = result.toObject();
     } catch (e) {}
-    if (oddEven && oddEven !== 'all') {
-      result = result.filter(st => {
+    if (oddEven && oddEven !== "all") {
+      result = result.filter((st) => {
         const regNo = Number(st.registrationNo);
-        if (oddEven === 'odd') return regNo % 2 === 1;
+        if (oddEven === "odd") return regNo % 2 === 1;
         else return regNo % 2 === 0;
-      })
+      });
     }
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, {
+      error: true,
+      message: err.message,
+    });
   }
 };
 
@@ -58,12 +76,22 @@ exports.createStudent = async (req, res) => {
     credential.password = randomPassword;
     credential.userType = STUDENT;
     const result = await studentHelper.createStudent(student);
-    const emailBody = emailHelper.generateRegisterEmailBody(student.firstName, randomPassword);
-    await emailHelper.sendMail(credential.email, 'Registration Successful', emailBody);
+    const emailBody = emailHelper.generateRegisterEmailBody(
+      student.firstName,
+      randomPassword
+    );
+    await emailHelper.sendMail(
+      credential.email,
+      "Registration Successful",
+      emailBody
+    );
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, {
+      error: true,
+      message: err.message,
+    });
   }
 };
 
@@ -75,7 +103,10 @@ exports.updateStudents = async (req, res) => {
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, {
+      error: true,
+      message: err.message,
+    });
   }
 };
 
@@ -87,10 +118,12 @@ exports.updateStudentByID = async (req, res) => {
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, {
+      error: true,
+      message: err.message,
+    });
   }
 };
-
 
 // DELETE STUDENT
 exports.deleteStudents = async (req, res) => {
@@ -100,7 +133,10 @@ exports.deleteStudents = async (req, res) => {
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, {
+      error: true,
+      message: err.message,
+    });
   }
 };
 
@@ -111,7 +147,10 @@ exports.deleteStudentByID = async (req, res) => {
     responseHandler(res, httpStatuses.OK, { payload: result });
   } catch (err) {
     console.log(err);
-    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, {
+      error: true,
+      message: err.message,
+    });
   }
 };
 
@@ -122,15 +161,34 @@ exports.studentsFileUpload = async (req, res) => {
   try {
     const students = await readCSV(filePath);
     students.splice(-1, 1);
-    if (!students.length) throw new Error('Please select a valid file!');
+    if (!students.length) throw new Error("Please select a valid file!");
     const mappedStudents = await mapCsvToStudent(students, user);
-    let createdStudents = await studentHelper.createOrUpdateStudent(mappedStudents, user);
-    createdStudents = createdStudents.filter(student => student);
-    const studentIDs = createdStudents.map(student => student._id);
-    responseHandler(res, httpStatuses.OK, { payload: { studentIDs } });
+    const data = mappedStudents.map((e) => ({
+      email: e.credential.email,
+      password: e.plainPassword,
+      registrationNo: e.registrationNo,
+    }));
+
+    const fields = ["registrationNo", "email", "password"];
+    const fieldNames = ["Registration Number", "Email", "Password"];
+    const opts = { fields, fieldNames };
+    const down_file = parse(data, opts);
+    console.log({ data, down_file });
+    let createdStudents = await studentHelper.createOrUpdateStudent(
+      mappedStudents,
+      user
+    );
+    createdStudents = createdStudents.filter((student) => student);
+    const studentIDs = createdStudents.map((student) => student._id);
+    res.setHeader("Content-disposition", "attachment; filename=data.csv");
+    res.set("Content-Type", "text/csv");
+    res.status(200).send(down_file);
   } catch (err) {
     console.log(err.message);
-    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, { error: true, message: err.message });
+    responseHandler(res, httpStatuses.INTERNAL_SERVER_ERROR, {
+      error: true,
+      message: err.message,
+    });
   }
   removeFile(filePath);
-}
+};
