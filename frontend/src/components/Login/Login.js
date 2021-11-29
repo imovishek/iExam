@@ -8,6 +8,8 @@ import { setUserAction } from "./actions";
 import { push } from "connected-react-router";
 import backgroundImage from "../../images/loginBackground.svg";
 import Loading from "../Common/Loading";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const fontColor = "#49006b";
 
@@ -23,7 +25,7 @@ const TitleColumn = styled.div`
   background-position: center;
   padding-left: 6vw;
   padding-top: 25vh;
-  width:60vw;
+  width: 60vw;
 `;
 
 const FormColumn = styled.div`
@@ -58,7 +60,7 @@ const SubWrapper = styled.div`
 
 const InputWrapper = styled(Input)`
   margin-bottom: 14px;
-  height: 44px;
+  height: 44px !important;
   border-radius: 8px;
   font-size: 14px;
   border: 0px solid grey;
@@ -89,7 +91,18 @@ const SpinWrapper = styled.div`
   z-index: 1000;
   background: rgba(225, 223, 223, 0.53);
 `;
-
+const FontAwesomeIconStyled = styled(FontAwesomeIcon)`
+  cursor: pointer;
+  height: 44px;
+  margin-left: 10px;
+  margin: auto;
+  ${(props) => (props.loading ? "animation: rotate 2s linear infinite;" : "")}
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
 const fontStyleObject = { color: "white", padding: "0", margin: "0" };
 const SignInText = styled.h3`
   color: #49006b;
@@ -110,7 +123,9 @@ const setLocalStorage = (user, token) => {
   localStorage.setItem("token", token);
 };
 const Login = ({ setUser, dispatch }) => {
-  const [isForgotPassword, setIsForgotPassword] = useState(window.location.pathname === "/forgotPassword");
+  const [isForgotPassword, setIsForgotPassword] = useState(
+    window.location.pathname === "/forgotPassword"
+  );
   const tryToLogin = async (email, password) => {
     try {
       const { data: res } = await apiLogin(email, password);
@@ -131,12 +146,13 @@ const Login = ({ setUser, dispatch }) => {
   };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const onEnterLogin = () => {
     setIsLoading(true);
     tryToLogin(email, password);
   };
-  
+
   const onResetPassword = async () => {
     setIsLoading(true);
     try {
@@ -150,10 +166,10 @@ const Login = ({ setUser, dispatch }) => {
       }
     } catch (e) {
       console.log(e);
-      message.error('Something went wrong! please try again later!')
+      message.error("Something went wrong! please try again later!");
     }
     setIsLoading(false);
-  }
+  };
 
   const handleKeypress = (e) => {
     if (e.charCode === 13) {
@@ -186,18 +202,37 @@ const Login = ({ setUser, dispatch }) => {
               <label style={{ color: fontColor, fontWeight: "bold" }}>
                 Password
               </label>
-              <InputWrapper
-                placeholder="Enter password"
-                type="password"
-                value={password}
-                onKeyPress={handleKeypress}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div style={{ position: "relative" }}>
+                <InputWrapper
+                  placeholder="Enter password"
+                  type={showPassword ? "" : "password"}
+                  value={password}
+                  onKeyPress={handleKeypress}
+                  onChange={(e) => setPassword(e.target.value)}
+                  // addonAfter={
+                  //   <FontAwesomeIcon
+                  //     icon={faEye}
+                  //     onClick={() => setShowPassword(!showPassword)}
+                  //   />
+                  // }
+                />
+                <div
+                  style={{ position: "absolute", right: "10px", top: "0px" }}
+                >
+                  <FontAwesomeIconStyled
+                    icon={showPassword ? faEyeSlash : faEye}
+                    onClick={() => setShowPassword(!showPassword)}
+                  />
+                </div>
+              </div>
             </>
           )}
           <div>
-            <ButtonWrapper type="primary" onClick={isForgotPassword ? onResetPassword : onEnterLogin}>
-              {isForgotPassword ? 'Reset Password' : 'Enter'}
+            <ButtonWrapper
+              type="primary"
+              onClick={isForgotPassword ? onResetPassword : onEnterLogin}
+            >
+              {isForgotPassword ? "Reset Password" : "Enter"}
             </ButtonWrapper>
             {!isForgotPassword && (
               <TextWrapper>
@@ -218,12 +253,11 @@ const Login = ({ setUser, dispatch }) => {
               </TextWrapper>
             )}
           </div>
-          {isLoading?
+          {isLoading ? (
             <SpinWrapper>
-              <Loading isLoading={true} style={{left: '20vw'}}/>
+              <Loading isLoading={true} style={{ left: "20vw" }} />
             </SpinWrapper>
-            : null
-          }
+          ) : null}
         </SubWrapper>
       </FormColumn>
     </BodyWrapper>
