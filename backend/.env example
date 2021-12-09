@@ -1,9 +1,0 @@
-JWT_SECRET=secretiejskalfjajea85fg5
-NODE_ENV=development
-PORT=8080
-PYTHON_CLI=python
-MONGO_URI=mongodb+srv://ovis96:TmV6nkwLlSbs5d1I@mongodb-cloud-project.sxv7e.mongodb.net/ems-dev?retryWrites=true&w=majority
-#MONGO_URI=mongodb://localhost/ems-local
-MONGO_PORT=27017
-SENDGRID_API_KEY=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
-SENGRID_SENDER_EMAIL=infoemssust@gmail.com

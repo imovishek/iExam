@@ -1,4 +1,6 @@
 import axios from "axios";
+import { push } from "connected-react-router";
+import { Redirect, useHistory } from "react-router";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 export const apiLogin = async (email, password) =>
@@ -189,6 +191,11 @@ export const requestApiAndGetResponse = (
     params: query,
     data: body,
     headers,
+  }).catch((e) => {
+    if (e.response.status === 403) {
+      localStorage.clear();
+      push("/login");
+    } else throw e;
   });
 };
 
@@ -366,9 +373,9 @@ export const createDeptAdmin = async (deptAdmin) =>
   requestApiAndGetResponse(`${apiUrl}/deptAdmins`, "post", {
     deptAdmin,
   }).then((res) => res.data);
-  // requestApiAndGetResponse(`${apiUrl}/superUser`, "post", {
-  //  deptAdmin,
-  // }).then((res) => res.data);
+// requestApiAndGetResponse(`${apiUrl}/superUser`, "post", {
+//  deptAdmin,
+// }).then((res) => res.data);
 export const updateDeptAdmin = async (deptAdmin) =>
   requestApiAndGetResponse(
     `${apiUrl}/deptAdmin/${deptAdmin._id || "random"}`,
@@ -395,18 +402,12 @@ export const createDept = async (dept) =>
     dept,
   }).then((res) => res.data);
 export const updateDept = async (dept) =>
-  requestApiAndGetResponse(
-    `${apiUrl}/dept/${dept._id || "random"}`,
-    "put",
-    {
-      query: {
-        _id: dept._id,
-      },
-      update: dept,
-    }
-  ).then((res) => res.data);
-
-
+  requestApiAndGetResponse(`${apiUrl}/dept/${dept._id || "random"}`, "put", {
+    query: {
+      _id: dept._id,
+    },
+    update: dept,
+  }).then((res) => res.data);
 
 const api = {
   getUserMe,
@@ -465,7 +466,7 @@ const api = {
   getDepts,
   deleteDept,
   createDept,
-  updateDept
+  updateDept,
 };
 
 export default api;

@@ -20,3 +20,5 @@ exports.userTypeToHelperMapping = {
   student: studentHelper,
   superUser: superUserHelper,
 };
+
+exports.JWTToken="JWTToken";
