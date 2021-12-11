@@ -1,6 +1,5 @@
 import axios from "axios";
 import { push } from "connected-react-router";
-import { Redirect, useHistory } from "react-router";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 export const apiLogin = async (email, password) =>
@@ -408,6 +407,13 @@ export const updateDept = async (dept) =>
     },
     update: dept,
   }).then((res) => res.data);
+
+export const logLogin = async (email,ipInfo) => {
+  requestApiAndGetResponse(`${apiUrl}/log/login`, "post", {
+    email: email,
+    ip: ipInfo,
+  }).then((res) => res.data);
+};
 
 const api = {
   getUserMe,
