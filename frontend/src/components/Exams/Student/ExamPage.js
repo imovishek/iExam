@@ -33,6 +33,7 @@ import { setUserAction } from "../../Login/actions";
 import { MATCHING } from "../../../utitlities/constants";
 import ShowExamStatusTitle from "../Common/ShowExamStatusTitle";
 import ClarificationOrAnnouncement from "./components/ClarificationOrAnnouncement";
+import { onAnExamStarted } from "../actions";
 
 const ButtonStyled = styled(Button)`
   height: 30px;
@@ -228,8 +229,24 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       };
     }
   }, [user.autoSubmitPaper]);
-  const isDisabled =
-    getExamStatus(exam) !== "running" || meGotBanned(exam, user) || isLoading;
+  const isExamRunning = getExamStatus(exam) === "running";
+  const amIBanned = meGotBanned(exam, user);
+
+  const isDisabled = !isExamRunning || amIBanned || isLoading;
+
+  if (isExamRunning && !amIBanned)
+    dispatch(
+      onAnExamStarted({
+        startDate: exam.startDate,
+        startTime: exam.startTime,
+        duration: exam.duration,
+        examTitle: exam.title,
+        courseCode: exam.course.courseCode,
+        courseTitle: exam.course.title,
+      })
+    );
+  else dispatch(onAnExamStarted(null));
+
   return (
     <div>
       <CheckAuthentication />

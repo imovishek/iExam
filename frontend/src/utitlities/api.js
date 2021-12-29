@@ -408,12 +408,17 @@ export const updateDept = async (dept) =>
     update: dept,
   }).then((res) => res.data);
 
-export const logLogin = async (email,ipInfo) => {
+export const logLogin = async (email, ipInfo) => {
   requestApiAndGetResponse(`${apiUrl}/log/login`, "post", {
     email: email,
     ip: ipInfo,
   }).then((res) => res.data);
 };
+
+export const getLogs = async (query) =>
+  requestApiAndGetResponse(`${apiUrl}/log/getLogs`, "post", query).then(
+    (res) => res.data
+  );
 
 const api = {
   getUserMe,

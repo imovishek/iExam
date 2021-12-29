@@ -13,6 +13,7 @@ export const ON_UPDATE_EXAMS = "exams/ON_UPDATE_EXAMS";
 export const ON_UPDATE_CURRENT_TAB = "exams/ON_UPDATE_CURRENT_TAB";
 export const ON_UPDATE_CLARIFICATION_TAB = "exams/ON_UPDATE_CLARIFICATION_TAB";
 export const ON_VIEW_STUDENT_LOG = "exam/ON_VIEW_STUDENT_LOG";
+export const AN_EXAM_STARTED = "exam/AN_EXAM_STARTED";
 export const typeToQuestionBody = {
   [MCQ]: MCQBody,
   [BROAD]: BroadBody,

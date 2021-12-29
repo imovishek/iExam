@@ -150,6 +150,7 @@ const Card = ({
         dispatch(
           onViewStudentLog({
             ...student,
+            exam:exam,
             bnText: showingStudentType === "banned" ? "Unban" : "Ban",
             bnFunc:
               showingStudentType === "banned"

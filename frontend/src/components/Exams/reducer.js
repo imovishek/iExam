@@ -1,5 +1,6 @@
 import produce from "immer";
 import {
+  AN_EXAM_STARTED,
   ON_UPDATE_CLARIFICATION_TAB,
   ON_UPDATE_CURRENT_TAB,
   ON_UPDATE_EXAMS,
@@ -11,6 +12,7 @@ const INITIAL_STATE = {
   currentTab: "running",
   clarificationTab: "Clarifications",
   viewLogForStudent: {},
+  currentRunningExam: null,
 };
 
 const reducer = produce((draft, action) => {
@@ -27,6 +29,8 @@ const reducer = produce((draft, action) => {
     case ON_VIEW_STUDENT_LOG:
       draft.viewLogForStudent = action.student;
       break;
+    case AN_EXAM_STARTED:
+      draft.currentRunningExam = action.exam;
   }
 }, INITIAL_STATE);
 
