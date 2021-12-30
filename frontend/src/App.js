@@ -211,7 +211,7 @@ const App = ({ user, dispatch }) => {
         )}
         <Route path="/" component={Dashboard} />
       </Switch>
-      <VisibilityLogger></VisibilityLogger>
+      {userType === "student" && <VisibilityLogger></VisibilityLogger>}
     </>
   );
 };

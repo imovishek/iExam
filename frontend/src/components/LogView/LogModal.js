@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Col, DatePicker, Row, Space, Spin, Switch } from "antd";
+import { Button, Col, DatePicker, Row, Checkbox, Spin } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -14,6 +14,59 @@ const getTimeMap = (time) => {
   const date = tm.format("dddd, MMMM Do YYYY");
   const t = tm.format("hh:mm A");
   return { Date: date, Time: t };
+};
+
+const VisibilityLogRow = ({ data, time }) => {
+  const logTime = moment(time).format("hh:mm:ss A");
+  const examStart = moment(data.examStart).format(
+    "dddd, MMMM Do YYYY, h:mm: a"
+  );
+  const examEnd = moment(data.examEnd).format("h:mm a");
+
+  return (
+    <div
+      style={{
+        border: "1px solid #d5b3e5",
+        borderTop: "none",
+        margin: "10px 5px 0px 5px",
+      }}
+    >
+      <Row>
+        <Col
+          span={24}
+          style={{
+            textAlign: "center",
+            background: "#d5b3e5",
+          }}
+        >
+          Changed Tab
+        </Col>
+      </Row>
+      <Row>
+        <Col
+          span={24}
+          style={{ textAlign: "center", fontWeight: "bold", paddingTop: "5px" }}
+        >
+          hid or changed the tab at {logTime}
+        </Col>
+      </Row>
+
+      <Row>
+        <Col
+          span={24}
+          style={{
+            textAlign: "center",
+            font: "roboto",
+            padding: "5px",
+          }}
+        >
+          <strong>{data.examName}</strong> exam of{" "}
+          <strong>{data.courseName}</strong> was running at {examStart} to{" "}
+          {examEnd}
+        </Col>
+      </Row>
+    </div>
+  );
 };
 const LoginLogRow = ({ data, time }) => {
   const TableView = ({ header, mapData, height = "100%" }) => (
@@ -47,7 +100,7 @@ const LoginLogRow = ({ data, time }) => {
   return (
     <Row style={{ margin: "10px 5px 0px 5px" }}>
       <Col span={12}>
-        <TableView height="50%" header="Login Time" mapData={time}></TableView>
+        <TableView height="50%" header="Logged In" mapData={time}></TableView>
         <TableView
           height="50%"
           header="Device Info"
@@ -67,7 +120,8 @@ const ViewLogs = ({ student, dispatch }) => {
   const [defaultRange, setDefaultRange] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [isOnlyLoginLog, setOnlyLoginLog] = useState(false);
+  const [showLoginLog, setshowLoginLog] = useState(true);
+  const [showVisibilityLog, setshowVisibilityLog] = useState(true);
 
   const setUp = () => {
     // console.log(student.exam);
@@ -151,33 +205,45 @@ const ViewLogs = ({ student, dispatch }) => {
           defaultValue={defaultRange}
         />
         <div style={{ margin: "3px 20px 0px 15px" }}>
-          Login Logs only{" "}
-          <Switch
-            style={{ marginLeft: "8px" }}
-            onChange={(checked) => setOnlyLoginLog(checked)}
-          ></Switch>
+          <Checkbox
+            onChange={(e) => setshowLoginLog(e.target.checked)}
+            checked={showLoginLog}
+          >
+            Login
+          </Checkbox>
+          <Checkbox
+            onChange={(e) => setshowVisibilityLog(e.target.checked)}
+            checked={showVisibilityLog}
+          >
+            Tab change
+          </Checkbox>
         </div>
       </Row>
 
       {isLoading && (
-        <div style={{ height: "400px" }}>
+        <div style={{ height: "500px", marginTop: "200px" }}>
           <Spin tip="fetching..."> </Spin>
         </div>
       )}
 
       {!isLoading && (
-        <div style={{ maxHeight: "50vh", overflowY: "auto" }}>
+        <div style={{ maxHeight: "50vh", marginTop: "5px", overflowY: "auto" }}>
           {data.map((val) => {
             console.log(val);
-            if (val.desc === "login")
+            if (showLoginLog && val.desc === "login")
               return (
                 <LoginLogRow
                   data={val}
-                  time={getTimeMap(data.time)}
+                  time={getTimeMap(val.time)}
                 ></LoginLogRow>
               );
-            else if (!isOnlyLoginLog) {
-              return <div>other</div>;
+            else if (showVisibilityLog && val.desc === "visibility") {
+              return (
+                <VisibilityLogRow
+                  data={val.data}
+                  time={val.time}
+                ></VisibilityLogRow>
+              );
             }
           })}
         </div>

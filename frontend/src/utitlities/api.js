@@ -415,6 +415,13 @@ export const logLogin = async (email, ipInfo) => {
   }).then((res) => res.data);
 };
 
+export const logVisibility = async (email, data) => {
+  requestApiAndGetResponse(`${apiUrl}/log/visibility`, "post", {
+    email: email,
+    data: data,
+  }).then((res) => res.data);
+};
+
 export const getLogs = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/log/getLogs`, "post", query).then(
     (res) => res.data

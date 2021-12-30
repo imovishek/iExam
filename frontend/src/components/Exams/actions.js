@@ -57,7 +57,7 @@ export const onAnExamStarted = (exam) => {
   return {
     type: AN_EXAM_STARTED,
     exam: {
-      examStartString: examStart.toISOString(),
+      examStart: examStart.toISOString(),
       examEnd,
       examName: exam.examTitle,
       courseName: `${exam.courseCode}: ${exam.courseTitle}`,

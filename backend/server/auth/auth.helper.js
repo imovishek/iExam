@@ -33,9 +33,9 @@ exports.login = async (email, password) => {
 
     const JWTPayload = { ...user };
 
-    //add a random string to jwt  payload everytime a student logs in
-    //we will use this random string whether the student is logging in from
-    //another device or not
+    // add a random string to jwt  payload everytime a student logs in
+    // we will use this random string whether the student is logging in from
+    // another device or not
     if (userType === STUDENT) {
       const sLog = await Log.findOne({ studentMail: user.credential.email });
 
