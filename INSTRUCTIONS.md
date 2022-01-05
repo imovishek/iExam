@@ -30,7 +30,7 @@
   ```
 
   Question:
-  If I close the broser how can I visit the website again?
+  If I close the browser how can I visit the website again?
 
   ```
   You can try to visit http://localhost:3000 in your browser.
