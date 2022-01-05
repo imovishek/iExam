@@ -149,8 +149,11 @@ const Card = ({
       case "log":
         dispatch(
           onViewStudentLog({
+            range: [],
+            visibilityLog: true,
+            loginLog: true,
             ...student,
-            exam:exam,
+            exam: exam,
             bnText: showingStudentType === "banned" ? "Unban" : "Ban",
             bnFunc:
               showingStudentType === "banned"

@@ -300,7 +300,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               View Announcements
             </Button>
           </Row>
-          <StyledRow columns="3fr 2fr">
+          <StyledRow columns="2.5fr 2.3fr">
             <Tabs onChange={() => {}} type="card">
               <TabPane tab="Questions" key="1">
                 <QuestionsWrapper>

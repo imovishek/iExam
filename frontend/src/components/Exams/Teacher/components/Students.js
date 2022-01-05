@@ -11,6 +11,7 @@ import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown, Menu, Select } from "antd";
 import { TableRowStyled, TableWrapper } from "../../../styles/tableStyles";
 import { onViewStudentLog } from "../../actions";
+import LogCountView from "../../../LogView/LogCountView";
 
 const { Option } = Select;
 const SearchStyled = styled(Search)`
@@ -111,6 +112,25 @@ const Card = ({
   const viewStudentLog = (e) =>
     dispatch(
       onViewStudentLog({
+        range: [],
+        visibilityLog: true,
+        loginLog: true,
+        ...student,
+        exam: exam,
+        bnText: showingStudentType === "banned" ? "Unban" : "Ban",
+        bnFunc:
+          showingStudentType === "banned"
+            ? unbanStudentButtonHandler
+            : banStudentButtonHandler,
+      })
+    );
+
+  const viewStudentLogCustom = (loginLog, visibilityLog, range) =>
+    dispatch(
+      onViewStudentLog({
+        range,
+        visibilityLog,
+        loginLog,
         ...student,
         exam: exam,
         bnText: showingStudentType === "banned" ? "Unban" : "Ban",
@@ -157,10 +177,17 @@ const Card = ({
       gridGap="10px"
       isSelected={studentID === student._id}
       onClick={() => dispatch(push(`/exam/${exam._id}/paper/${student._id}`))}
-      columns="repeat(2, 1fr) 80px 20px"
+      columns="repeat(2, 1fr) 60px 80px 20px"
     >
       <Wrapper>{student.registrationNo}</Wrapper>
       <Wrapper>{getName(student)}</Wrapper>
+      <Wrapper>
+        <LogCountView
+          exam={exam}
+          studentEmail={student.credential.email}
+          showDetails={viewStudentLogCustom}
+        ></LogCountView>
+      </Wrapper>
       <Wrapper>
         {" "}
         <TextCenter>{totalMarks || 0} </TextCenter>{" "}
@@ -237,12 +264,14 @@ const Students = ({
         />
       </Row>
       <TableWrapper>
-        <Row columns="repeat(2, 1fr) 80px 20px">
+        <Row columns="repeat(2, 1fr) 60px 80px 20px">
           <HeaderLabel>Regi No.</HeaderLabel>
           <HeaderLabel>Name</HeaderLabel>
+          <HeaderLabel>Activity</HeaderLabel>
           <HeaderLabel>
             <TextCenter> Marks </TextCenter>
           </HeaderLabel>
+
           <div> </div>
         </Row>
         <Body>

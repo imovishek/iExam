@@ -426,6 +426,10 @@ export const getLogs = async (query) =>
   requestApiAndGetResponse(`${apiUrl}/log/getLogs`, "post", query).then(
     (res) => res.data
   );
+export const getLogCounts = async (query) =>
+  requestApiAndGetResponse(`${apiUrl}/log/getLogCounts`, "post", query).then(
+    (res) => res.data
+  );
 
 const api = {
   getUserMe,

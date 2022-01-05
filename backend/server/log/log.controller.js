@@ -61,7 +61,7 @@ exports.getLogs = async (req, res) => {
       $match: {
         "logs.createdAt": {
           $gte: new Date(startTime),
-          $lt: new Date(endTime),
+          $lte: new Date(endTime),
         },
       },
     },
@@ -75,4 +75,44 @@ exports.getLogs = async (req, res) => {
   ]);
 
   responseHandler(res, httpStatuses.OK, data);
+};
+
+exports.countLogs = async (req, res) => {
+  const { email, startTime, endTime } = req.body;
+
+  console.log(email, startTime, endTime);
+
+  const data = await logModel.aggregate([
+    {
+      $match: {
+        studentMail: email,
+      },
+    },
+    { $unwind: "$logs" },
+    {
+      $match: {
+        "logs.createdAt": {
+          $gte: new Date(startTime),
+          $lte: new Date(endTime),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        loginCount: {
+          $sum: {
+            $cond: [{ $eq: ["$logs.desc", "login"] }, 1, 0],
+          },
+        },
+        visibilityCount: {
+          $sum: {
+            $cond: [{ $eq: ["$logs.desc", "visibility"] }, 1, 0],
+          },
+        },
+      },
+    },
+  ]);
+
+  responseHandler(res, httpStatuses.OK, data[0]);
 };

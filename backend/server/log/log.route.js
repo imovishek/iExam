@@ -16,5 +16,8 @@ router
 router
   .route("/log/getLogs")
   .post(secureApiCall([TEACHER, DEPTADMIN]), logController.getLogs);
+router
+  .route("/log/getLogCounts")
+  .post(secureApiCall([TEACHER, DEPTADMIN]), logController.countLogs);
 
 module.exports = router;

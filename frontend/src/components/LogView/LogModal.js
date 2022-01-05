@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { onViewStudentLog } from "../Exams/actions";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
-import { getLogs } from "../../utitlities/api";
+import { getLogs, getLogCounts } from "../../utitlities/api";
 const { RangePicker } = DatePicker;
 
 const getTimeMap = (time) => {
@@ -116,13 +116,14 @@ const LoginLogRow = ({ data, time }) => {
 };
 
 const ViewLogs = ({ student, dispatch }) => {
+  // console.log(student);
   const [isVisible, setVisible] = useState(false);
   const [defaultRange, setDefaultRange] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [showLoginLog, setshowLoginLog] = useState(true);
-  const [showVisibilityLog, setshowVisibilityLog] = useState(true);
-
+  const [showLoginLog, setshowLoginLog] = useState(false);
+  const [showVisibilityLog, setshowVisibilityLog] = useState(false);
+  const [showEmptyResult, setShowEmptyResult] = useState(false);
   const setUp = () => {
     // console.log(student.exam);
 
@@ -143,16 +144,12 @@ const ViewLogs = ({ student, dispatch }) => {
     examStart.subtract(1, "hour");
 
     setDefaultRange([examStart, examEnd]);
+
     setVisible(true);
   };
 
-  useEffect(() => {
-    if (student._id) setUp();
-    else setVisible(false);
-  }, [student]);
-
   useEffect(async () => {
-    if (defaultRange.length === 0) return;
+    if (!defaultRange || defaultRange.length === 0) return;
     setLoading(true);
 
     const data = await getLogs({
@@ -161,11 +158,31 @@ const ViewLogs = ({ student, dispatch }) => {
       endTime: defaultRange[1].format(),
     });
 
-    console.log(data);
+    const data1 = await getLogCounts({
+      email: student.credential.email,
+      startTime: defaultRange[0].format(),
+      endTime: defaultRange[1].format(),
+    });
+
+    // console.log(data1);
 
     setData(data);
     setLoading(false);
   }, [defaultRange]);
+
+  useEffect(() => {
+    if (student._id) {
+      setDefaultRange(student.range);
+      setshowVisibilityLog(student.visibilityLog);
+      setshowLoginLog(student.loginLog);
+
+      console.log(defaultRange);
+      console.log(student.range);
+
+      if (student.range.length === 0) setUp();
+      else setVisible(true);
+    } else setVisible(false);
+  }, [student]);
 
   const closeModal = () => dispatch(onViewStudentLog({}));
 
@@ -177,6 +194,17 @@ const ViewLogs = ({ student, dispatch }) => {
   const timeChanged = (e) => {
     setDefaultRange(e);
   };
+
+  const renderEmptyNotice = () => {
+    const ele = document.getElementById("log-content");
+    if (!ele) return;
+
+    if (ele.childNodes.length === 0) {
+      setShowEmptyResult(true);
+    } else setShowEmptyResult(false);
+  };
+
+  useEffect(renderEmptyNotice);
 
   return (
     <Modal
@@ -202,7 +230,7 @@ const ViewLogs = ({ student, dispatch }) => {
           separator={"and"}
           showSecond={false}
           onChange={timeChanged}
-          defaultValue={defaultRange}
+          value={defaultRange}
         />
         <div style={{ margin: "3px 20px 0px 15px" }}>
           <Checkbox
@@ -227,9 +255,11 @@ const ViewLogs = ({ student, dispatch }) => {
       )}
 
       {!isLoading && (
-        <div style={{ maxHeight: "50vh", marginTop: "5px", overflowY: "auto" }}>
+        <div
+          id="log-content"
+          style={{ maxHeight: "50vh", marginTop: "5px", overflowY: "auto" }}
+        >
           {data.map((val) => {
-            console.log(val);
             if (showLoginLog && val.desc === "login")
               return (
                 <LoginLogRow
@@ -246,6 +276,13 @@ const ViewLogs = ({ student, dispatch }) => {
               );
             }
           })}
+        </div>
+      )}
+
+      {!isLoading && showEmptyResult && (
+        <div style={{ textAlign: "center", padding: "100px 20px" }}>
+          {" "}
+          No Activity found to show
         </div>
       )}
     </Modal>
