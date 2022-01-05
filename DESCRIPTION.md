@@ -10,9 +10,13 @@ This is a project mainly started by Ovishek Paul(Software Engineer, Re:cruit) an
 
 - Creating MCQ/free-text/code based Exam
 - Evaluating and grading (auto/manual)
+- Improving the UI
+- Creating a dashboard for student/teacher where all the features can be accessed easily
+- Allowing students to use the site only from one device at a time
+- Monitoring students' activity during the exam 
 - Integrity testing
 - creating dummy accounts for students to attempt one exam
-- evaluating dynamic answers by running a code
+- Evaluating dynamic answers by running a code
 - Publishing results of a exam/test without any hassle
 
 ## Contributions of Antar Roy (2018331040)
@@ -43,3 +47,43 @@ This is a project mainly started by Ovishek Paul(Software Engineer, Re:cruit) an
   - Install docker and start a mongodb container
   - setup ssh and create bash script to make redeployment semi-automatic
   - Configuring services to run without sticking to terminal session
+
+
+## Contributions of Faridul Reza Sagor (2018331012)
+
+- Frontend Design
+
+  - Designing the login window
+  - Designing a student's dashboard where student can -
+    - see their upcoming exams with useful statistics
+    - access their running exam with one click
+  - Designing a Teacher's dashboard where teachers can -
+    - see the running exam(s) of their courses
+    - create exams easily from dashboard
+    - see exam or course statistics and access them easily
+
+- Allowing student accounts to have only one active session (Backend)
+
+  - created a new database (logs) with the most efficient database scheme for logging & querying student activities (login activity & tab visibility)
+  - worked with JWT for allowing one active session
+  - modified the frontend's all API call's response delivery system so that the user is automatically logged out on requests made with invalidated JWT token
+
+- Student's activity monitoring
+
+  - New login made by students will be logged to the server. The log contains-
+    - Device info 
+    - IP info (public).
+    Along with the time of login
+   
+  - When an exam is running students tab visibility is monitored. When the tab is 100% invisible (by means of tab change, browser minimization or overlay by other programs) a log entry will be registered against the student.
+
+- Showing the logs to the frontend
+
+  - Created a Modal view with where teachers can-
+    - Query all the logs by a timeframe
+    - filter out logs
+    - see details of the logs
+  - Created a view for activity summary on exam page
+    - Teachers can see the count of how many logins or tab changes had been made while an exam was running
+    - Access the details of the activity with appropriate filter with one click
+  
