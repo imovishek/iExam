@@ -19,6 +19,19 @@ This is a project mainly started by Ovishek Paul(Software Engineer, Re:cruit) an
 - Evaluating dynamic answers by running a code
 - Publishing results of a exam/test without any hassle
 
+
+## Functioanalities
+
+- Super Admin can create departments and assign teachers to these departments.
+- Super Admin can batch import students
+- Teachers can create exams, set questions, assign students to these exams
+- Students can see the upcoming, running exams, attempt one exam and get the result when published.
+- Teachers can Monitor students if they login to different account from one device and ban them.
+- Teacher can publish announcements.
+- Students can ask clarification public or private and the teacher have the option to publish it
+- Teachers can grade manual/automcatically running a python code.
+- Teachers can publish results.
+
 ## Contributions of Antar Roy (2018331040)
 
 - Application Changes
