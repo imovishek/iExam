@@ -178,24 +178,24 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   };
 
   const submitSilentPaperHandler = async () => {
-  //   const showingPaper = window.location.pathname.match(/\/answer$/);
-  //   if (!showingPaper) return;
-  //   const cleanPaper = {
-  //     ...virtualState.paper,
-  //   };
-  //   console.log("virtualState.paper", cleanPaper, id);
-  //   try {
-  //     await api.updateExamPaperForStudent(id, cleanPaper);
-  //     await updateExamOnUI();
-  //     setSavedText("Saved a few seconds ago");
-  //   } catch (err) {
-  //     message.error(err.response.data.message);
-  //     dispatch(push(`/exam/${id}`));
-  //     try {
-  //       await updateExamOnUI();
-  //     } catch (error) {}
-  //     console.log(err);
-  //   }
+    //   const showingPaper = window.location.pathname.match(/\/answer$/);
+    //   if (!showingPaper) return;
+    //   const cleanPaper = {
+    //     ...virtualState.paper,
+    //   };
+    //   console.log("virtualState.paper", cleanPaper, id);
+    //   try {
+    //     await api.updateExamPaperForStudent(id, cleanPaper);
+    //     await updateExamOnUI();
+    //     setSavedText("Saved a few seconds ago");
+    //   } catch (err) {
+    //     message.error(err.response.data.message);
+    //     dispatch(push(`/exam/${id}`));
+    //     try {
+    //       await updateExamOnUI();
+    //     } catch (error) {}
+    //     console.log(err);
+    //   }
   };
 
   const autoSubmitUpdateHandler = async (checked) => {
@@ -259,7 +259,6 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                         disabled={true}
                         checked={false}
                         onChange={autoSubmitUpdateHandler}
-                        style={{ marginRight: "10px" }}
                       />
                     </div>
                     {user.autoSubmitPaper && <div>{}</div>}

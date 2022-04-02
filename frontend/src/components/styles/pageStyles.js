@@ -18,25 +18,22 @@ export const BodyRow = styled.div`
 export const LabelWrapper = styled.div`
   color: grey;
   margin-bottom: 10px;
-  
 `;
 
 export const TileHeaderWrapper = styled.div`
   display: grid;
   grid-template-columns: ${(props) => props.columns || "auto"};
-  
 `;
 export const RightButtonWrapper = styled.div`
   display: flex;
+  grid-gap: 10px;
   justify-content: flex-end;
 `;
 
 export const PageHeader = styled.h1`
   display: inline;
-  
 `;
 
 export const SecondHeader = styled.h2`
   display: inline;
-  
 `;

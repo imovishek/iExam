@@ -43,7 +43,6 @@ const InputWrapper = styled(Input)`
 
 const ButtonStyled = styled(Button)`
   height: 30px;
-  margin-right: 10px;
 `;
 
 const getName = (obj) => `${obj.firstName} ${obj.lastName}`;
@@ -66,7 +65,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
     matchingOptions: {
       leftSide: [],
       rightSide: [],
-    }
+    },
   };
   const [question, setQuestion] = useState(deepCopy(defaultQuestion));
   const [questionBody, setQuestionBody] = useState(null);
@@ -89,7 +88,9 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
       obj = teachersObj;
     }
     const accessTeachers = [];
-    _.forEach(question.teacherAccess, teacherID => accessTeachers.push(obj[teacherID]));
+    _.forEach(question.teacherAccess, (teacherID) =>
+      accessTeachers.push(obj[teacherID])
+    );
     setAccessTeachers(accessTeachers);
     console.log(obj);
   }, [question.authorID, question.teacherAccess]);
@@ -102,7 +103,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
         const { payload: newQuestion } = await api.getQuestionByID(questionID);
         setQuestion({ ...newQuestion });
         setQuestionBody(newQuestion.body);
-        console.log('question', newQuestion);
+        console.log("question", newQuestion);
       } catch (err) {
         console.log(err);
         message.error("Cannot find the question");
@@ -110,7 +111,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
       }
       setLoading(false);
     } else {
-      setQuestion({...defaultQuestion});
+      setQuestion({ ...defaultQuestion });
     }
   }, [questionID]);
 
@@ -119,7 +120,7 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
       ...question,
       [key]: value,
     };
-    if (key === 'body') {
+    if (key === "body") {
       setQuestion(newQuestion);
       return setQuestionBody(value);
     }
@@ -136,7 +137,10 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
     const isCreate = questionID === "new";
     try {
       if (questionID === "new") {
-        question.teacherAccess = _.map(accessTeachers, teacher => teacher._id);
+        question.teacherAccess = _.map(
+          accessTeachers,
+          (teacher) => teacher._id
+        );
         question.body = questionBody;
         const { payload: newQuestion } = await api.createQuestion(question);
         setQuestion(newQuestion);
@@ -161,7 +165,10 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
           push(`${examID ? `/exam/${examID}` : ""}/question/${newQuestion._id}`)
         );
       } else {
-        question.teacherAccess = _.map(accessTeachers, teacher => teacher._id);
+        question.teacherAccess = _.map(
+          accessTeachers,
+          (teacher) => teacher._id
+        );
         question.body = questionBody;
         await api.updateQuestion(question, question);
         if (examID) {
@@ -187,9 +194,11 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
     }
   };
   const propQuestion = { ...question };
-  console.log('propQuestion', propQuestion);
+  console.log("propQuestion", propQuestion);
   const isBroad = question.type === BROAD;
-  const filteredTeachers = Object.values(teachersObj).filter(t => !_.any(accessTeachers, aT => aT._id === t._id));
+  const filteredTeachers = Object.values(teachersObj).filter(
+    (t) => !_.any(accessTeachers, (aT) => aT._id === t._id)
+  );
   return (
     <div>
       <CheckAuthentication />
@@ -228,7 +237,11 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               </ButtonStyled>
             </RightButtonWrapper>
           </TileHeaderWrapper>
-          <Row columns={`minmax(220px, 1fr) 220px ${isBroad ? '220px' : ''} 220px 70px`}>
+          <Row
+            columns={`minmax(220px, 1fr) 220px ${
+              isBroad ? "220px" : ""
+            } 220px 70px`}
+          >
             <HeaderRow>
               <LabelWrapper>Title</LabelWrapper>
               <InputWrapper
@@ -266,12 +279,14 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
                 </Select>
               </HeaderRow>
             )}
-            
+
             <HeaderRow>
               <LabelWrapper>Author</LabelWrapper>
               <InputWrapper
                 disabled={true}
-                value={getName(teachersObj[question.authorID] || {}) || "Anonymous"}
+                value={
+                  getName(teachersObj[question.authorID] || {}) || "Anonymous"
+                }
               />
             </HeaderRow>
 
@@ -288,52 +303,88 @@ const QuestionPage = ({ user, dispatch, hasBack = true }) => {
               <Row columns="1fr">
                 <QuestionBodyRow>
                   <LabelWrapper>Question</LabelWrapper>
-                  <QuestionBody question={propQuestion} setQuestionValue={setValue} />
+                  <QuestionBody
+                    question={propQuestion}
+                    setQuestionValue={setValue}
+                  />
                 </QuestionBodyRow>
               </Row>
               {user._id === question.authorID && (
-                <Row columns="1fr 1fr" style={{ marginTop: '70px' }}>
+                <Row columns="1fr 1fr" style={{ marginTop: "70px" }}>
                   <div>
                     <Row columns="1fr 1fr">
                       <PageHeader>Access</PageHeader>
                       <RightButtonWrapper>
-                        <ButtonStyled type="primary" onClick={setShowAcccessModal}>
+                        <ButtonStyled
+                          type="primary"
+                          onClick={setShowAcccessModal}
+                        >
                           Add Access
                         </ButtonStyled>
                       </RightButtonWrapper>
                     </Row>
-                    <QuestionAccess teachers={accessTeachers} setAccessTeachers={setAccessTeachers}/>
+                    <QuestionAccess
+                      teachers={accessTeachers}
+                      setAccessTeachers={setAccessTeachers}
+                    />
                   </div>
-                  
                 </Row>
               )}
-    
+
               <Modal
                 title="Give Access"
                 visible={showAccessModal}
                 width={500}
-                style={{ height: '700px' }}
+                style={{ height: "700px" }}
                 onOk={() => setShowAcccessModal(false)}
                 onCancel={() => setShowAcccessModal(false)}
                 okText="Import"
                 footer={[
                   <Button
-                    key="add-access" type="primary" onClick={() => {
-                      if (!selectedTeacher) return message.error("Please select anyone");
-                      const newTeachers = [...accessTeachers, teachersObj[selectedTeacher.split("#")[0]]];
+                    key="add-access"
+                    type="primary"
+                    onClick={() => {
+                      if (!selectedTeacher)
+                        return message.error("Please select anyone");
+                      const newTeachers = [
+                        ...accessTeachers,
+                        teachersObj[selectedTeacher.split("#")[0]],
+                      ];
                       setAccessTeachers(newTeachers);
                       setSelectedTeacher(null);
                       setShowAcccessModal(false);
-                    }}>Share</Button>
+                    }}
+                  >
+                    Share
+                  </Button>,
                 ]}
               >
                 <Select
-                  placeholder="Select a teacher" filterOption={(searchParam, v) => {
-                    const val = v.value.split('#')[1];
-                    return val.trim().toLowerCase().includes(searchParam.toLowerCase());
-                  }} showSearch onChange={v => setSelectedTeacher(v)} value={selectedTeacher} style={{ width: '50%' }}>
-                  {filteredTeachers.map(teacher => (
-                    <Option key={Math.random()} value={`${teacher._id}#${getName(teacher)} ${teacher.department.departmentCode}`}> {`${getName(teacher)} ${teacher.department.departmentCode}`} </Option>
+                  placeholder="Select a teacher"
+                  filterOption={(searchParam, v) => {
+                    const val = v.value.split("#")[1];
+                    return val
+                      .trim()
+                      .toLowerCase()
+                      .includes(searchParam.toLowerCase());
+                  }}
+                  showSearch
+                  onChange={(v) => setSelectedTeacher(v)}
+                  value={selectedTeacher}
+                  style={{ width: "50%" }}
+                >
+                  {filteredTeachers.map((teacher) => (
+                    <Option
+                      key={Math.random()}
+                      value={`${teacher._id}#${getName(teacher)} ${
+                        teacher.department.departmentCode
+                      }`}
+                    >
+                      {" "}
+                      {`${getName(teacher)} ${
+                        teacher.department.departmentCode
+                      }`}{" "}
+                    </Option>
                   ))}
                 </Select>
               </Modal>
