@@ -44,7 +44,9 @@ import NewAnnouncementModal from "./NewAnnouncementModal";
 import ShowAnnouncementModal from "./ShowAnnouncementModla";
 import ShowExamStatusTitle from "../Common/ShowExamStatusTitle";
 import Clarifications from "./components/Clarifications";
+
 import LogModal from "../../LogView/LogModal";
+
 const { TabPane } = Tabs;
 
 const StyledDropdown = styled(Dropdown)`
@@ -312,6 +314,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                       <CenterText style={{ marginRight: "10px" }}>
                         Total Marks: {exam.totalMarks}{" "}
                       </CenterText>
+
                       <Center>
                         <StyledDropdown
                           overlay={questionActionMenu}

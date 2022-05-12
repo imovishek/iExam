@@ -3,8 +3,12 @@ const moment = require("moment");
 const Papa = require("papaparse");
 const bcrypt = require("bcryptjs");
 const _ = require("underscore");
-const uniqid = require("uniqid");
-const shortid = require("shortid");
+const { customAlphabet } = require("nanoid");
+const nanoid = customAlphabet(
+  "asdfghjklqwertyuiopzxcvbnmASDFGHJKLQWERTYUIOPZXCVBNM1234567890",
+  10
+);
+
 const {
   requiredCsvHeaders,
   inputDateFormats,
@@ -246,5 +250,5 @@ exports.checkEqual = (objA, objB) => {
 };
 
 exports.getEightDigitRandomPassword = () => {
-  return shortid.generate();
+  return nanoid();
 };

@@ -178,7 +178,7 @@ exports.runEvaluation = async (req, res) => {
           const runCode = spawn(
             runCommand,
             {
-              shell: true,
+              shell: "/bin/bash",
             }
           );
           let sent = 0;

@@ -179,24 +179,24 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
   };
 
   const submitSilentPaperHandler = async () => {
-    const showingPaper = window.location.pathname.match(/\/answer$/);
-    if (!showingPaper) return;
-    const cleanPaper = {
-      ...virtualState.paper,
-    };
-    console.log("virtualState.paper", cleanPaper, id);
-    try {
-      await api.updateExamPaperForStudent(id, cleanPaper);
-      await updateExamOnUI();
-      setSavedText("Saved a few seconds ago");
-    } catch (err) {
-      message.error(err.response.data.message);
-      dispatch(push(`/exam/${id}`));
-      try {
-        await updateExamOnUI();
-      } catch (error) {}
-      console.log(err);
-    }
+    //   const showingPaper = window.location.pathname.match(/\/answer$/);
+    //   if (!showingPaper) return;
+    //   const cleanPaper = {
+    //     ...virtualState.paper,
+    //   };
+    //   console.log("virtualState.paper", cleanPaper, id);
+    //   try {
+    //     await api.updateExamPaperForStudent(id, cleanPaper);
+    //     await updateExamOnUI();
+    //     setSavedText("Saved a few seconds ago");
+    //   } catch (err) {
+    //     message.error(err.response.data.message);
+    //     dispatch(push(`/exam/${id}`));
+    //     try {
+    //       await updateExamOnUI();
+    //     } catch (error) {}
+    //     console.log(err);
+    //   }
   };
 
   const autoSubmitUpdateHandler = async (checked) => {
@@ -208,27 +208,28 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
     setSwitchLoading(false);
   };
   const AUTO_SAVE_TIME_INTERVAL = 5000;
-  useEffect(() => {
-    if (user.autoSubmitPaper) {
-      // console.log('Starting new one...........');
-      const interval = setInterval(async () => {
-        if (
-          virtualState.exam &&
-          (getExamStatus(virtualState.exam) === "ended" ||
-            meGotBanned(virtualState.exam, user))
-        ) {
-          setSavedText("");
-          return clearInterval(interval);
-        }
-        setSavedText("Saving...");
-        await submitSilentPaperHandler();
-      }, AUTO_SAVE_TIME_INTERVAL);
-      return () => {
-        // console.log('Killing prev one........');
-        clearInterval(interval);
-      };
-    }
-  }, [user.autoSubmitPaper]);
+
+  // useEffect(() => {
+  //   if (user.autoSubmitPaper) {
+  //     // console.log('Starting new one...........');
+  //     const interval = setInterval(async () => {
+  //       if (
+  //         virtualState.exam &&
+  //         (getExamStatus(virtualState.exam) === "ended" ||
+  //           meGotBanned(virtualState.exam, user))
+  //       ) {
+  //         setSavedText("");
+  //         return clearInterval(interval);
+  //       }
+  //       setSavedText("Saving...");
+  //       await submitSilentPaperHandler();
+  //     }, AUTO_SAVE_TIME_INTERVAL);
+  //     return () => {
+  //       // console.log('Killing prev one........');
+  //       clearInterval(interval);
+  //     };
+  //   }
+  // }, [user.autoSubmitPaper]);
   const isExamRunning = getExamStatus(exam) === "running";
   const amIBanned = meGotBanned(exam, user);
 
@@ -273,13 +274,12 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                       <span style={{ marginRight: "10px" }}>Auto submit: </span>
                       <Switch
                         loading={switchLoading}
-                        disabled={isDisabled}
-                        checked={user.autoSubmitPaper}
+                        disabled={true}
+                        checked={false}
                         onChange={autoSubmitUpdateHandler}
-                        style={{ marginRight: "10px" }}
                       />
                     </div>
-                    {user.autoSubmitPaper && <div>{savedText}</div>}
+                    {user.autoSubmitPaper && <div>{}</div>}
                   </Col>
 
                   <ButtonStyled
