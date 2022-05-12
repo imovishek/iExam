@@ -44,6 +44,9 @@ import NewAnnouncementModal from "./NewAnnouncementModal";
 import ShowAnnouncementModal from "./ShowAnnouncementModla";
 import ShowExamStatusTitle from "../Common/ShowExamStatusTitle";
 import Clarifications from "./components/Clarifications";
+
+import LogModal from "../../LogView/LogModal";
+
 const { TabPane } = Tabs;
 
 const StyledDropdown = styled(Dropdown)`
@@ -259,6 +262,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
       <BodyWrapper>
         <NavBar />
         <Container rows="100px 30px 1fr" gridGap="20px">
+          <LogModal />
           <TileHeaderWrapper columns="1fr 1fr 1fr">
             <div>
               {hasBack && (
@@ -298,7 +302,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
               View Announcements
             </Button>
           </Row>
-          <StyledRow columns="3fr 2fr">
+          <StyledRow columns="2.5fr 2.3fr">
             <Tabs onChange={() => {}} type="card">
               <TabPane tab="Questions" key="1">
                 <QuestionsWrapper>
@@ -307,7 +311,10 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                       Questions ({(exam.questions || []).length})
                     </SecondHeader>
                     <RightButtonWrapper>
-                      <CenterText>Total Marks: {exam.totalMarks} </CenterText>
+                      <CenterText style={{ marginRight: "10px" }}>
+                        Total Marks: {exam.totalMarks}{" "}
+                      </CenterText>
+
                       <Center>
                         <StyledDropdown
                           overlay={questionActionMenu}

@@ -2,7 +2,7 @@ import { Input, Button, message } from "antd";
 import React, { useState } from "react";
 import jwt from "jsonwebtoken";
 import styled from "styled-components";
-import api, { apiLogin } from "../../utitlities/api";
+import api, { apiLogin, logLogin } from "../../utitlities/api";
 import { connect } from "react-redux";
 import { setUserAction } from "./actions";
 import { push } from "connected-react-router";
@@ -10,6 +10,7 @@ import backgroundImage from "../../images/loginBackground.svg";
 import Loading from "../Common/Loading";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ipInfo from "ipinfo";
 
 const fontColor = "#49006b";
 
@@ -129,16 +130,30 @@ const Login = ({ setUser, dispatch }) => {
   const tryToLogin = async (email, password) => {
     try {
       const { data: res } = await apiLogin(email, password);
-      setIsLoading(false);
-      if (res.error) return message.error(res.message);
+
+      if (res.error) {
+        setIsLoading(false);
+        return message.error(res.message);
+      }
       localStorage.clear();
       const user = await jwt.decode(res.token);
       setUser(user);
-      if (!user)
+      if (!user) {
+        setIsLoading(false);
         return message.error("Something went wrong please try again later!");
-
+      }
       setLocalStorage(user, res.token);
-      dispatch(push("/"));
+      if (user.userType === "student") {
+        ipInfo("", "dccee228e5daa1", async (err, cLoc) => {
+          if (err) cLoc = { Message: "Could not get IP information" };
+          await logLogin(user.credential.email, cLoc);
+          setIsLoading(false);
+          dispatch(push("/"));
+        });
+      } else {
+        setIsLoading(false);
+        dispatch(push("/"));
+      }
     } catch (e) {
       console.log(e);
       message.error("Something went wrong please try again later!");
