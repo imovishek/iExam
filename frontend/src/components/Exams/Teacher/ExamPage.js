@@ -312,7 +312,7 @@ const ExamPage = ({ dispatch, user, hasBack = true }) => {
                     </SecondHeader>
                     <RightButtonWrapper>
                       <CenterText style={{ marginRight: "10px" }}>
-                        Total Marks: {exam.totalMarks}{" "}
+                        Total Marks: {exam.totalMarks}
                       </CenterText>
 
                       <Center>
